@@ -184,7 +184,7 @@ package
 				return tf;
 			}
 			var ldr:Loader = new Loader();
-			var url:String = "thumbnails\\"+num+".PNG";
+			var url:String = "../data/thumbnails/"+num+".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
 			
@@ -279,7 +279,7 @@ private function onXMLLoadComplete(event:Event):void
 		{
 			tree = new Tree();
 			var loader:URLLoader = new URLLoader();
-			var request:URLRequest = new URLRequest("tree_cat.xml");
+			var request:URLRequest = new URLRequest("../data/tree_cat.xml");
 			loader.load(request);
 			loader.addEventListener(Event.COMPLETE, onXMLLoadComplete);			
 //			//Build the JavaScript objects representing the tree
