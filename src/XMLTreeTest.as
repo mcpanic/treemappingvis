@@ -68,8 +68,8 @@ package
 			
 			//buildSprite();
 			addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
-				
 			addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
 			parseXML();
 		}
 		
@@ -78,7 +78,7 @@ package
 			Shapes.setShape("RECT", drawRectangle);
 			
 			// create data and set defaults
-//			data = createTree();//GraphUtil.diamondTree(3,4,4);
+//			data = createTree();
 			data = tree;
 			
 			data.nodes.setProperties(nodes);
@@ -97,7 +97,6 @@ package
 		private function initVis():void
 		{
 			vis = new Visualization(data);
-//			vis.bounds = new Rectangle(stage.width/2, stage.height/2, stage.width/2, stage.height/2);
 			vis.operators.add(new NodeLinkTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10));
 			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
@@ -195,9 +194,6 @@ package
 			ldr.contentLoaderInfo.addEventListener(Event.COMPLETE,
 				function(evt:Event):void
 				{	
-					iw = ldr.width;
-					ih = ldr.height;
-//					n.shape = "RECT"; // Trying to make the node shaped like the image 
 					vis.update();
 				});
 						
@@ -224,17 +220,9 @@ package
 				nodeSprite = tree.addChild(parent);
 				addImageNode(nodeSprite, el.label);
 		
-//				if (xml.children.node != null && xml.children.node != undefined)
-//				{
-//					retrieveData(el.children(), depth + 1, nodeSprite);
-//				}
 		 	    if (el.children.node == null || el.children.node == undefined){}
 		 	    else retrieveData(el.children.node, depth + 1, nodeSprite);
 		 	}
-		 	
-//		    		return;
-		    	//trace("hello");
-//		    		
 		
 		}
 		
@@ -277,30 +265,6 @@ package
 			var request:URLRequest = new URLRequest("../data/tree_cat.xml");
 			loader.load(request);
 			loader.addEventListener(Event.COMPLETE, onXMLLoadComplete);			
-//			//Build the JavaScript objects representing the tree
-//			function createObjects(element, depth)
-//			{
-//				element.label = element.getElementsByTagName("label")[0].firstChild.nodeValue;
-//				element.url = element.getElementsByTagName("url")[0].firstChild.nodeValue;
-//				element.depth = depth;
-//				if(treeWidths[depth] == undefined){
-//					treeWidths[depth] = 1;
-//				} else {
-//					treeWidths[depth]++;
-//				}
-//				element.children = new Array();
-//				allNodes.push(element);
-//				
-//				var children = element.getElementsByTagName("children")[0].childNodes;
-//				for(var i=0; i<children.length; i++){
-//					if(children[i].nodeType != 3 && children[i].tagName == "node"){  //TextNode = type 3
-//						element.children.push(createObjects(children[i], depth+1));  //Recurse on children
-//					}
-//				}
-//
-//				return element;
-//			}
-			
 		}
 
 		
@@ -332,17 +296,29 @@ package
 		{ 
 			if(me.buttonDown)
 			{ // TODO: handle pan
-				var dX:Number = me.stageX - prevX;
-				var dY:Number = me.stageY - prevY;
+				var sX:Number = me.stageX;
+				var sY:Number = me.stageY;
 				
-				trace("dX/dY: "+dX+"/"+dY);
+				var dX:Number = sX - prevX;
+				var dY:Number = sY - prevY;
+				
+//				trace("stageX/stageY: "+me.stageX+"/"+me.stageY);
+//				trace("prevX/prevY: "+prevX+"/"+prevY);
+//				trace("dX/dY: "+dX+"/"+dY);
 				
 				vis.x += dX;
 				vis.y += dY;
-			}
 			
+				prevX = sX;
+				prevY = sY;
+//				trace("prevX2/prevY2: "+prevX+"/"+prevY);
+			}
+		}		
+		
+		private function handleMouseDown(me:MouseEvent):void
+		{
 			prevX = me.stageX;
 			prevY = me.stageY;
-		}		
+		}
 	}
 }
