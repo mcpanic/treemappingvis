@@ -19,9 +19,10 @@ package
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
-	import flash.events.MouseEvent;
 	
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
@@ -29,6 +30,8 @@ package
 	
 	public class XMLTreeTest extends Sprite
 	{
+		private static var MAX_ZOOM:Number = 4;
+		private static var MIN_ZOOM:Number = 0.25;
 		
 		private var prevX:Number = 0;
 		private var prevY:Number = 0;
@@ -209,71 +212,62 @@ package
 			g.drawRect(0,0, iw, ih);	
 		}
 
-
-import flash.events.Event;
-import flash.net.URLLoader;
-import flash.net.URLRequest;
-private var tree:Tree;
-
-private function retrieveData(xml:XMLList, depth:Number, parent:NodeSprite):void
-{
-	var nodeSprite:NodeSprite; 
-	
-//			
-//			var n:NodeSprite = tree.addRoot();
-//			addImageNode(n); 
-//			
-//			var l:NodeSprite = tree.addChild(n);
-//			addImageNode(l);
-//			
-//			var r:NodeSprite = tree.addChild(n);
-//			addImageNode(r);
-	
-					
-	for each (var el:XML in xml)	// next depth
-	{
-		trace(el.label + "/" + depth);
-		nodeSprite = tree.addChild(parent);
-		addImageNode(nodeSprite, el.label);
-
- 	}
- 	    if (xml.children.node == null || xml.children.node == undefined)
-    		return;
-    	//trace("hello");
-    	retrieveData(xml.children.node, depth + 1, nodeSprite);	
-
-}
-
-private function onXMLLoadComplete(event:Event):void
-{
-    var loader:URLLoader = event.target as URLLoader;
-    
-    if (loader != null)
-    {
-	    var externalXML:XML = new XML(loader.data);
-	    var nodeSprite:NodeSprite; 
-		trace(externalXML.label);
-	    //trace(externalXML.url);        
-		nodeSprite = tree.addRoot();
-		addImageNode(nodeSprite, externalXML.label);	    
- 		retrieveData(externalXML.children.node, 1, nodeSprite);
-//        trace(externalXML.toXMLString());
-        //var total2:Number = 0;
-//		for each (var prop:XML in externalXML.children)
-//		{
-//		    trace(prop.label + " " + prop.url);
-//		}
-
-    }
-    else
-    {
-        trace("loader is not a URLLoader!");
-    }
-	initComponents();
-	
-	buildSprite();    
-    
-}
+		private var tree:Tree;
+		
+		private function retrieveData(xml:XMLList, depth:Number, parent:NodeSprite):void
+		{
+			var nodeSprite:NodeSprite; 			
+							
+			for each (var el:XML in xml)	// next depth
+			{
+				trace(el.label + "/" + depth);
+				nodeSprite = tree.addChild(parent);
+				addImageNode(nodeSprite, el.label);
+		
+//				if (xml.children.node != null && xml.children.node != undefined)
+//				{
+//					retrieveData(el.children(), depth + 1, nodeSprite);
+//				}
+		 	    if (el.children.node == null || el.children.node == undefined){}
+		 	    else retrieveData(el.children.node, depth + 1, nodeSprite);
+		 	}
+		 	
+//		    		return;
+		    	//trace("hello");
+//		    		
+		
+		}
+		
+		private function onXMLLoadComplete(event:Event):void
+		{
+		    var loader:URLLoader = event.target as URLLoader;
+		    
+		    if (loader != null)
+		    {
+			    var externalXML:XML = new XML(loader.data);
+			    var nodeSprite:NodeSprite; 
+				trace(externalXML.label);
+			    //trace(externalXML.url);        
+				nodeSprite = tree.addRoot();
+				addImageNode(nodeSprite, externalXML.label);	    
+		 		retrieveData(externalXML.children.node, 1, nodeSprite);
+		//        trace(externalXML.toXMLString());
+		        //var total2:Number = 0;
+		//		for each (var prop:XML in externalXML.children)
+		//		{
+		//		    trace(prop.label + " " + prop.url);
+		//		}
+		
+		    }
+		    else
+		    {
+		        trace("loader is not a URLLoader!");
+		    }
+			initComponents();
+			
+			buildSprite();    
+		    
+		}
 
 		
 		private function parseXML():void
@@ -314,21 +308,21 @@ private function onXMLLoadComplete(event:Event):void
 		{ // handle zoom
 			if(me.delta > 0)
 			{
-				if(vis.scaleX > 0.5*1.5)
+				if(vis.scaleX < MAX_ZOOM*1.5)
 				{
-					trace("zoom out!");
-					vis.scaleX /= 1.5;
-					vis.scaleY /= 1.5;
+					trace("zoom in!");
+					vis.scaleX *= 1.5;
+					vis.scaleY *= 1.5;
 					update();
 				}
 			} 
 			else
 			{
-				if(vis.scaleX < 4*1.5)
+				if(vis.scaleX > MIN_ZOOM*1.5)
 				{
-					trace("zoom in!");
-					vis.scaleX *= 1.5;
-					vis.scaleY *= 1.5;
+					trace("zoom out!");
+					vis.scaleX /= 1.5;
+					vis.scaleY /= 1.5;
 					update();
 				}
 			}
