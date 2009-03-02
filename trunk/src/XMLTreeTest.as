@@ -184,6 +184,7 @@ package
 				return tf;
 			}
 			var ldr:Loader = new Loader();
+
 			var url:String = "../data/thumbnails/"+num+".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
