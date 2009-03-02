@@ -121,7 +121,7 @@ package
 		{
 			addChild(vis);
 		}
-		
+/*		
 		private function createTree():Tree
 		{
 			var b:int = 2;
@@ -169,7 +169,7 @@ package
 			if (!left && depth > 0)
 				deepHelper(t, c, breadth, depth-1, left);
 		}
-		
+*/		
 		private function addImageNode(n:NodeSprite, num:Number = 0):void
 		{
 			var image:DisplayObject = addImage(n, num);
@@ -270,24 +270,26 @@ package
 		
 		private function handleMouseWheel(me:MouseEvent):void
 		{ // handle zoom
+
 			if(me.delta > 0)
 			{
-				if(vis.scaleX < MAX_ZOOM*1.5)
+				if(vis.scaleX < MAX_ZOOM)
+
 				{
 					trace("zoom in!");
-					vis.scaleX *= 1.5;
-					vis.scaleY *= 1.5;
-					update();
+					vis.scaleX *= 1.1;
+					vis.scaleY *= 1.1;
+					//update();
 				}
 			} 
 			else
 			{
-				if(vis.scaleX > MIN_ZOOM*1.5)
+				if(vis.scaleX > MIN_ZOOM)
 				{
 					trace("zoom out!");
-					vis.scaleX /= 1.5;
-					vis.scaleY /= 1.5;
-					update();
+					vis.scaleX /= 1.1;
+					vis.scaleY /= 1.1;
+					//update();
 				}
 			}
 		}
@@ -296,19 +298,17 @@ package
 		{ 
 			if(me.buttonDown)
 			{ // TODO: handle pan
+
 				var sX:Number = me.stageX;
 				var sY:Number = me.stageY;
-				
+
 				var dX:Number = sX - prevX;
 				var dY:Number = sY - prevY;
-				
-//				trace("stageX/stageY: "+me.stageX+"/"+me.stageY);
-//				trace("prevX/prevY: "+prevX+"/"+prevY);
-//				trace("dX/dY: "+dX+"/"+dY);
-				
+
+	
 				vis.x += dX;
 				vis.y += dY;
-			
+		
 				prevX = sX;
 				prevY = sY;
 //				trace("prevX2/prevY2: "+prevX+"/"+prevY);
