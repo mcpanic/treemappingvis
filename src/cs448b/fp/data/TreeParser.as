@@ -13,7 +13,7 @@ package cs448b.fp.data
 		
 		private var _tree:Tree;
 		private var _fileName:String;
-		private var _cb:Function = null;
+		private var _cb:Function;
 						
 		public function TreeParser(fileName:String)
 		{
