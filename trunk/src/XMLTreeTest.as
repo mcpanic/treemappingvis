@@ -1,12 +1,13 @@
 package
-{
-	import flare.query.methods.update;
+{	
+	import cs448b.fp.data.DataLoader;
+	import cs448b.fp.ui.LoaderExpandControl;
+	
 	import flare.util.Orientation;
 	import flare.util.Shapes;
 	import flare.vis.Visualization;
 	import flare.vis.controls.ExpandControl;
 	import flare.vis.controls.HoverControl;
-	import flare.vis.controls.IControl;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
@@ -14,8 +15,8 @@ package
 	import flare.vis.operator.encoder.PropertyEncoder;
 	import flare.vis.operator.layout.NodeLinkTreeLayout;
 	
-	import flash.display.DisplayObject;
 	import flash.display.Graphics;
+	import flash.display.InteractiveObject;
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -30,6 +31,8 @@ package
 	
 	public class XMLTreeTest extends Sprite
 	{
+		private var dataLoader:DataLoader;
+		
 		private static var MAX_ZOOM:Number = 4;
 		private static var MIN_ZOOM:Number = 0.25;
 		
@@ -57,8 +60,6 @@ package
 			alpha: 1,
 			visible: true
 		}
-		
-		private var ctrl:IControl;
 		
 		private var nodeNum:Number = 0;
 		
@@ -88,9 +89,6 @@ package
 				data.nodes[j].buttonMode = true;
 			}
 			
-			ctrl = new ExpandControl(NodeSprite,
-				function():void { vis.update(1, "nodes","main").play(); });
-			
 			initVis();
 		}
 		
@@ -113,7 +111,14 @@ package
 					e.node.lineWidth = 0;
 					e.node.lineColor = nodes.lineColor;
 				}));
-			vis.controls.add(ctrl);
+			vis.controls.add(new LoaderExpandControl(NodeSprite,
+				function():void { 
+					vis.update(1, "nodes","main").play(); 
+				}));
+			vis.controls.add(new ExpandControl(NodeSprite,
+				function():void { 
+					vis.update(1, "nodes","main").play(); 
+				}));
 			vis.update();
 		}
 		
@@ -172,11 +177,18 @@ package
 */		
 		private function addImageNode(n:NodeSprite, num:Number = 0):void
 		{
-			var image:DisplayObject = addImage(n, num);
+			var image:InteractiveObject = addImage(n, num);
 			n.addChild(image);
+			
+//			image.addEventListener(MouseEvent.CLICK, 
+//				function(evt:MouseEvent):void
+//				{
+//					n.dispatchEvent(evt);
+//					trace("Click!");
+//				});
 		}
 		
-		private function addImage(n:NodeSprite, num:Number = 0):DisplayObject
+		private function addImage(n:NodeSprite, num:Number = 0):InteractiveObject
 		{
 			if(num == 0)
 			{
@@ -264,7 +276,7 @@ package
 			var loader:URLLoader = new URLLoader();
 			var request:URLRequest = new URLRequest("../data/tree_cat.xml");
 			loader.load(request);
-			loader.addEventListener(Event.COMPLETE, onXMLLoadComplete);			
+			loader.addEventListener(Event.COMPLETE, onXMLLoadComplete);
 		}
 
 		
@@ -276,20 +288,18 @@ package
 				if(vis.scaleX < MAX_ZOOM)
 
 				{
-					trace("zoom in!");
+//					trace("zoom in!");
 					vis.scaleX *= 1.1;
 					vis.scaleY *= 1.1;
-					//update();
 				}
 			} 
 			else
 			{
 				if(vis.scaleX > MIN_ZOOM)
 				{
-					trace("zoom out!");
+//					trace("zoom out!");
 					vis.scaleX /= 1.1;
 					vis.scaleY /= 1.1;
-					//update();
 				}
 			}
 		}
