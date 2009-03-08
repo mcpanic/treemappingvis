@@ -1,11 +1,11 @@
 package cs448b.fp.data
 {
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.events.Event;
-	
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
+	
+	import flash.events.Event;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 					
 	public class TreeParser
@@ -14,12 +14,14 @@ package cs448b.fp.data
 		private var _tree:Tree;
 		private var _fileName:String;
 		private var _cb:Function;
+		private var _index:Number;
 						
-		public function TreeParser(fileName:String)
+		public function TreeParser(index:Number, fileName:String)
 		{
 			_tree = new Tree();
 			_fileName = fileName;
 			_cb = null;
+			_index = index;
 		}
 
 		/**
@@ -30,6 +32,14 @@ package cs448b.fp.data
 			return _tree;
 		}
 
+		/**
+		 * Get the index of the current tree
+		 */		
+		public function get index():Number
+		{
+			return _index;
+		}
+		
 		/**
 		 * Load the XML file for parsing
 		 */						

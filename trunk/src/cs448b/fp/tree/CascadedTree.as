@@ -1,40 +1,37 @@
 package cs448b.fp.tree
 {
-	import flash.display.Sprite;
-	import flash.geom.Rectangle;
-//	import flash.display.StageQuality;
-		
-	import flare.vis.data.NodeSprite;
-	import flare.vis.events.SelectionEvent;	
 	import flare.util.Shapes;
 	import flare.vis.Visualization;
 	import flare.vis.controls.HoverControl;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
-//	import flare.demos.util.GraphUtil;
+	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.layout.TreeMapLayout;
 	
-
+	import cs448b.fp.util.*;
+	
+	import flash.display.StageQuality;
+	
 					
-	public class CascadedTree extends Sprite
+	public class CascadedTree extends AbstractTree
 	{
-		private var bounds:Rectangle;
 		private var vis:Visualization;
+		
+		private var _tree:Tree;
 				
-		public function CascadedTree()
+		public function CascadedTree(tree:Tree)
 		{
-			
+			_tree = tree;
+//			_tree = GraphUtil.balancedTree(4,5);
 		}
 		
-		public function init(inputTree:Tree):void
+		public override function init():void
 		{
-//			var tree:Tree = GraphUtil.balancedTree(4,5);
-			var tree:Tree = inputTree;
 			var e:EdgeSprite, n:NodeSprite;
 			
 			// create the visualization
-			vis = new Visualization(tree);
+			vis = new Visualization(_tree);
 			vis.tree.nodes.visit(function(n:NodeSprite):void {
 				n.size = Math.random();
 				n.shape = Shapes.BLOCK; // needed for treemap sqaures
@@ -43,7 +40,8 @@ package cs448b.fp.tree
 			});
 			vis.data.edges.setProperty("visible", false);
 			vis.operators.add(new TreeMapLayout());
-			vis.bounds = bounds;
+// mcpanic 9307 commented out since bounds is null for unknown reason			
+//			vis.bounds = bounds;
 			vis.update();
 			addChild(vis);
 			
@@ -65,7 +63,7 @@ package cs448b.fp.tree
 			n.fillAlpha = n.lineAlpha = n.depth / 25;
 		}
 		
-		public function resize():void
+		public override function resize():void
 		{
 			if (vis) {
 				vis.bounds = bounds;
@@ -73,14 +71,14 @@ package cs448b.fp.tree
 			}
 		}
 		
-		public function play():void
+		public override function play():void
 		{
-//			stage.quality = StageQuality.LOW;
+			stage.quality = StageQuality.LOW;
 		}
 		
-		public function stop():void
+		public override function stop():void
 		{
-//			stage.quality = StageQuality.HIGH;
+			stage.quality = StageQuality.HIGH;
 		}
 		
 	}
