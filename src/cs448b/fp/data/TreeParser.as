@@ -1,14 +1,14 @@
 package cs448b.fp.data
 {
+	import fl.containers.UILoader;
+	
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
-	import flare.vis.Visualization;
 	
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.display.DisplayObject;	
-	import flash.display.Loader;
 	
 							
 	public class TreeParser
@@ -62,7 +62,7 @@ package cs448b.fp.data
 		/**
 		 * Attach images to the nodes
 		 */			
-		private function addImageNode(n:NodeSprite, num:Number = 0):void
+		private function addImageNode(n:NodeSprite, num:Number):void
 		{
 			var image:DisplayObject = addImage(n, num);
 			n.addChild(image);
@@ -71,22 +71,15 @@ package cs448b.fp.data
 		/**
 		 * Load images
 		 */			
-		private function addImage(n:NodeSprite, num:Number = 0):DisplayObject
+		private function addImage(n:NodeSprite, num:Number):DisplayObject
 		{
-/*			if(num == 0)
-			{
-				var tf:TextField = new TextField();
-				
-				tf.text = "Node";
-				return tf;
-			}
-*/			var ldr:Loader = new Loader();
+			var ldr:UILoader = new UILoader();
 
 			var url:String = "../data/thumbnails/"+num+".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
 			
-			ldr.contentLoaderInfo.addEventListener(Event.COMPLETE,
+			ldr.addEventListener(Event.COMPLETE,
 				function(evt:Event):void
 				{	
 					_numNodesLoaded++;
