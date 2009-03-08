@@ -16,6 +16,7 @@ package {
 	{
 		private var dataLoader:DataLoader;
 		private var cascadedTree:CascadedTree;
+		private var fileList:Array;
 		
 		/**
 		 * Constructor
@@ -25,7 +26,7 @@ package {
 			initComponents();
 			buildSprite();
 			loadData();			
-			displayTree();
+			//displayTree();
 			
 
 		}
@@ -44,7 +45,10 @@ package {
 		 */
 		private function loadData():void
 		{
-			dataLoader = new DataLoader();
+			fileList = new Array(2);
+			fileList[0] = "../data/tree_dog.xml";
+			fileList[1] = "../data/tree_cat.xml";
+			dataLoader = new DataLoader(2, fileList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 		}
@@ -54,29 +58,28 @@ package {
 		 */
 		private function displayTree():void
 		{
-			//cascadedTree = new CascadedTree();
-			//cascadedTree.init(dataLoader.tree1);
+			cascadedTree = new CascadedTree(dataLoader.getTree(1));
+			cascadedTree.init();
+			addChild(cascadedTree);
 		}
 
+		/**
+		 * Print the tree in the console
+		 */
 		private function printTree(n:NodeSprite, d:int) : void
 		{
-			/*
-			var s:String = "";
-			for (var k:uint = 0; k < d; k++) {
-				s += "  ";
-			}
-			trace(s+n.name+" ("+n.x+", "+n.y+", "+n.w+", "+n.h+")");
-			*/
 			trace(n.name+"\t"+n.depth+"\t"+n.childDegree+"\t"+n.w+"\t"+n.h);
 			for (var i:uint = 0; i < n.childDegree; ++i) {
 				printTree(n.getChildNode(i), d+1);
 			}
 		}
-		
+
+		/**
+		 * Upon data load complete, display the tree
+		 */		
 		private function handleLoaded(event:Event):void
 		{
-			trace("hello");
-			printTree(dataLoader.tree1.root, 3);
+			printTree(dataLoader.getTree(0).root, 3);
 			displayTree();			
 		}
 	}
