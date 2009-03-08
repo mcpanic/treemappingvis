@@ -2,12 +2,15 @@ package cs448b.fp.data
 {
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
+	import flare.vis.Visualization;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.display.DisplayObject;	
+	import flash.display.Loader;
 	
-					
+							
 	public class TreeParser
 	{
 		
@@ -15,6 +18,9 @@ package cs448b.fp.data
 		private var _fileName:String;
 		private var _cb:Function;
 		private var _index:Number;
+		
+		private var _numNodes:Number;
+		private var _numNodesLoaded:Number;	// number of trees loaded so far
 						
 		public function TreeParser(index:Number, fileName:String)
 		{
@@ -22,6 +28,8 @@ package cs448b.fp.data
 			_fileName = fileName;
 			_cb = null;
 			_index = index;
+			_numNodes = 0;
+			_numNodesLoaded = 0;
 		}
 
 		/**
@@ -45,13 +53,50 @@ package cs448b.fp.data
 		 */						
 		public function parseXML():void
 		{
-
 			var loader:URLLoader = new URLLoader();
 			var request:URLRequest = new URLRequest(_fileName);
 			loader.load(request);
 			loader.addEventListener(Event.COMPLETE, onXMLLoadComplete);			
 		}
+		
+		/**
+		 * Attach images to the nodes
+		 */			
+		private function addImageNode(n:NodeSprite, num:Number = 0):void
+		{
+			var image:DisplayObject = addImage(n, num);
+			n.addChild(image);
+		}
 
+		/**
+		 * Load images
+		 */			
+		private function addImage(n:NodeSprite, num:Number = 0):DisplayObject
+		{
+/*			if(num == 0)
+			{
+				var tf:TextField = new TextField();
+				
+				tf.text = "Node";
+				return tf;
+			}
+*/			var ldr:Loader = new Loader();
+
+			var url:String = "../data/thumbnails/"+num+".PNG";
+ 			var urlReq:URLRequest = new URLRequest(url);
+			ldr.load(urlReq);
+			
+			ldr.contentLoaderInfo.addEventListener(Event.COMPLETE,
+				function(evt:Event):void
+				{	
+					_numNodesLoaded++;
+					if(_numNodes == _numNodesLoaded && _cb != null) 
+						_cb( evt );					
+				});
+						
+			return ldr;
+		}
+		
 		/**
 		 * Retrieve tree data from the given XML structure
 		 */		
@@ -63,7 +108,8 @@ package cs448b.fp.data
 			{
 //				trace(el.label + "/" + depth);
 				nodeSprite = _tree.addChild(parent);
-//				addImageNode(nodeSprite, el.label);
+				_numNodes++;
+				addImageNode(nodeSprite, el.label);
 		
 		 	    if (el.children.node == null || el.children.node == undefined)
 		 	    {}	// do nothing
@@ -84,14 +130,14 @@ package cs448b.fp.data
 		    {
 			    var externalXML:XML = new XML(loader.data);
 			    var nodeSprite:NodeSprite; 
-//				trace(externalXML.label);
        
 				nodeSprite = _tree.addRoot();	// Add the tree root
-//				addImageNode(nodeSprite, externalXML.label);	    
+				addImageNode(nodeSprite, externalXML.label);	    
+		 		_numNodes++;
 		 		retrieveData(externalXML.children.node, 1, nodeSprite);
 
 				
-				if(_cb != null) 
+				if(_numNodes == _numNodesLoaded && _cb != null) 
 					_cb( event );
 		    }
 		    else
