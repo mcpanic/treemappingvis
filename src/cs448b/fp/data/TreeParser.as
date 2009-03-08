@@ -61,7 +61,7 @@ package cs448b.fp.data
 							
 			for each (var el:XML in xml)	// next depth
 			{
-				trace(el.label + "/" + depth);
+//				trace(el.label + "/" + depth);
 				nodeSprite = _tree.addChild(parent);
 //				addImageNode(nodeSprite, el.label);
 		
@@ -84,7 +84,7 @@ package cs448b.fp.data
 		    {
 			    var externalXML:XML = new XML(loader.data);
 			    var nodeSprite:NodeSprite; 
-				trace(externalXML.label);
+//				trace(externalXML.label);
        
 				nodeSprite = _tree.addRoot();	// Add the tree root
 //				addImageNode(nodeSprite, externalXML.label);	    
