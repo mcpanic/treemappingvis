@@ -8,6 +8,8 @@ package {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 
 	
 	// Convenient way to pass in compiler arguments
@@ -29,6 +31,8 @@ package {
 		 */		
 		public function TreeMappingVisTest()
 		{
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
+			
 			initComponents();
 			buildSprite();
 			
@@ -55,7 +59,7 @@ package {
 		{
 			addChild(simpleTree);
 			
-			simpleTree2.x = 500;
+//			simpleTree2.x = 500;
 			addChild(simpleTree2);
 		}
 		
@@ -72,9 +76,9 @@ package {
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 			
-			dataLoader2 = new DataLoader(2, fileList);
-			dataLoader2.addLoadEventListener(handleLoaded2);			
-			dataLoader2.loadData();
+//			dataLoader2 = new DataLoader(2, fileList);
+//			dataLoader2.addLoadEventListener(handleLoaded2);			
+//			dataLoader2.loadData();
 		}
 
 		/**
@@ -82,12 +86,24 @@ package {
 		 */
 		private function displayTree(i:Number):void
 		{
-			if(i == 0) simpleTree.setTree(dataLoader.getTree(0));
-			if(i == 1)
+			if(i == 0) 
 			{
-				simpleTree2.setTree(dataLoader2.getTree(0));
+				simpleTree.setTree(dataLoader.getTree(0), 0);
+				simpleTree2.setTree(dataLoader.getTree(1), 1);
 				simpleTree2.setOrientation(Orientation.RIGHT_TO_LEFT);
+				
+				// position trees
+//				simpleTree.x = 0;
+//				simpleTree.y = 0;
+//				
+//				simpleTree2.x = 0;
+//				simpleTree2.y = 0;
 			}
+//			if(i == 1)
+//			{
+//				simpleTree2.setTree(dataLoader2.getTree(0));
+//				simpleTree2.setOrientation(Orientation.RIGHT_TO_LEFT);
+//			}
 		}
 
 		/**
@@ -115,6 +131,24 @@ package {
 		private function handleLoaded2(event:Event):void
 		{
 			displayTree(1);
+		}
+		
+		private function handleKeyDown(ke:KeyboardEvent):void
+		{
+			if(ke.keyCode == Keyboard.LEFT)
+			{
+//				simpleTree.vis.width = 500;
+//				simpleTree.vis.height = 500;
+//				simpleTree.vis.setAspectRatio(1, 100, 100);
+				simpleTree.updateVis();
+			}
+			else if(ke.keyCode == Keyboard.RIGHT)
+			{
+//				simpleTree2.vis.width = 300;
+//				simpleTree2.vis.height = 300;
+//				simpleTree2.vis.setAspectRatio(1, 300, 300);
+				simpleTree2.updateVis();
+			}
 		}
 	}
 }

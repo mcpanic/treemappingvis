@@ -1,5 +1,9 @@
 package cs448b.fp.tree
 {
+	import cs448b.fp.data.Mapping;
+	
+	import flare.vis.data.NodeSprite;
+	
 	import flash.events.Event;
 	
 	/**
@@ -9,8 +13,11 @@ package cs448b.fp.tree
 	{
 		private var trees:Array = new Array(2);
 		
+		private var mapping:Mapping;
+		
 		public function TreeEventSynchronizer()
 		{
+			mapping = new Mapping();
 		}
 
 		/**
@@ -38,18 +45,38 @@ package cs448b.fp.tree
 		 */
 		public function handleEvent(evt:Event):void
 		{
-//			trace(evt);
-
-			// send this to all trees except sender
-			var sender:SimpleTree = evt.currentTarget as SimpleTree; 
+			// check if it was sent by a NodeSprite
+			var node:NodeSprite = evt.target as NodeSprite;
+			if(node == null) return;
+			
+			// find the sender
+			var sender:SimpleTree = evt.currentTarget as SimpleTree;
+			if(sender == null)
+			{
+				for(var oo:Object in trees)
+				{
+					var tt:SimpleTree = trees[oo] as SimpleTree;
+					if(tt != null && tt.contains(node)) {
+						sender = tt;
+						break;
+					}
+				}
+			}
 			if(sender == null) return;
 			
+			// send this to all trees except sender
 			for(var o:Object in trees)
 			{
 				var t:SimpleTree = trees[o] as SimpleTree;
 				if(t != null) {
-					// Set mapping value
-					if(t != sender) t.handleSyncEvent(evt);
+					if(t != sender) {
+						// Get mapped value
+						var mappedIdx:Number = mapping.getMappedIndex(Number(node.name), t.getId());
+						
+						var mv:String = String(mappedIdx);
+
+						t.handleSyncEvent(mv, evt);
+					}
 				}
 			}
 		}
