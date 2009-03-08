@@ -1,5 +1,7 @@
 package cs448b.fp.tree
 {
+	import cs448b.fp.utils.*;
+	
 	import flare.util.Shapes;
 	import flare.vis.Visualization;
 	import flare.vis.controls.HoverControl;
@@ -7,11 +9,9 @@ package cs448b.fp.tree
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
-	import flare.vis.operator.layout.TreeMapLayout;
-	
-	import cs448b.fp.utils.*;
 	
 	import flash.display.StageQuality;
+	import flash.geom.Rectangle;
 	
 					
 	public class CascadedTree extends AbstractTree
@@ -19,10 +19,14 @@ package cs448b.fp.tree
 		private var vis:Visualization;
 		
 		private var _tree:Tree;
+		private var _x:Number;
+		private var _y:Number;
 				
-		public function CascadedTree(tree:Tree)
+		public function CascadedTree(tree:Tree, x:Number, y:Number)
 		{
 			_tree = tree;
+			_x = x;
+			_y = y;
 //			_tree = GraphUtil.balancedTree(4,5);
 		}
 		
@@ -39,9 +43,10 @@ package cs448b.fp.tree
 				n.fillAlpha = n.lineAlpha = n.depth / 25;
 			});
 			vis.data.edges.setProperty("visible", false);
-			vis.operators.add(new TreeMapLayout());
+			vis.operators.add(new CascadedTreeLayout(_x, _y));
 // mcpanic 9307 commented out since bounds is null for unknown reason			
-//			vis.bounds = bounds;
+			bounds = new Rectangle(_x, _y, 300, 300);
+			vis.bounds = bounds;
 			vis.update();
 			addChild(vis);
 			
