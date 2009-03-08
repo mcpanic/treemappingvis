@@ -192,8 +192,6 @@ package cs448b.fp.tree
 			if(me.buttonDown)
 			{ // handle pan
 			
-//				trace("bounds"+vis.getBounds(stage));
-			
 				var sX:Number = me.stageX;
 				var sY:Number = me.stageY;
 
@@ -206,11 +204,6 @@ package cs448b.fp.tree
 				prevX = sX;
 				prevY = sY;
 			}
-//			else
-//			{
-//				prevX = me.stageX;
-//				prevY = me.stageY;
-//			}
 		}		
 		
 		private function handleMouseDown(me:MouseEvent):void
@@ -219,9 +212,6 @@ package cs448b.fp.tree
 //			trace("this - " + this);
 //			trace("handleMouseDown() - target: " + me.target);
 //			trace("handleMouseDown() - cur_target: " + me.currentTarget);
-			
-//			trace("bounds"+vis.getBounds(stage));
-//			trace("bounds"+vis.getRect(stage));
 			
 			prevX = me.stageX;
 			prevY = me.stageY;
