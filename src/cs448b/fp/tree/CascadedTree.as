@@ -9,7 +9,7 @@ package cs448b.fp.tree
 	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.layout.TreeMapLayout;
 	
-	import cs448b.fp.util.*;
+	import cs448b.fp.utils.*;
 	
 	import flash.display.StageQuality;
 	
