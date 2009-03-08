@@ -1,14 +1,15 @@
 package cs448b.fp.tree
 {
+	import flare.animate.Transitioner;
 	import flare.util.Orientation;
 	import flare.util.Shapes;
 	import flare.vis.Visualization;
-	import flare.vis.controls.ExpandControl;
 	import flare.vis.controls.HoverControl;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
+	import flare.vis.events.VisualizationEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
 	import flare.vis.operator.layout.NodeLinkTreeLayout;
 	
@@ -26,7 +27,7 @@ package cs448b.fp.tree
 		private var prevX:Number = 0;
 		private var prevY:Number = 0;
 		
-		private var vis:Visualization;
+		public var vis:Visualization;
 		
 		private var listeners:Array = new Array(1);
 		
@@ -52,10 +53,12 @@ package cs448b.fp.tree
 		{	
 			id = i;
 			
-			addEventListener(MouseEvent.MOUSE_OVER, handleMouseOver);
 			addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
 			addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
 			addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			
+			addEventListener(MouseEvent.MOUSE_OVER, handleMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, handleMouseOut);
 			
 			initComponents();
 			buildSprite();
@@ -84,16 +87,24 @@ package cs448b.fp.tree
 		{
 			vis = new Visualization();
 			
-//			vis.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
-//			vis.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
-//			vis.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			vis.addEventListener(VisualizationEvent.UPDATE, handleVisUpdate);
+		}
+		
+		/**
+		 * 
+		 */
+		public function getId():Number
+		{
+			return id;
 		}
 		
 		/**
 		 * Sets the tree data.
 		 */ 
-		public function setTree(t:Tree):void
+		public function setTree(t:Tree, i:Number):void
 		{
+			id = i;
+			
 			// set data
 			vis.data = t;
 			
@@ -124,10 +135,13 @@ package cs448b.fp.tree
 					e.node.lineWidth = 0;
 					e.node.lineColor = nodes.lineColor;
 				}));
-			vis.controls.add(new ExpandControl(NodeSprite,
-				function():void { 
-					vis.update(1, "nodes","main").play(); 
+			vis.controls.add(new ExpandEventControl(NodeSprite,
+				function(evt:Event):void { 
+					vis.update(1, "nodes","main").play();
+					
+					fireEvent(evt);
 				}));
+			
 			vis.update();
 		}
 		
@@ -159,10 +173,6 @@ package cs448b.fp.tree
 		// Mouse Handlers
 		private function handleMouseWheel(me:MouseEvent):void
 		{ // handle zoom
-			// TODO: check targets
-//			trace("this - " + this);
-//			trace("handleMouseWheel() - target: " + me.target);
-//			trace("handleMouseWheel() - cur_target: " + me.currentTarget);
 			
 			if(me.delta > 0)
 			{ // zoom in
@@ -184,11 +194,6 @@ package cs448b.fp.tree
 		
 		private function handleMouseMove(me:MouseEvent):void
 		{ 
-			// TODO: check targets
-//			trace("this - " + this);
-//			trace("handleMouseMove() - target: " + me.target);
-//			trace("handleMouseMove() - cur_target: " + me.currentTarget);
-			
 			if(me.buttonDown)
 			{ // handle pan
 			
@@ -204,20 +209,30 @@ package cs448b.fp.tree
 				prevX = sX;
 				prevY = sY;
 			}
-		}		
+			else
+			{
+				prevX = me.stageX;
+				prevY = me.stageY;
+			}
+		}
 		
 		private function handleMouseDown(me:MouseEvent):void
-		{
-			// TODO: check targets
-//			trace("this - " + this);
-//			trace("handleMouseDown() - target: " + me.target);
-//			trace("handleMouseDown() - cur_target: " + me.currentTarget);
-			
-			prevX = me.stageX;
-			prevY = me.stageY;
+		{			
+//			prevX = me.stageX;
+//			prevY = me.stageY;
 		}
 		
 		private function handleMouseOver(me:MouseEvent):void
+		{
+			var ns:NodeSprite = me.target as NodeSprite;
+			if(ns != null) 
+			{
+				// fire event
+				fireEvent(me);
+			}
+		}
+		
+		private function handleMouseOut(me:MouseEvent):void
 		{
 			var ns:NodeSprite = me.target as NodeSprite;
 			if(ns != null) 
@@ -236,7 +251,6 @@ package cs448b.fp.tree
 			{
 				var l:TreeEventListener = listeners[o] as TreeEventListener;
 				if(l != null) {
-//					trace("fire MouseOver event.");
 					l.handleEvent(evt);
 				}
 			}
@@ -245,15 +259,75 @@ package cs448b.fp.tree
 		/**
 		 * Handles the tree sync event
 		 */
-		public function handleSyncEvent(evt:Event):void
+		public function handleSyncEvent(s:String, evt:Event):void
 		{
 			// TODO: handle event
-			trace(this);
+			var t:Tree = vis.data as Tree;	
+				
+			t.visit(function (o:Object):Boolean{
+				
+				var n:NodeSprite = o as NodeSprite;
+				if( n == null ) return false; 
+				
+				if(n.name == s){
+					if(evt.type == MouseEvent.MOUSE_OVER)
+					{
+						n.lineWidth = 2;
+						n.lineColor = 0x88ff0000;
+					} 
+					else if(evt.type == MouseEvent.MOUSE_OUT)
+					{
+						n.lineWidth = 0;
+						n.lineColor = nodes.lineColor;
+					}
+					else if(evt.type == MouseEvent.MOUSE_UP)
+					{
+						var nn:NodeSprite = evt.target as NodeSprite; 
+						n.expanded = nn.expanded;
+						
+						vis.update(1, "nodes","main").play();
+					}
+					
+					return true; 
+				}
+				
+				return false;
+			});
+			
 		}
 		
 		public override function toString():String
 		{
 			return super.toString()+" ID : "+id;
+		}
+		
+		/**
+		 * Handles vis update.
+		 */
+		public function handleVisUpdate(ve:VisualizationEvent):void
+		{
+//			trace(ve);
+//			vis.graphics.clear();
+//			vis.graphics.beginFill(0xaaaaaa, 0.5);
+//			vis.graphics.drawRect(vis.x, vis.y, vis.width, vis.height);
+//			vis.graphics.endFill();
+//			vis.bounds = new Rectangle(0, 0, 500, 500);
+//			trace("x/y/width/height: "+vis.x+"/"+vis.y+"/"+vis.width+"/"+vis.height);
+		}
+		
+		/**
+		 * Delegates update vis.
+		 */
+		public function updateVis(t:Object = null, ...operators):Transitioner
+		{
+			vis.x = 0;
+			vis.y = 0;
+			
+//			trace("x/y/width/height: "+vis.x+"/"+vis.y+"/"+vis.width+"/"+vis.height);
+			
+//			vis.bounds = new Rectangle(0, 0, 500, 500);
+			
+			return vis.update(t, operators);
 		}
 	}
 }

@@ -5,7 +5,7 @@ package cs448b.fp.data
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
-	import flash.display.DisplayObject;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -65,10 +65,10 @@ package cs448b.fp.data
 		private function addDataNode(n:NodeSprite, xml:XML):void
 		{
 			n.name = xml.label.toString();
-			n.x = xml.@x;
-			n.y = xml.@y;
-			n.width = xml.@width;
-			n.height = xml.position.@height;
+//			n.x = xml.@x;
+//			n.y = xml.@y;
+//			n.width = xml.@width;
+//			n.height = xml.position.@height;
 			
 			 
 		}
@@ -78,23 +78,27 @@ package cs448b.fp.data
 		 */			
 		private function addImageNode(n:NodeSprite, num:Number):void
 		{
-			var image:DisplayObject = addImage(n, num);
+			var image:Sprite = addImage(n, num);
+			
+//			n.hitArea = image;
+//			image.mouseEnabled = false;
+			
 			n.addChild(image);
 		}
 
 		/**
 		 * Load images
 		 */			
-		private function addImage(n:NodeSprite, num:Number):DisplayObject
+		private function addImage(n:NodeSprite, num:Number):Sprite
 		{
 			var ldr:UILoader = new UILoader();
 
 			var url:String = "../data/thumbnails/"+num+".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
-			ldr.setSize(300, 300);
-			ldr.x = 200;
-			ldr.y = 200;
+//			ldr.setSize(300, 300);
+//			ldr.x = 200;
+//			ldr.y = 200;
 			ldr.addEventListener(Event.COMPLETE,
 				function(evt:Event):void
 				{	
@@ -118,7 +122,7 @@ package cs448b.fp.data
 				trace(_index + "/" + el.label + "/" + depth);
 				nodeSprite = _tree.addChild(parent);
 				addImageNode(nodeSprite, el.label);
-				addDataNode(nodeSprite, el.label);
+				addDataNode(nodeSprite, el);
 				_numNodes++;
 				
 		 	    if (el.children.node == null || el.children.node == undefined)

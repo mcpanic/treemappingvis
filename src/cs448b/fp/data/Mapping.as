@@ -1,10 +1,65 @@
 package cs448b.fp.data
 {
+	import flash.geom.Point;
+	
 	public class Mapping
 	{
+		private var map:Array = new Array(10);
+		
 		public function Mapping()
 		{
+			createMap();
 		}
 
+		public function createMap():void
+		{
+			map.push(new Point(1, 117));
+			map.push(new Point(16, 121));
+			map.push(new Point(112, 225));
+			map.push(new Point(115, 227));
+			map.push(new Point(41, 144));
+			map.push(new Point(52, 158));
+			map.push(new Point(56, 162));
+			map.push(new Point(32, 137));
+			map.push(new Point(96, 212));
+			map.push(new Point(23, 130));
+			map.push(new Point(105, 220));
+			map.push(new Point(107, 222));
+			map.push(new Point(48, 153));
+			map.push(new Point(99, 215));
+			map.push(new Point(102, 217));
+		}		
+	
+		/**
+		 * Returns the mapped index.
+		 * 
+		 * @param idx - the index to find mapped index.
+		 * @param treeId - the ID of the tree mapped
+		 */	
+		public function getMappedIndex(idx:Number, treeId:Number):Number
+		{
+			if(treeId == 0) // send to content tree
+			{
+				for(var oo:Object in map)
+				{
+					var pp:Point = map[oo] as Point;
+					
+					if(pp.y == idx) return pp.x;
+				}
+			}
+			else
+			{ // send to all trees
+				// for each mapping
+				for(var o:Object in map)
+				{
+					var p:Point = map[o] as Point;
+					
+					if(p.x == idx) return p.y;
+				}
+					
+			}
+			
+			return -1;
+		}
 	}
 }
