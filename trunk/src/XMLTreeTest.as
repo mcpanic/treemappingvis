@@ -1,7 +1,6 @@
 package
 {	
 	import cs448b.fp.data.DataLoader;
-	import cs448b.fp.ui.LoaderExpandControl;
 	
 	import flare.util.Orientation;
 	import flare.util.Shapes;
@@ -111,10 +110,10 @@ package
 					e.node.lineWidth = 0;
 					e.node.lineColor = nodes.lineColor;
 				}));
-			vis.controls.add(new LoaderExpandControl(NodeSprite,
-				function():void { 
-					vis.update(1, "nodes","main").play(); 
-				}));
+//			vis.controls.add(new LoaderExpandControl(NodeSprite,
+//				function():void { 
+//					vis.update(1, "nodes","main").play(); 
+//				}));
 			vis.controls.add(new ExpandControl(NodeSprite,
 				function():void { 
 					vis.update(1, "nodes","main").play(); 
