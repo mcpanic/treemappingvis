@@ -15,7 +15,8 @@ package {
 	public class TreeMappingVis extends Sprite
 	{
 		private var dataLoader:DataLoader;
-		private var cascadedTree:CascadedTree;
+		private var cascadedTree1:CascadedTree;
+		private var cascadedTree2:CascadedTree;
 		private var fileList:Array;
 		
 		/**
@@ -58,9 +59,12 @@ package {
 		 */
 		private function displayTree():void
 		{
-			cascadedTree = new CascadedTree(dataLoader.getTree(1));
-			cascadedTree.init();
-			addChild(cascadedTree);
+			cascadedTree1 = new CascadedTree(dataLoader.getTree(0), 0, 0);
+			cascadedTree1.init();
+			addChild(cascadedTree1);
+			cascadedTree2 = new CascadedTree(dataLoader.getTree(1), 550, 200);
+			cascadedTree2.init();
+			addChild(cascadedTree2);			
 		}
 
 		/**
@@ -68,6 +72,7 @@ package {
 		 */
 		private function printTree(n:NodeSprite, d:int) : void
 		{
+//			trace(n.dataLabel+"\t"+n.name+"\t"+n.depth+"\t"+n.childDegree+"\t"+n.w+"\t"+n.h);
 			trace(n.name+"\t"+n.depth+"\t"+n.childDegree+"\t"+n.w+"\t"+n.h);
 			for (var i:uint = 0; i < n.childDegree; ++i) {
 				printTree(n.getChildNode(i), d+1);

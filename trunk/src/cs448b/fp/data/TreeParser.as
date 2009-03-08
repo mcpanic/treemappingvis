@@ -58,7 +58,21 @@ package cs448b.fp.data
 			loader.load(request);
 			loader.addEventListener(Event.COMPLETE, onXMLLoadComplete);			
 		}
-		
+
+		/**
+		 * Attach data to the nodes
+		 */			
+		private function addDataNode(n:NodeSprite, xml:XML):void
+		{
+			n.name = xml.label.toString();
+			n.x = xml.@x;
+			n.y = xml.@y;
+			n.width = xml.@width;
+			n.height = xml.position.@height;
+			
+			 
+		}
+				
 		/**
 		 * Attach images to the nodes
 		 */			
@@ -78,7 +92,9 @@ package cs448b.fp.data
 			var url:String = "../data/thumbnails/"+num+".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
-			
+			ldr.setSize(300, 300);
+			ldr.x = 200;
+			ldr.y = 200;
 			ldr.addEventListener(Event.COMPLETE,
 				function(evt:Event):void
 				{	
@@ -99,11 +115,12 @@ package cs448b.fp.data
 							
 			for each (var el:XML in xml)	// next depth
 			{
-//				trace(el.label + "/" + depth);
+				trace(_index + "/" + el.label + "/" + depth);
 				nodeSprite = _tree.addChild(parent);
-				_numNodes++;
 				addImageNode(nodeSprite, el.label);
-		
+				addDataNode(nodeSprite, el.label);
+				_numNodes++;
+				
 		 	    if (el.children.node == null || el.children.node == undefined)
 		 	    {}	// do nothing
 		 	    else 
@@ -112,6 +129,12 @@ package cs448b.fp.data
 		
 		}
 
+		private function addNode(nodeSprite:NodeSprite, xml:XML):void
+		{
+			addImageNode(nodeSprite, xml.label);
+			addDataNode(nodeSprite, xml);	    
+	 		_numNodes++;			
+		} 
 		/**
 		 * Event handler for XML load completion
 		 */				
@@ -125,8 +148,7 @@ package cs448b.fp.data
 			    var nodeSprite:NodeSprite; 
        
 				nodeSprite = _tree.addRoot();	// Add the tree root
-				addImageNode(nodeSprite, externalXML.label);	    
-		 		_numNodes++;
+				addNode(nodeSprite, externalXML);
 		 		retrieveData(externalXML.children.node, 1, nodeSprite);
 
 				
