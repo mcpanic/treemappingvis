@@ -13,10 +13,13 @@ package cs448b.fp.tree
 	import flare.vis.operator.layout.NodeLinkTreeLayout;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	public class SimpleTree extends Sprite
 	{
+		private var id:Number;
+		
 		private static var MAX_ZOOM:Number = 4;
 		private static var MIN_ZOOM:Number = 0.25;
 		
@@ -24,6 +27,8 @@ package cs448b.fp.tree
 		private var prevY:Number = 0;
 		
 		private var vis:Visualization;
+		
+		private var listeners:Array = new Array(1);
 		
 		// default values
 		private var nodes:Object = {
@@ -43,8 +48,15 @@ package cs448b.fp.tree
 			visible: true
 		}
 		
-		public function SimpleTree()
-		{						
+		public function SimpleTree(i:Number = 0)
+		{	
+			id = i;
+			
+			addEventListener(MouseEvent.MOUSE_OVER, handleMouseOver);
+			addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
+			addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			
 			initComponents();
 			buildSprite();
 		}
@@ -72,11 +84,14 @@ package cs448b.fp.tree
 		{
 			vis = new Visualization();
 			
-			vis.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
-			vis.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
-			vis.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+//			vis.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
+//			vis.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+//			vis.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
 		}
 		
+		/**
+		 * Sets the tree data.
+		 */ 
 		public function setTree(t:Tree):void
 		{
 			// set data
@@ -116,19 +131,41 @@ package cs448b.fp.tree
 			vis.update();
 		}
 		
+		/**
+		 * Sets the orientation of the tree.
+		 */
 		public function setOrientation(or:String):void
 		{
 			vis.operators[0] = new NodeLinkTreeLayout(or,20,5,10);
 			vis.update();
 		}
 		
+		/**
+		 * Adds a tree event handler.
+		 */
+		public function addTreeEventListener(l:TreeEventListener):void
+		{
+			listeners.push(l);
+		}
+		
+		/**
+		 * Removes a tree event handler.
+		 */
+		public function removeTreeEventListener(l:TreeEventListener):void
+		{
+			listeners.splice(listeners.indexOf(l), 1);
+		}
+		
 		// Mouse Handlers
 		private function handleMouseWheel(me:MouseEvent):void
 		{ // handle zoom
 			// TODO: check targets
+//			trace("this - " + this);
+//			trace("handleMouseWheel() - target: " + me.target);
+//			trace("handleMouseWheel() - cur_target: " + me.currentTarget);
 			
 			if(me.delta > 0)
-			{
+			{ // zoom in
 				if(vis.scaleX < MAX_ZOOM)
 				{
 					vis.scaleX *= 1.1;
@@ -136,7 +173,7 @@ package cs448b.fp.tree
 				}
 			} 
 			else
-			{
+			{ // zoom out
 				if(vis.scaleX > MIN_ZOOM)
 				{
 					vis.scaleX /= 1.1;
@@ -148,9 +185,15 @@ package cs448b.fp.tree
 		private function handleMouseMove(me:MouseEvent):void
 		{ 
 			// TODO: check targets
+//			trace("this - " + this);
+//			trace("handleMouseMove() - target: " + me.target);
+//			trace("handleMouseMove() - cur_target: " + me.currentTarget);
 			
 			if(me.buttonDown)
 			{ // handle pan
+			
+//				trace("bounds"+vis.getBounds(stage));
+			
 				var sX:Number = me.stageX;
 				var sY:Number = me.stageY;
 
@@ -162,16 +205,65 @@ package cs448b.fp.tree
 		
 				prevX = sX;
 				prevY = sY;
-//				trace("prevX2/prevY2: "+prevX+"/"+prevY);
 			}
+//			else
+//			{
+//				prevX = me.stageX;
+//				prevY = me.stageY;
+//			}
 		}		
 		
 		private function handleMouseDown(me:MouseEvent):void
 		{
 			// TODO: check targets
+//			trace("this - " + this);
+//			trace("handleMouseDown() - target: " + me.target);
+//			trace("handleMouseDown() - cur_target: " + me.currentTarget);
+			
+//			trace("bounds"+vis.getBounds(stage));
+//			trace("bounds"+vis.getRect(stage));
 			
 			prevX = me.stageX;
 			prevY = me.stageY;
+		}
+		
+		private function handleMouseOver(me:MouseEvent):void
+		{
+			var ns:NodeSprite = me.target as NodeSprite;
+			if(ns != null) 
+			{
+				// fire event
+				fireEvent(me);
+			}
+		}
+		
+		/**
+		 * Fire events.
+		 */
+		private function fireEvent(evt:Event):void
+		{
+			for(var o:Object in listeners)
+			{
+				var l:TreeEventListener = listeners[o] as TreeEventListener;
+				if(l != null) {
+//					trace("fire MouseOver event.");
+					l.handleEvent(evt);
+				}
+			}
+		}
+		
+		/**
+		 * Handles the tree sync event
+		 */
+		public function handleSyncEvent(evt:Event):void
+		{
+			// TODO: handle event
+			trace(this);
+		}
+		
+		public override function toString():String
+		{
+			return super.toString()+" ID : "+id;
 		}
 	}
 }
