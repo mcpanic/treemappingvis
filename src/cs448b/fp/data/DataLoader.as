@@ -3,83 +3,65 @@ package cs448b.fp.data
 	import flare.vis.data.Tree;
 	
 	import flash.events.Event;
-				
+			
 	public class DataLoader
 	{
-		private var tree1Parser:TreeParser;
-		private var tree2Parser:TreeParser;
-		private var _tree1:Tree;
-		private var _tree2:Tree;
-	
-		private var tree1Address:String;
-		private var tree2Address:String;
-
+		private var _treeList:Array;
 		private var _cb:Function;
-				
+		private var _numTrees:Number;
+		private var _numTreesLoaded:Number;	// number of trees loaded so far
+		
+			
 		/**
 		 * Constructor
 		 */
-		public function DataLoader()
+		public function DataLoader(numTrees:Number, fileNameArray:Array)
 		{
 			_cb = null;
-			tree1Address = "../data/tree_dog.xml";
-			tree2Address = "../data/tree_cat.xml";			
+			_numTrees = numTrees;
+			_numTreesLoaded = 0;
+			_treeList = new Array(_numTrees);
+			if (fileNameArray.length != numTrees)
+			{	
+				trace("ERROR: The number of filenames and trees does not match.");
+				return;
+			}
+			// Add each tree info to the list of trees
+			for (var i:uint = 0; i<_numTrees; i++)
+			{
+				_treeList[i] = new TreeInfo(i, fileNameArray[i]);
+				_treeList[i].parser.addLoadEventListener(handleLoaded);
+			}
+	
 //			mappingAddress = "../data/mapping1.txt";
-			_tree1 = new Tree();
-			_tree2 = new Tree();		 				
-			tree1Parser = new TreeParser(tree1Address);
-			tree2Parser = new TreeParser(tree2Address);
-			tree1Parser.addLoadEventListener(handleLoaded);
-			
+
 
 		}
 		
-		public function get tree1():Tree
+		public function getTree(index:Number):Tree
 		{
-			return _tree1;
-		}
-		public function get tree2():Tree
-		{
-			return _tree2;
-		}
-				
+			return _treeList[index].parser.tree;
+		}		
 		/**
 		 * Load the data
 		 */
         public function loadData():void
         {		            			
-			tree1Parser.parseXML();
-			//tree2Parser.parseXML();
+			for (var i:uint = 0; i<_numTrees; i++)
+			{
+				_treeList[i].parser.parseXML();
+			}
         }
-        
-
 
 		/**
-		 * Handles the loaded event
+		 * Handles the loaded event for all trees
 		 */
 		public function handleLoaded( evt:Event ):void
 		{
-		// register data into tree objects
-			_tree1 = tree1Parser.tree;
-			trace("loadData");
-						
-			if(_cb != null) 
+			_numTreesLoaded++;
+			if (_numTrees == _numTreesLoaded && _cb != null)
 				_cb( evt );					
 		}
-
-		/**
-		 * Handles the loaded event
-		 */
-/*		public function handleLoaded2( evt:Event ):void
-		{
-		// register data into tree objects
-			_tree2 = tree2Parser.tree;
-			trace("loadData");
-						
-			if(_cb2 != null) 
-				_cb2( evt );					
-		}
-*/
 
        /**
          * Add a load event listener 
@@ -99,3 +81,29 @@ package cs448b.fp.data
 	}
 }
 
+	//import flare.vis.data.Tree;	
+	import cs448b.fp.data.TreeParser;		
+	/**
+	 * Managing a list of trees to be loaded from the visualization
+	 */				
+	class TreeInfo
+	{
+		private var _fileName:String;
+		private var _parser:TreeParser;		
+		private var _isLoadComplete:Boolean;
+
+		public function TreeInfo(index:Number, fileName:String)
+		{
+			_fileName = fileName; 
+			_parser = new TreeParser(index, _fileName);
+		}
+
+		public function get fileName():String
+		{
+			return _fileName;
+		}		
+		public function get parser():TreeParser
+		{
+			return _parser;
+		}
+	};	
