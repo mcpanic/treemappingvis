@@ -178,28 +178,28 @@ package
 		
 		private function addImage(n:NodeSprite, num:Number):DisplayObject
 		{
-			if(num > 0) 
-			{
+//			if(num > 0) 
+//			{
 				var tf:TextField = new TextField();
 				tf.text = num.toString();
 				return tf;
-			}
-			else
-			{
-				var ldr:Loader = new Loader();
-				var url:String = "E:\\Code\\CS448B\\maptree\\images\\"+num+".jpg";
-	 			var urlReq:URLRequest = new URLRequest(url);
-				ldr.load(urlReq);
-				
-				ldr.contentLoaderInfo.addEventListener(Event.COMPLETE,
-					function(evt:Event):void
-					{	 
-						vis.update();
-//						visR.update();
-					});
-						
-				return ldr;
-			}
+//			}
+//			else
+//			{
+//				var ldr:Loader = new Loader();
+//				var url:String = "E:\\Code\\CS448B\\maptree\\images\\"+num+".jpg";
+//	 			var urlReq:URLRequest = new URLRequest(url);
+//				ldr.load(urlReq);
+//				
+//				ldr.contentLoaderInfo.addEventListener(Event.COMPLETE,
+//					function(evt:Event):void
+//					{	 
+//						vis.update();
+////						visR.update();
+//					});
+//						
+//				return ldr;
+//			}
 		}
 		
 		private function handleMouseWheel(me:MouseEvent):void
