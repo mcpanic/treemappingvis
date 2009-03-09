@@ -62,6 +62,31 @@ package cs448b.fp.tree
 		/** @inheritDoc */
 		protected override function layout():void
 		{
+			var root:NodeSprite = layoutRoot as NodeSprite;
+			var b:Rectangle = layoutBounds;
+			_r.x = b.x;
+			_r.y = b.y;
+			_r.width=b.width-1; 
+	        _r.height=b.height-1;
+	        
+	        // process size values
+	        computeAreas(root);
+			//computeAreasOld(root);
+	        
+	        // layout root node
+	        var o:Object = _t.$(root);
+	        o.x = 0;//_r.x + _r.width/2;
+	        o.y = 0;//_r.y + _r.height/2;
+	        o.u = _r.x;
+	        o.v = _r.y;
+	        o.w = _r.width;
+	        o.h = _r.height;
+	
+	        // layout the tree
+	        updateArea(root, _r);
+	        doLayout(root, _r);
+	        	        	        
+			/*
 	        // setup
 	        var root:NodeSprite = layoutRoot as NodeSprite;
 	        var b:Rectangle = layoutBounds;
@@ -87,12 +112,54 @@ package cs448b.fp.tree
 	        // layout the tree
 	        updateArea(root, _r);
 	        doLayout(root, _r);
+	        */
 		}
 		
 	    /**
     	 * Compute the pixel areas of nodes based on their size values.
 	     */
 	    private function computeAreas(root:NodeSprite):void
+	    {
+	    	var leafCount:int = 0;
+ 
+	        // reset all sizes to zero
+	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
+	        	n.props[AREA] = 0;
+	        });
+        
+	        // set raw sizes, compute leaf count
+	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
+	        	if (n.childDegree == 0) {
+	        		var sz:Number = _size.getValue(_t.$(n));
+	        		n.props[AREA] = sz;
+	        		var p:NodeSprite = n.parentNode;
+	        		for (; p != null; p=p.parentNode)
+	        			p.props[AREA] += sz;
+	        		++leafCount;
+	        	}
+	        });
+	                
+	        // reset all sizes to zero
+	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
+	        	//trace(n.name);
+	        	n.x = Number(n.props["x"])  + n.depth * 10;
+	        	n.y = Number(n.props["y"])  + n.depth * 10;
+				n.props["image"].x = Number(n.props["x"]);
+				n.props["image"].y = Number(n.props["y"]);	     
+				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));   	
+	        });
+        
+        
+	        // scale sizes by display area factor
+	        var b:Rectangle = layoutBounds;
+	        var area:Number = (b.width-1)*(b.height-1);
+	        var scale:Number = area / root.props[AREA];
+	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
+	        	n.props[AREA] *= scale;
+	        });
+	    }
+	    	     
+	    private function computeAreasOld(root:NodeSprite):void
 	    {
 	    	var leafCount:int = 0;
         
@@ -242,8 +309,52 @@ package cs448b.fp.tree
 	        s = s*s; w = w*w;
 	        return Math.max(w*rmax/s, s/(w*rmin));
 	    }
-	    
+
 	    private function layoutRow(row:Array, ww:Number, r:Rectangle):Rectangle
+	    {
+	    	var s:Number = 0; // sum of row areas
+	        for each (var n:NodeSprite in row) {
+	        	s += n.props[AREA];
+	        }
+			
+			var xx:Number = r.x, yy:Number = r.y, d:Number = 0;
+			var hh:Number = ww==0 ? 0 : s/ww;
+			var horiz:Boolean = (ww == r.width);
+	        
+	        // set node positions and dimensions
+	        for each (n in row) {
+	        	var p:NodeSprite = n.parentNode;
+	        	var nw:Number = n.props[AREA]/hh;
+	        	
+	        	var o:Object = _t.$(n);
+				if (1) {
+	        		o.u = n.props["x"];
+	        		o.v = n.props["y"];
+	        		o.w = n.props["width"];
+	        		o.h = n.props["height"];	        		
+	        	} else {
+	        		o.u = xx;
+	        		o.v = yy + d;
+	        		o.w = hh;
+	        		o.h = nw;
+	        		//o.x = xx + hh/2;
+	        		//o.y = yy + d + nw/2;
+	        	}
+	        	o.x = 0;
+	        	o.y = 0;
+	        	d += nw;
+	        }
+	        
+	        // update space available in rectangle r
+	        if (horiz) {
+	        	r.x = xx; r.y = yy+hh; r.height -= hh;
+	        } else {
+	        	r.x = xx+hh; r.y = yy; r.width -= hh;
+	        }
+	        return r;
+	    }
+	    	    
+	    private function layoutRowOld(row:Array, ww:Number, r:Rectangle):Rectangle
 	    {
 	    	var s:Number = 0; // sum of row areas
 	        for each (var n:NodeSprite in row) {
@@ -264,7 +375,7 @@ package cs448b.fp.tree
 	        		o.u = xx + d;
 	        		o.v = yy;
 	        		o.w = nw;
-	        		o.h = hh;
+	        		o.h = hh;	        		
 	        		//o.x = xx + d + nw/2;
 	        		//o.y = yy + hh/2;
 	        	} else {

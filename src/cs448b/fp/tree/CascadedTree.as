@@ -45,7 +45,7 @@ package cs448b.fp.tree
 			vis.data.edges.setProperty("visible", false);
 			vis.operators.add(new CascadedTreeLayout(_x, _y));
 // mcpanic 9307 commented out since bounds is null for unknown reason			
-			bounds = new Rectangle(_x, _y, 300, 300);
+			bounds = new Rectangle(_x, _y, 1024, 768);
 			vis.bounds = bounds;
 			vis.update();
 			addChild(vis);

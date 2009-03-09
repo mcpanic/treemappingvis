@@ -65,51 +65,55 @@ package cs448b.fp.data
 		private function addDataNode(n:NodeSprite, xml:XML):void
 		{
 			n.name = xml.label.toString();
-//			n.x = xml.@x;
-//			n.y = xml.@y;
-//			n.width = xml.@width;
-//			n.height = xml.position.@height;
-			
-			 
+			n.props["x"] = Number(xml.position.@x);
+			n.props["y"] = Number(xml.position.@y);
+			n.props["width"] = Number(xml.position.@width);
+			n.props["height"] = Number(xml.position.@height);		 
 		}
 				
 		/**
 		 * Attach images to the nodes
 		 */			
-		private function addImageNode(n:NodeSprite, num:Number):void
+		private function addImageNode(n:NodeSprite, xml:XML):void
 		{
-			var image:Sprite = addImage(n, num);
-			
-//			n.hitArea = image;
-//			image.mouseEnabled = false;
-			
+			var image:Sprite = addImage(n, xml);
+			n.props["image"] = image;
 			n.addChild(image);
 		}
 
 		/**
 		 * Load images
 		 */			
-		private function addImage(n:NodeSprite, num:Number):Sprite
+		private function addImage(n:NodeSprite, xml:XML):Sprite
+
 		{
 			var ldr:UILoader = new UILoader();
 
-			var url:String = "../data/thumbnails/"+num+".PNG";
+			var url:String = "../data/thumbnails/"+xml.label+".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
-//			ldr.setSize(300, 300);
-//			ldr.x = 200;
-//			ldr.y = 200;
 			ldr.addEventListener(Event.COMPLETE,
 				function(evt:Event):void
 				{	
 					_numNodesLoaded++;
 					if(_numNodes == _numNodesLoaded && _cb != null) 
-						_cb( evt );					
+						_cb( evt );
+											
 				});
 						
 			return ldr;
 		}
 		
+		/**
+		 * Attach node data to the sprite
+		 */	
+		private function addNode(nodeSprite:NodeSprite, xml:XML):void
+		{
+			addImageNode(nodeSprite, xml);
+			addDataNode(nodeSprite, xml);	    
+	 		_numNodes++;			
+		} 
+				
 		/**
 		 * Retrieve tree data from the given XML structure
 		 */		
@@ -119,26 +123,16 @@ package cs448b.fp.data
 							
 			for each (var el:XML in xml)	// next depth
 			{
-				trace(_index + "/" + el.label + "/" + depth);
+				//trace(_index + "/" + el.label + "/" + depth);
 				nodeSprite = _tree.addChild(parent);
-				addImageNode(nodeSprite, el.label);
-				addDataNode(nodeSprite, el);
-				_numNodes++;
+				addNode(nodeSprite, el);
 				
-		 	    if (el.children.node == null || el.children.node == undefined)
-		 	    {}	// do nothing
-		 	    else 
+		 	    if (el.children.node != null && el.children.node != undefined) 
 		 	    	retrieveData(el.children.node, depth + 1, nodeSprite);	// recursive
 		 	}
 		
 		}
 
-		private function addNode(nodeSprite:NodeSprite, xml:XML):void
-		{
-			addImageNode(nodeSprite, xml.label);
-			addDataNode(nodeSprite, xml);	    
-	 		_numNodes++;			
-		} 
 		/**
 		 * Event handler for XML load completion
 		 */				
