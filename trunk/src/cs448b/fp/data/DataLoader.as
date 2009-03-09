@@ -8,49 +8,61 @@ package cs448b.fp.data
 	{
 		private var _treeList:Array;
 		private var _cb:Function;
-		private var _numTrees:Number;
-		private var _numTreesLoaded:Number;	// number of trees loaded so far
-		
+		private var _numFiles:Number;
+		private var _numFilesLoaded:Number;	// number of trees loaded so far
+		private var _mappingParser:MappingParser;
 			
 		/**
 		 * Constructor
 		 */
-		public function DataLoader(numTrees:Number, fileNameArray:Array)
+		public function DataLoader(numTrees:Number, fileNameArray:Array, mappingFileName:String)
 		{
 			_cb = null;
-			_numTrees = numTrees;
-			_numTreesLoaded = 0;
-			_treeList = new Array(_numTrees);
+			_numFiles = numTrees + 1;	// 1 is for the mapping
+			_numFilesLoaded = 0;
+			_treeList = new Array(_numFiles);
 			if (fileNameArray.length != numTrees)
 			{	
 				trace("ERROR: The number of filenames and trees does not match.");
 				return;
 			}
 			// Add each tree info to the list of trees
-			for (var i:uint = 0; i<_numTrees; i++)
+			for (var i:uint = 0; i<_numFiles; i++)
 			{
 				_treeList[i] = new TreeInfo(i, fileNameArray[i]);
 				_treeList[i].parser.addLoadEventListener(handleLoaded);
 			}
 	
-//			mappingAddress = "../data/mapping1.txt";
-
-
+			_mappingParser = new MappingParser(mappingFileName);
+			_mappingParser.addLoadEventListener(handleLoaded);
 		}
 		
+		/**
+		 * Get the tree with the index
+		 */
 		public function getTree(index:Number):Tree
 		{
 			return _treeList[index].parser.tree;
-		}		
+		}	
+			
+		/**
+		 * Wrapper for the index retrieval function
+		 */
+		public function getMappedIndex(idx:Number, treeId:Number):Number
+		{
+			return _mappingParser.mapping.getMappedIndex(idx, treeId);
+		}
+		
 		/**
 		 * Load the data
 		 */
         public function loadData():void
         {		            			
-			for (var i:uint = 0; i<_numTrees; i++)
+			for (var i:uint = 0; i<_numFiles-1; i++)
 			{
 				_treeList[i].parser.parseXML();
 			}
+			_mappingParser.parseXML();
         }
 
 		/**
@@ -58,8 +70,8 @@ package cs448b.fp.data
 		 */
 		public function handleLoaded( evt:Event ):void
 		{
-			_numTreesLoaded++;
-			if (_numTrees == _numTreesLoaded && _cb != null)
+			_numFilesLoaded++;
+			if (_numFiles == _numFilesLoaded && _cb != null)
 				_cb( evt );					
 		}
 

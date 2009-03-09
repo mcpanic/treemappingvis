@@ -49,7 +49,7 @@ package {
 			fileList = new Array(2);
 			fileList[0] = "../data/tree_dog.xml";
 			fileList[1] = "../data/tree_cat.xml";
-			dataLoader = new DataLoader(2, fileList);
+			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml");
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 		}
@@ -62,9 +62,9 @@ package {
 			cascadedTree1 = new CascadedTree(dataLoader.getTree(0), 0, 0);
 			cascadedTree1.init();
 			addChild(cascadedTree1);
-			cascadedTree2 = new CascadedTree(dataLoader.getTree(1), 550, 200);
-			cascadedTree2.init();
-			addChild(cascadedTree2);			
+			//cascadedTree2 = new CascadedTree(dataLoader.getTree(1), 550, 200);
+			//cascadedTree2.init();
+			//addChild(cascadedTree2);			
 		}
 
 		/**

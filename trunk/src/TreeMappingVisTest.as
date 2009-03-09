@@ -72,7 +72,7 @@ package {
 			fileList[0] = "../data/tree_dog.xml";
 			fileList[1] = "../data/tree_cat.xml";
 		
-			dataLoader = new DataLoader(2, fileList);
+			dataLoader = new DataLoader(2, fileList, "../data/mapping.xml");
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 			
