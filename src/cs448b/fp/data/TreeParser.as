@@ -64,11 +64,13 @@ package cs448b.fp.data
 		 */			
 		private function addDataNode(n:NodeSprite, xml:XML):void
 		{
+			
 			n.name = xml.label.toString();
 			n.props["x"] = Number(xml.position.@x);
 			n.props["y"] = Number(xml.position.@y);
 			n.props["width"] = Number(xml.position.@width);
-			n.props["height"] = Number(xml.position.@height);		 
+			n.props["height"] = Number(xml.position.@height);
+			trace (n.name + " " + 	n.props["width"] + " " + n.props["height"]);	 
 		}
 				
 		/**
