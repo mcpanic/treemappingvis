@@ -90,10 +90,10 @@ package cs448b.fp.tree
 						
 						var mv:String = String(mappedIdx);
 
-						t.handleSyncEvent(mv, evt);
+						t.handleSyncEvent(mv, evt, node);
 					} 
 					else {
-						t.handleSyncEvent(node.name, evt);
+						t.handleSyncEvent(node.name, evt, node);
 					}
 					
 				}

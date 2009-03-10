@@ -13,26 +13,21 @@ package cs448b.fp.tree
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	
 	public class SimpleTree extends AbstractTree
 	{	
 		public function SimpleTree(i:Number, tree:Tree, x:Number, y:Number)
-		{	
+		{
 			super(i, tree, x, y);
-			
-			init();
-			buildSprite();
-			
-			setTree(_tree);
 		}
 
 		/**
 		 * Initializes Components
 		 */
 		public override function init():void
-		{
-			initVis();
-			
+		{	
+			// init values		
 			nodes = {
 				shape: Shapes.CIRCLE,
 				fillColor: 0x88aaaaaa,
@@ -49,33 +44,9 @@ package cs448b.fp.tree
 				alpha: 1,
 				visible: true
 			}
-		}
-		
-		/**
-		 * Builds the sprite
-		 */
-		private function buildSprite():void
-		{
-			this.addChild(vis);
-		}
-		
-		/**
-		 * Initializes the vis component
-		 */
-		private function initVis():void
-		{
-			vis = new Visualization();
-		}
-		
-		/**
-		 * Sets the tree data.
-		 */ 
-		public function setTree(t:Tree):void
-		{			
-			// set data
-			vis.data = t;
 			
-			var data:Data = vis.data;
+			// initialize tree
+			var data:Data = _tree;
 			data.nodes.setProperties(nodes);
 			data.edges.setProperties(edges);
 			
@@ -84,11 +55,15 @@ package cs448b.fp.tree
 				data.nodes[j].buttonMode = true;
 			}
 			
-			// add operators
+			// create the visualization
+			vis = new Visualization(_tree);
+			
+			// set operators
 			vis.operators.add(new SimpleTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10));
 			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 			
+			// add controls
 			vis.controls.add(new HoverControl(NodeSprite,
 				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
 				
@@ -99,7 +74,12 @@ package cs448b.fp.tree
 					fireEvent(evt);
 				}));
 			
+//			bounds = new Rectangle(_x, _y, 100, 100);
+//			vis.bounds = bounds;
+
 			vis.update();
+			
+			addChild(vis);
 		}
 		
 		/**
@@ -114,9 +94,9 @@ package cs448b.fp.tree
 		/**
 		 * Handles the tree sync event
 		 */
-		public override function handleSyncEvent(s:String, evt:Event):void
+		public override function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void
 		{
-			// TODO: handle event
+			// handle event
 			var t:Tree = vis.data as Tree;	
 				
 			t.visit(function (o:Object):Boolean{
@@ -162,13 +142,13 @@ package cs448b.fp.tree
 			return vis.update(t, operators);
 		}
 		
-		private function rollOver(evt:SelectionEvent):void 
+		protected override function rollOver(evt:SelectionEvent):void 
 		{		
 			evt.node.lineWidth = 2;
 			evt.node.lineColor = 0x88ff0000;
 		}
 		
-		private function rollOut(evt:SelectionEvent):void 
+		protected override function rollOut(evt:SelectionEvent):void 
 		{
 			evt.node.lineWidth = 0;
 			evt.node.lineColor = nodes.lineColor;

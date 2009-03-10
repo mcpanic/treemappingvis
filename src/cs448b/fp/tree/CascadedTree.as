@@ -10,10 +10,9 @@ package cs448b.fp.tree
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
-
+	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-
 	import flash.geom.Rectangle;
 
 						
@@ -25,66 +24,55 @@ package cs448b.fp.tree
 		}
 		
 		public override function init():void
-		{			
+		{	
+			// init values		
 			nodes = {
 				shape: Shapes.BLOCK, // needed for treemap sqaures
 				fillColor: 0xff8888FF, 
-				lineColor: 0,
-				fillAlpha: 1,//depth / 25,
-				lineAlpha: 1//depth / 25
+				lineColor: 0
 			}
 			
 			edges = {
 				visible: false
 			}
 			
+			// initialize tree
 			var data:Data = _tree;
-//			data.nodes.setProperties(nodes);
+			data.nodes.setProperties(nodes);
 			data.edges.setProperties(edges);
+			
+			for (var j:int=0; j<data.nodes.length; ++j) 
+			{
+				data.nodes[j].fillAlpha = 1/25;
+				data.nodes[j].lineAlpha = 1/25;
+			}
 			
 			// create the visualization
 			vis = new Visualization(_tree);
 			
+			// set operators
 			vis.operators.add(new CascadedTreeLayout(_x, _y));
-//			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
+			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 
-
-
-			//filters = [new DropShadowFilter(1)];
-						
-//			var e:EdgeSprite, n:NodeSprite;
-			vis.data.nodes.visit(function(n:NodeSprite):void {
-				n.shape = Shapes.BLOCK; // needed for treemap sqaures
-				n.fillColor = 0xff8888FF; n.lineColor = 0;
-				n.fillAlpha = n.lineAlpha = (n.depth+1) / 25;
-			});
-//			vis.data.edges.setProperty("visible", false);
-
-			// create a hover control to highlight nodes on mouse-over
+			// add controls
 			vis.controls.add(new HoverControl(NodeSprite,
 				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
 
 			bounds = new Rectangle(_x, _y, 1024, 768);
 			vis.bounds = bounds;
+			
 			vis.update();
+			
 			addChild(vis);
-		}
-
-		public override function resize():void
-		{
-			if (vis) {
-				vis.bounds = bounds;
-				vis.update();
-			}
 		}
 		
 		/**
 		 * Handles the tree sync event
 		 */
-		public override function handleSyncEvent(s:String, evt:Event):void
+		public override function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void
 		{
-			// TODO: handle event
+			// handle event
 			var t:Tree = vis.data as Tree;	
 				
 			t.visit(function (o:Object):Boolean{
@@ -115,7 +103,7 @@ package cs448b.fp.tree
 			
 		}
 		
-		private function rollOver(evt:SelectionEvent):void 
+		protected override function rollOver(evt:SelectionEvent):void 
 		{
 			var n:NodeSprite = evt.node;
 			n.lineColor = 0xffFF0000; 
@@ -123,7 +111,7 @@ package cs448b.fp.tree
 			n.fillColor = 0xffFFFFAAAA;
 		}
 		
-		private function rollOut(evt:SelectionEvent):void 
+		protected override function rollOut(evt:SelectionEvent):void 
 		{
 			var n:NodeSprite = evt.node;
 			n.lineColor = 0; 
@@ -131,6 +119,5 @@ package cs448b.fp.tree
 			n.fillColor = 0xff8888FF;
 			n.fillAlpha = n.lineAlpha = 1 / 25;
 		}
-		
 	}
 }
