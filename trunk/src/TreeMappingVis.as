@@ -70,8 +70,7 @@ package {
 			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 0, 0);
 //			cascadedTree2.init();
 			addChild(cascadedTree2);
-			
-			
+					
 			tes.addTree(cascadedTree1);
 			tes.addTree(cascadedTree2);
 		}
@@ -93,7 +92,7 @@ package {
 		 */		
 		private function handleLoaded(event:Event):void
 		{
-			printTree(dataLoader.getTree(0).root, 3);
+			//printTree(dataLoader.getTree(0).root, 3);
 			displayTree();			
 		}
 	}

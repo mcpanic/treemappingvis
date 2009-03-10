@@ -15,7 +15,8 @@ package cs448b.fp.tree
 	import flash.events.MouseEvent;
 
 	import flash.geom.Rectangle;
-					
+
+						
 	public class CascadedTree extends AbstractTree
 	{								
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number)
@@ -47,7 +48,11 @@ package cs448b.fp.tree
 			vis.operators.add(new CascadedTreeLayout(_x, _y));
 //			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
-			
+
+
+
+			//filters = [new DropShadowFilter(1)];
+						
 //			var e:EdgeSprite, n:NodeSprite;
 			vis.data.nodes.visit(function(n:NodeSprite):void {
 				n.shape = Shapes.BLOCK; // needed for treemap sqaures
@@ -60,7 +65,7 @@ package cs448b.fp.tree
 			vis.controls.add(new HoverControl(NodeSprite,
 				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
 
-			bounds = new Rectangle(_x, _y, 300, 300);
+			bounds = new Rectangle(_x, _y, 1024, 768);
 			vis.bounds = bounds;
 			vis.update();
 			addChild(vis);
@@ -99,7 +104,7 @@ package cs448b.fp.tree
 						n.lineColor = 0; 
 						n.lineWidth = 0;
 						n.fillColor = 0xff8888FF;
-						n.fillAlpha = n.lineAlpha = (n.depth+1) / 25;
+						n.fillAlpha = n.lineAlpha = 1 / 25;
 					}
 					
 					return true; 
@@ -124,7 +129,7 @@ package cs448b.fp.tree
 			n.lineColor = 0; 
 			n.lineWidth = 0;
 			n.fillColor = 0xff8888FF;
-			n.fillAlpha = n.lineAlpha = (n.depth+1) / 25;
+			n.fillAlpha = n.lineAlpha = 1 / 25;
 		}
 		
 	}
