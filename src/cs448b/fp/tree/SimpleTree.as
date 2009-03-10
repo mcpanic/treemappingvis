@@ -18,7 +18,7 @@ package cs448b.fp.tree
 	{	
 		public function SimpleTree(i:Number, tree:Tree, x:Number, y:Number)
 		{	
-			super();
+			super(i, tree, x, y);
 			
 			_id = i;
 			

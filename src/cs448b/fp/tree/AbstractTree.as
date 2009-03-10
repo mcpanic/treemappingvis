@@ -60,7 +60,12 @@ package cs448b.fp.tree
 		
 		// --------------------------------------------------------------------
 		
-		public function AbstractTree() {
+		public function AbstractTree(i:Number, tree:Tree, x:Number, y:Number) {
+			_id = i;
+			_tree = tree;
+			_x = x;
+			_y = y;
+			
 			this.links = new LinkGroup();
 			
 			addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);

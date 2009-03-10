@@ -19,12 +19,7 @@ package cs448b.fp.tree
 	{								
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number)
 		{
-			super();
-			
-			_id = i;
-			_tree = tree;
-			_x = x;
-			_y = y;
+			super(i, tree, x, y);			
 		}
 		
 		public override function init():void
