@@ -4,6 +4,7 @@ package cs448b.fp.tree
 	
 	import flare.vis.data.NodeSprite;
 	
+	import flash.display.Loader;
 	import flash.events.Event;
 	
 	/**
@@ -49,8 +50,17 @@ package cs448b.fp.tree
 		 */
 		public function handleEvent(evt:Event):void
 		{
+			if(dataLoader == null) return;
+			
 			// check if it was sent by a NodeSprite
 			var node:NodeSprite = evt.target as NodeSprite;
+			var uil:Loader = evt.target as Loader;
+			if(node == null && uil == null) return;
+			
+			if(node == null)
+			{
+				node = uil.parent.parent.parent as NodeSprite;
+			}
 			if(node == null) return;
 			
 			// find the sender
@@ -60,7 +70,8 @@ package cs448b.fp.tree
 				for(var oo:Object in trees)
 				{
 					var tt:AbstractTree = trees[oo] as AbstractTree;
-					if(tt != null && tt.contains(node)) {
+					if(tt != null && tt.contains(node)) 
+					{
 						sender = tt;
 						break;
 					}
@@ -73,14 +84,18 @@ package cs448b.fp.tree
 			{
 				var t:AbstractTree = trees[o] as AbstractTree;
 				if(t != null) {
-					if(t != sender && dataLoader != null) {
+					if(t != sender) {
 						// Get mapped value
 						var mappedIdx:Number = dataLoader.getMappedIndex(Number(node.name), t.getId());
 						
 						var mv:String = String(mappedIdx);
 
 						t.handleSyncEvent(mv, evt);
+					} 
+					else {
+						t.handleSyncEvent(node.name, evt);
 					}
+					
 				}
 			}
 		}
