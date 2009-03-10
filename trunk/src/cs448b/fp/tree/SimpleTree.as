@@ -3,13 +3,9 @@ package cs448b.fp.tree
 	import flare.animate.Transitioner;
 	import flare.util.Orientation;
 	import flare.util.Shapes;
-	import flare.vis.Visualization;
-	import flare.vis.controls.HoverControl;
-	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
-	import flare.vis.operator.encoder.PropertyEncoder;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -82,46 +78,6 @@ package cs448b.fp.tree
 		}
 		
 		/**
-		 * Handles the tree sync event
-		 */
-		public override function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void
-		{
-			// handle event
-			var t:Tree = vis.data as Tree;	
-				
-			t.visit(function (o:Object):Boolean{
-				
-				var n:NodeSprite = o as NodeSprite;
-				if( n == null ) return false; 
-				
-				if(n.name == s){
-					if(evt.type == MouseEvent.MOUSE_OVER)
-					{
-						n.lineWidth = 2;
-						n.lineColor = 0x88ff0000;
-					} 
-					else if(evt.type == MouseEvent.MOUSE_OUT)
-					{
-						n.lineWidth = 0;
-						n.lineColor = nodes.lineColor;
-					}
-					else if(evt.type == MouseEvent.MOUSE_UP)
-					{
-						var nn:NodeSprite = evt.target as NodeSprite; 
-						n.expanded = nn.expanded;
-						
-						vis.update(1, "nodes","main").play();
-					}
-					
-					return true; 
-				}
-				
-				return false;
-			});
-			
-		}
-		
-		/**
 		 * Delegates update vis.
 		 */
 		public function updateVis(t:Object = null, ...operators):Transitioner
@@ -132,16 +88,35 @@ package cs448b.fp.tree
 			return vis.update(t, operators);
 		}
 		
-		protected override function rollOver(evt:SelectionEvent):void 
-		{		
-			evt.node.lineWidth = 2;
-			evt.node.lineColor = 0x88ff0000;
+		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event):void
+		{
+			if(evt.type == MouseEvent.MOUSE_OVER)
+			{
+				onMouseOver(n);
+			} 
+			else if(evt.type == MouseEvent.MOUSE_OUT)
+			{
+				onMouseOut(n);
+			}
+			else if(evt.type == MouseEvent.MOUSE_UP)
+			{
+				var nn:NodeSprite = evt.target as NodeSprite; 
+				n.expanded = nn.expanded;
+				
+				vis.update(1, "nodes","main").play();
+			}
 		}
 		
-		protected override function rollOut(evt:SelectionEvent):void 
+		protected override function onMouseOver(n:NodeSprite):void
 		{
-			evt.node.lineWidth = 0;
-			evt.node.lineColor = nodes.lineColor;
+			n.lineWidth = 2;
+			n.lineColor = 0x88ff0000;
+		}
+		
+		protected override function onMouseOut(n:NodeSprite):void
+		{
+			n.lineWidth = 0;
+			n.lineColor = nodes.lineColor;
 		}
 	}
 }
