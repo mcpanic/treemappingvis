@@ -20,11 +20,23 @@ package cs448b.fp.tree
 	{								
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number)
 		{
-			super(i, tree, x, y);			
+			super(i, tree, x, y);
 		}
 		
 		public override function init():void
 		{	
+			super.init();
+
+			bounds = new Rectangle(_x, _y, 1024, 768);
+			vis.bounds = bounds;
+			
+			vis.update();
+			
+			addChild(vis);
+		}
+		
+		protected override function initComponents():void
+		{
 			// init values		
 			nodes = {
 				shape: Shapes.BLOCK, // needed for treemap sqaures
@@ -36,35 +48,13 @@ package cs448b.fp.tree
 				visible: false
 			}
 			
-			// initialize tree
-			var data:Data = _tree;
-			data.nodes.setProperties(nodes);
-			data.edges.setProperties(edges);
-			
-			for (var j:int=0; j<data.nodes.length; ++j) 
-			{
-				data.nodes[j].fillAlpha = 1/25;
-				data.nodes[j].lineAlpha = 1/25;
-			}
-			
-			// create the visualization
-			vis = new Visualization(_tree);
-			
-			// set operators
-			vis.operators.add(new CascadedTreeLayout(_x, _y));
-			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
-			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
-
-			// add controls
-			vis.controls.add(new HoverControl(NodeSprite,
-				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
-
-			bounds = new Rectangle(_x, _y, 1024, 768);
-			vis.bounds = bounds;
-			
-			vis.update();
-			
-			addChild(vis);
+			_layout = new CascadedTreeLayout(_x, _y);
+		}
+		
+		protected override function initNode(n:NodeSprite, i:Number):void
+		{
+			n.fillAlpha = 1/25;
+			n.lineAlpha = 1/25;	
 		}
 		
 		/**
