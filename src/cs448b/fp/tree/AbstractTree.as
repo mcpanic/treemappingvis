@@ -67,7 +67,10 @@ package cs448b.fp.tree
 			_y = y;
 			
 			this.links = new LinkGroup();
+
+			init();
 			
+			// add mouse listeners
 			addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
 			addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
 			addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);

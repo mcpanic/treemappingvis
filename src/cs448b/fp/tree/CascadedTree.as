@@ -13,7 +13,6 @@ package cs448b.fp.tree
 	import flare.vis.operator.encoder.PropertyEncoder;
 	
 	import flash.geom.Rectangle;
-	
 					
 	public class CascadedTree extends AbstractTree
 	{								
