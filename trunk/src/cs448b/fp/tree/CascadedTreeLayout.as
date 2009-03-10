@@ -80,10 +80,12 @@ package cs448b.fp.tree
 	        var o:Object = _t.$(root);
 	        o.x = 0;//_r.x + _r.width/2;
 	        o.y = 0;//_r.y + _r.height/2;
-	        o.u = _r.x;
-	        o.v = _r.y;
-	        o.w = _r.width;
-	        o.h = _r.height;
+
+// mcpanic fixes
+	        o.u = root.props["x"];//_r.x;
+	        o.v = root.props["y"];//_r.y;
+	        o.w = root.props["width"];//_r.width;
+	        o.h = root.props["height"];//_r.height;
 	
 	        // layout the tree
 	        updateArea(root, _r);
@@ -151,8 +153,11 @@ package cs448b.fp.tree
  
 	        // reset all sizes to zero
 	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
-	        	n.props[AREA] = 0;
-	            
+//	        	n.props[AREA] = 0;
+	        	// mcpanic
+	        	n.props[AREA] = n.props["width"] * n.props["height"];
+	        	
+	            // apply dropshadow filter for all nodes to give 3D-like look
 	            var filter:BitmapFilter = getBitmapFilter();
 	            var myFilters:Array = new Array();
 	            myFilters.push(filter);
@@ -161,24 +166,26 @@ package cs448b.fp.tree
         
 	        // set raw sizes, compute leaf count
 	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
-	        	if (n.childDegree == 0) {
-	        		var sz:Number = _size.getValue(_t.$(n));
-	        		n.props[AREA] = sz;
-	        		var p:NodeSprite = n.parentNode;
-	        		for (; p != null; p=p.parentNode)
-	        			p.props[AREA] += sz;
-	        		++leafCount;
-	        	}
+// mcpanic fixes	        		
+//	        	if (n.childDegree == 0) {
+//	        		var sz:Number = _size.getValue(_t.$(n));
+//	        		n.props[AREA] = sz;
+//	        		var p:NodeSprite = n.parentNode;
+//	        		for (; p != null; p=p.parentNode)
+//	        			p.props[AREA] += sz;
+//	        		++leafCount;
+//	        	}
 	        });
 	                
 	        // reset all sizes to zero
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
 	        	//trace(n.name);
-	        	n.x = Number(n.props["x"])  + n.depth * 10;
-	        	n.y = Number(n.props["y"])  + n.depth * 10;
+	        	n.x = Number(n.props["x"]) + n.depth * 10;
+	        	n.y = Number(n.props["y"]) + n.depth * 10;
+				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
 				n.props["image"].x = Number(n.props["x"]);
 				n.props["image"].y = Number(n.props["y"]);	     
-				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));   	
+				   	
 	        });
         
         
@@ -360,10 +367,15 @@ package cs448b.fp.tree
 	        	
 	        	var o:Object = _t.$(n);
 				if (1) {
+					trace(n.name + " " + n.props["height"]);
+//	        		o.u = n.props["image"].x;
+//	        		o.v = n.props["image"].y;
+//	        		o.w = n.props["image"].width;
+//	        		o.h = n.props["height"].height;	       
 	        		o.u = n.props["x"];
 	        		o.v = n.props["y"];
 	        		o.w = n.props["width"];
-	        		o.h = n.props["height"];	        		
+	        		o.h = n.props["height"];	  	        		 		
 	        	} else {
 	        		o.u = xx;
 	        		o.v = yy + d;
@@ -378,8 +390,10 @@ package cs448b.fp.tree
 	        }
 	        
 	        // update space available in rectangle r
-	        if (horiz) {
-	        	r.x = xx; r.y = yy+hh; r.height -= hh;
+	        if (1) {
+	        	//r.x = xx; 
+	        	//r.y = yy+hh; 
+	        	//r.height -= hh;
 	        } else {
 	        	r.x = xx+hh; r.y = yy; r.width -= hh;
 	        }
