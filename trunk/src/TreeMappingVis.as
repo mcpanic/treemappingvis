@@ -67,7 +67,7 @@ package {
 			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 0, 0);
 //			cascadedTree1.init();
 			addChild(cascadedTree1);
-			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 550, 200);
+			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 0, 0);
 //			cascadedTree2.init();
 			addChild(cascadedTree2);
 			

@@ -81,8 +81,6 @@ package cs448b.fp.tree
 		{
 			// TODO: handle event
 			var t:Tree = vis.data as Tree;	
-			
-			trace(s);
 				
 			t.visit(function (o:Object):Boolean{
 				
