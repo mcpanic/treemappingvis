@@ -1,11 +1,10 @@
 package cs448b.fp.tree
 {
-	import cs448b.fp.utils.LinkGroup;
-	
 	import flare.vis.Visualization;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
+	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -162,21 +161,22 @@ package cs448b.fp.tree
 		private function handleMouseOver(me:MouseEvent):void
 		{
 			var ns:NodeSprite = me.target as NodeSprite;
-			if(ns != null) 
-			{
-				// fire event
-				fireEvent(me);
-			}
+			var uil:Loader = me.target as Loader;
+			if(ns == null && uil == null) return;
+			
+			// fire event
+			fireEvent(me);
+			
 		}
 		
 		private function handleMouseOut(me:MouseEvent):void
 		{
 			var ns:NodeSprite = me.target as NodeSprite;
-			if(ns != null) 
-			{
-				// fire event
-				fireEvent(me);
-			}
+			var uil:Loader = me.target as Loader;
+			if(ns == null && uil == null) return;
+			
+			// fire event
+			fireEvent(me);
 		}
 		
 		/**

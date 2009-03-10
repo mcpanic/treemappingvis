@@ -38,22 +38,22 @@ package cs448b.fp.tree
 			}
 			
 			var data:Data = _tree;
-			data.nodes.setProperties(nodes);
+//			data.nodes.setProperties(nodes);
 			data.edges.setProperties(edges);
 			
 			// create the visualization
 			vis = new Visualization(_tree);
 			
 			vis.operators.add(new CascadedTreeLayout(_x, _y));
-			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
+//			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 			
 //			var e:EdgeSprite, n:NodeSprite;
-//			vis.data.nodes.visit(function(n:NodeSprite):void {
-//				n.shape = Shapes.BLOCK; // needed for treemap sqaures
-//				n.fillColor = 0xff8888FF; n.lineColor = 0;
-//				n.fillAlpha = n.lineAlpha = n.depth / 25;
-//			});
+			vis.data.nodes.visit(function(n:NodeSprite):void {
+				n.shape = Shapes.BLOCK; // needed for treemap sqaures
+				n.fillColor = 0xff8888FF; n.lineColor = 0;
+				n.fillAlpha = n.lineAlpha = (n.depth+1) / 25;
+			});
 //			vis.data.edges.setProperty("visible", false);
 
 			// create a hover control to highlight nodes on mouse-over
@@ -99,7 +99,7 @@ package cs448b.fp.tree
 						n.lineColor = 0; 
 						n.lineWidth = 0;
 						n.fillColor = 0xff8888FF;
-						n.fillAlpha = n.lineAlpha = 1;//n.depth / 25;
+						n.fillAlpha = n.lineAlpha = (n.depth+1) / 25;
 					}
 					
 					return true; 
@@ -124,7 +124,7 @@ package cs448b.fp.tree
 			n.lineColor = 0; 
 			n.lineWidth = 0;
 			n.fillColor = 0xff8888FF;
-			n.fillAlpha = n.lineAlpha = 1;//n.depth / 25;
+			n.fillAlpha = n.lineAlpha = (n.depth+1) / 25;
 		}
 		
 	}
