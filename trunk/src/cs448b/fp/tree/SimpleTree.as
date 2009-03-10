@@ -20,11 +20,7 @@ package cs448b.fp.tree
 		{	
 			super(i, tree, x, y);
 			
-			_id = i;
-			
-			_tree = tree;
-			
-			initComponents();
+			init();
 			buildSprite();
 			
 			setTree(_tree);
@@ -33,7 +29,7 @@ package cs448b.fp.tree
 		/**
 		 * Initializes Components
 		 */
-		private function initComponents():void
+		public override function init():void
 		{
 			initVis();
 			
