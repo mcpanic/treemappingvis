@@ -32,31 +32,31 @@ package cs448b.fp.tree
 		
 		protected var listeners:Array = new Array(1);
 		
-		public static var LINK_X:Number;
-		public static var LINK_Y:Number;
+//		public static var LINK_X:Number;
+//		public static var LINK_Y:Number;
 		
 		private var _init:Boolean = false;
 		private var _bounds:Rectangle;
-		private var _links:LinkGroup;
+//		private var _links:LinkGroup;
 		
 		public function get bounds():Rectangle { return _bounds; }
 		public function set bounds(b:Rectangle):void {
 			_bounds = b;
-			if (_links) {
-				_links.x = LINK_X;
-				_links.y = LINK_Y;
-				setChildIndex(_links, numChildren-1);
-			}
+//			if (_links) {
+//				_links.x = LINK_X;
+//				_links.y = LINK_Y;
+//				setChildIndex(_links, numChildren-1);
+//			}
 			resize();
 		}
 		
-		protected function get links():LinkGroup { return _links; }
-		protected function set links(links:LinkGroup):void
-		{
-			if (_links) removeChild(_links);
-			_links = links;
-			if (links != null) addChildAt(_links, numChildren);
-		}
+//		protected function get links():LinkGroup { return _links; }
+//		protected function set links(links:LinkGroup):void
+//		{
+//			if (_links) removeChild(_links);
+//			_links = links;
+//			if (links != null) addChildAt(_links, numChildren);
+//		}
 		
 		// --------------------------------------------------------------------
 		
@@ -66,7 +66,7 @@ package cs448b.fp.tree
 			_x = x;
 			_y = y;
 			
-			this.links = new LinkGroup();
+//			this.links = new LinkGroup();
 
 			init();
 			
@@ -78,17 +78,6 @@ package cs448b.fp.tree
 			addEventListener(MouseEvent.MOUSE_OVER, handleMouseOver);
 			addEventListener(MouseEvent.MOUSE_OUT, handleMouseOut);
 		}
-		
-//		public function start():void
-//		{
-//			if (!_init) { init(); _init = true; }
-//			play();
-//			if (_links) {
-//				_links.x = LINK_X;
-//				_links.y = LINK_Y;
-//				setChildIndex(_links, numChildren-1);
-//			}
-//		}
 		
 		/**
 		 * Returns the ID of the tree.

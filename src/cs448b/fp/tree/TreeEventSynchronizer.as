@@ -13,13 +13,10 @@ package cs448b.fp.tree
 	{
 		private var trees:Array = new Array(2);
 		
-//		private var mapping:Mapping;
-		
 		private var dataLoader:DataLoader = null;
 		
 		public function TreeEventSynchronizer()
 		{
-//			mapping = new Mapping();
 		}
 		
 		public function setDataLoader(dl:DataLoader):void
@@ -55,8 +52,6 @@ package cs448b.fp.tree
 			// check if it was sent by a NodeSprite
 			var node:NodeSprite = evt.target as NodeSprite;
 			if(node == null) return;
-			
-			trace(evt);
 			
 			// find the sender
 			var sender:AbstractTree = evt.currentTarget as AbstractTree;
