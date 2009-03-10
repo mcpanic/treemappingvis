@@ -75,24 +75,6 @@ package {
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 		}
-
-		/**
-		 * Display the tree
-		 */
-		private function displayTree():void
-		{
-//			simpleTree.setTree(dataLoader.getTree(0), 0);
-//			simpleTree2.setTree(dataLoader.getTree(1), 1);
-//			simpleTree2.setOrientation(Orientation.RIGHT_TO_LEFT);
-				
-			// position trees
-//			simpleTree.x = 0;
-//			simpleTree.y = 0;
-//			
-//			simpleTree2.x = 0;
-//			simpleTree2.y = 0;
-		}
-
 		/**
 		 * Print tree.
 		 */
@@ -108,9 +90,7 @@ package {
 		 * Handle loaded.
 		 */
 		private function handleLoaded(event:Event):void
-		{
-//			displayTree();
-			
+		{			
 			initComponents();
 			buildSprite();
 		}

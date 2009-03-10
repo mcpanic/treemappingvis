@@ -3,6 +3,7 @@ package cs448b.fp.tree
 	import flare.vis.Visualization;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
+	import flare.vis.events.SelectionEvent;
 	
 	import flash.display.Loader;
 	import flash.display.Sprite;
@@ -31,32 +32,14 @@ package cs448b.fp.tree
 		
 		protected var listeners:Array = new Array(1);
 		
-//		public static var LINK_X:Number;
-//		public static var LINK_Y:Number;
-		
 		private var _init:Boolean = false;
 		private var _bounds:Rectangle;
-//		private var _links:LinkGroup;
 		
 		public function get bounds():Rectangle { return _bounds; }
 		public function set bounds(b:Rectangle):void {
 			_bounds = b;
-//			if (_links) {
-//				_links.x = LINK_X;
-//				_links.y = LINK_Y;
-//				setChildIndex(_links, numChildren-1);
-//			}
 			resize();
 		}
-		
-//		protected function get links():LinkGroup { return _links; }
-//		protected function set links(links:LinkGroup):void
-//		{
-//			if (_links) removeChild(_links);
-//			_links = links;
-//			if (links != null) addChildAt(_links, numChildren);
-//		}
-		
 		// --------------------------------------------------------------------
 		
 		public function AbstractTree(i:Number, tree:Tree, x:Number, y:Number) {
@@ -64,8 +47,6 @@ package cs448b.fp.tree
 			_tree = tree;
 			_x = x;
 			_y = y;
-			
-//			this.links = new LinkGroup();
 
 			init();
 			
@@ -88,7 +69,13 @@ package cs448b.fp.tree
 		
 		public function init() : void {}
 		
-		public function resize():void {}
+		public function resize():void 
+		{
+			if (vis) {
+				vis.bounds = bounds;
+				vis.update();
+			}
+		}
 		
 		/**
 		 * Adds a tree event handler.
@@ -199,7 +186,10 @@ package cs448b.fp.tree
 		 * @param s - the id of the brushed node
 		 * @param evt - the event
 		 */
-		public function handleSyncEvent(s:String, evt:Event):void {}
+		public function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void {}
 		
+		protected function rollOver(evt:SelectionEvent):void{}
+		
+		protected function rollOut(evt:SelectionEvent):void{}
 	} // end of class Demo
 }
