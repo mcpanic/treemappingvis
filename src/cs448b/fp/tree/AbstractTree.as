@@ -247,6 +247,12 @@ package cs448b.fp.tree
 			
 		}
 		
+		/** 
+		 * Handles the event for brushing (node sync)
+		 * 
+		 * @param n - the node to sync
+		 * @param evt - the event that was sent 
+		 */
 		protected function handleSyncNodeEvent(n:NodeSprite, evt:Event):void {}
 		
 		protected function rollOver(evt:SelectionEvent):void 
