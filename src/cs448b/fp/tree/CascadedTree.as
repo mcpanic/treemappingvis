@@ -10,9 +10,10 @@ package cs448b.fp.tree
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
-	
+
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+
 	import flash.geom.Rectangle;
 					
 	public class CascadedTree extends AbstractTree
@@ -58,13 +59,13 @@ package cs448b.fp.tree
 			// create a hover control to highlight nodes on mouse-over
 			vis.controls.add(new HoverControl(NodeSprite,
 				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
-					
-			bounds = new Rectangle(_x, _y, 1024, 768);
+
+			bounds = new Rectangle(_x, _y, 300, 300);
 			vis.bounds = bounds;
 			vis.update();
 			addChild(vis);
 		}
-		
+
 		public override function resize():void
 		{
 			if (vis) {
