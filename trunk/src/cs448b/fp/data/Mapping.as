@@ -14,22 +14,26 @@ package cs448b.fp.data
 		public function createMap(num1:Number, num2:Number):void
 		{
 			map.push(new Point(num1, num2));
-//			map.push(new Point(1, 117));
-//			map.push(new Point(16, 121));
-//			map.push(new Point(112, 225));
-//			map.push(new Point(115, 227));
-//			map.push(new Point(41, 144));
-//			map.push(new Point(52, 158));
-//			map.push(new Point(56, 162));
-//			map.push(new Point(32, 137));
-//			map.push(new Point(96, 212));
-//			map.push(new Point(23, 130));
-//			map.push(new Point(105, 220));
-//			map.push(new Point(107, 222));
-//			map.push(new Point(48, 153));
-//			map.push(new Point(99, 215));
-//			map.push(new Point(102, 217));
 		}		
+		
+		public function jjanMap():void
+		{
+			map.push(new Point(1, 117));
+			map.push(new Point(16, 121));
+			map.push(new Point(112, 225));
+			map.push(new Point(115, 227));
+			map.push(new Point(41, 144));
+			map.push(new Point(52, 158));
+			map.push(new Point(56, 162));
+			map.push(new Point(32, 137));
+			map.push(new Point(96, 212));
+			map.push(new Point(23, 130));
+			map.push(new Point(105, 220));
+			map.push(new Point(107, 222));
+			map.push(new Point(48, 153));
+			map.push(new Point(99, 215));
+			map.push(new Point(102, 217));
+		}
 	
 		/**
 		 * Returns the mapped index.

@@ -84,7 +84,7 @@ package
 		private function createVis(d:Data, or:String):Visualization
 		{			
 			var v:Visualization = new Visualization(d);
-			v.operators.add(new NodeLinkTreeLayout(or,20,5,10));
+			v.operators.add(new SimpleTreeLayout(or,20,5,10));
 			
 			// Set encoders
 			v.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));

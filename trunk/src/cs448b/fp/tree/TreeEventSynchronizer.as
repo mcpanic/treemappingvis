@@ -1,6 +1,6 @@
 package cs448b.fp.tree
 {
-	import cs448b.fp.data.Mapping;
+	import cs448b.fp.data.DataLoader;
 	
 	import flare.vis.data.NodeSprite;
 	
@@ -13,17 +13,24 @@ package cs448b.fp.tree
 	{
 		private var trees:Array = new Array(2);
 		
-		private var mapping:Mapping;
+//		private var mapping:Mapping;
+		
+		private var dataLoader:DataLoader = null;
 		
 		public function TreeEventSynchronizer()
 		{
-			mapping = new Mapping();
+//			mapping = new Mapping();
+		}
+		
+		public function setDataLoader(dl:DataLoader):void
+		{
+			dataLoader = dl;
 		}
 
 		/**
 		 * Adds the tree.
 		 */
-		public function addTree(tree:SimpleTree):void
+		public function addTree(tree:AbstractTree):void
 		{
 			trees.push(tree);
 			
@@ -67,11 +74,11 @@ package cs448b.fp.tree
 			// send this to all trees except sender
 			for(var o:Object in trees)
 			{
-				var t:SimpleTree = trees[o] as SimpleTree;
+				var t:AbstractTree = trees[o] as AbstractTree;
 				if(t != null) {
-					if(t != sender) {
+					if(t != sender && dataLoader != null) {
 						// Get mapped value
-						var mappedIdx:Number = mapping.getMappedIndex(Number(node.name), t.getId());
+						var mappedIdx:Number = dataLoader.getMappedIndex(Number(node.name), t.getId());
 						
 						var mv:String = String(mappedIdx);
 
