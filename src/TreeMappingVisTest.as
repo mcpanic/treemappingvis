@@ -19,7 +19,6 @@ package {
 	public class TreeMappingVisTest extends Sprite
 	{
 		private var dataLoader:DataLoader;
-		private var dataLoader2:DataLoader;
 		
 		private var simpleTree:SimpleTree;
 		private var simpleTree2:SimpleTree;
@@ -33,9 +32,6 @@ package {
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 			
-			initComponents();
-			buildSprite();
-			
 			loadData();			
 		}
 		
@@ -44,9 +40,12 @@ package {
 		 */
 		private function initComponents():void
 		{
-			simpleTree = new SimpleTree(1);
-			simpleTree2 = new SimpleTree(2);
+			simpleTree = new SimpleTree(0, dataLoader.getTree(0), 0, 0);
+			simpleTree2 = new SimpleTree(1, dataLoader.getTree(1), 0, 0);
+			simpleTree2.setOrientation(Orientation.RIGHT_TO_LEFT);
+			
 			tes = new TreeEventSynchronizer();
+			tes.setDataLoader(dataLoader);
 			
 			tes.addTree(simpleTree);
 			tes.addTree(simpleTree2);
@@ -72,38 +71,26 @@ package {
 			fileList[0] = "../data/tree_dog.xml";
 			fileList[1] = "../data/tree_cat.xml";
 		
-			dataLoader = new DataLoader(2, fileList, "../data/mapping.xml");
+			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml");
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
-			
-//			dataLoader2 = new DataLoader(2, fileList);
-//			dataLoader2.addLoadEventListener(handleLoaded2);			
-//			dataLoader2.loadData();
 		}
 
 		/**
 		 * Display the tree
 		 */
-		private function displayTree(i:Number):void
+		private function displayTree():void
 		{
-			if(i == 0) 
-			{
-				simpleTree.setTree(dataLoader.getTree(0), 0);
-				simpleTree2.setTree(dataLoader.getTree(1), 1);
-				simpleTree2.setOrientation(Orientation.RIGHT_TO_LEFT);
+//			simpleTree.setTree(dataLoader.getTree(0), 0);
+//			simpleTree2.setTree(dataLoader.getTree(1), 1);
+//			simpleTree2.setOrientation(Orientation.RIGHT_TO_LEFT);
 				
-				// position trees
-//				simpleTree.x = 0;
-//				simpleTree.y = 0;
-//				
-//				simpleTree2.x = 0;
-//				simpleTree2.y = 0;
-			}
-//			if(i == 1)
-//			{
-//				simpleTree2.setTree(dataLoader2.getTree(0));
-//				simpleTree2.setOrientation(Orientation.RIGHT_TO_LEFT);
-//			}
+			// position trees
+//			simpleTree.x = 0;
+//			simpleTree.y = 0;
+//			
+//			simpleTree2.x = 0;
+//			simpleTree2.y = 0;
 		}
 
 		/**
@@ -122,15 +109,10 @@ package {
 		 */
 		private function handleLoaded(event:Event):void
 		{
-			displayTree(0);
-		}
-		
-		/**
-		 * Handle loaded.
-		 */
-		private function handleLoaded2(event:Event):void
-		{
-			displayTree(1);
+//			displayTree();
+			
+			initComponents();
+			buildSprite();
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void

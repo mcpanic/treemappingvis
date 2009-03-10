@@ -1,6 +1,7 @@
 package
 {	
 	import cs448b.fp.data.DataLoader;
+	import cs448b.fp.tree.SimpleTreeLayout;
 	
 	import flare.util.Orientation;
 	import flare.util.Shapes;
@@ -12,7 +13,6 @@ package
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
-	import flare.vis.operator.layout.NodeLinkTreeLayout;
 	
 	import flash.display.Graphics;
 	import flash.display.InteractiveObject;
@@ -94,7 +94,7 @@ package
 		private function initVis():void
 		{
 			vis = new Visualization(data);
-			vis.operators.add(new NodeLinkTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10));
+			vis.operators.add(new SimpleTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10));
 			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 			vis.controls.add(new HoverControl(NodeSprite,

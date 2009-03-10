@@ -59,7 +59,7 @@ package {
 		 */
 		private function displayTree():void
 		{
-			cascadedTree1 = new CascadedTree(dataLoader.getTree(0), 0, 0);
+			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 0, 0);
 			cascadedTree1.init();
 			addChild(cascadedTree1);
 			//cascadedTree2 = new CascadedTree(dataLoader.getTree(1), 550, 200);

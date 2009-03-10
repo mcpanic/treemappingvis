@@ -9,59 +9,25 @@ package cs448b.fp.tree
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
-	import flare.vis.events.VisualizationEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
-	import flare.vis.operator.layout.NodeLinkTreeLayout;
 	
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	public class SimpleTree extends Sprite
-	{
-		private var id:Number;
-		
-		private static var MAX_ZOOM:Number = 4;
-		private static var MIN_ZOOM:Number = 0.25;
-		
-		private var prevX:Number = 0;
-		private var prevY:Number = 0;
-		
-		public var vis:Visualization;
-		
-		private var listeners:Array = new Array(1);
-		
-		// default values
-		private var nodes:Object = {
-			shape: Shapes.CIRCLE,
-			fillColor: 0x88aaaaaa,
-			lineColor: 0xdddddddd,
-			lineWidth: 1,
-			size: 1.5,
-			alpha: 1,
-			visible: true
-		}
-		
-		private var edges:Object = {
-			lineColor: 0xffcccccc,
-			lineWidth: 1,
-			alpha: 1,
-			visible: true
-		}
-		
-		public function SimpleTree(i:Number = 0)
+	public class SimpleTree extends AbstractTree
+	{	
+		public function SimpleTree(i:Number, tree:Tree, x:Number, y:Number)
 		{	
-			id = i;
+			super();
 			
-			addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
-			addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
-			addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			_id = i;
 			
-			addEventListener(MouseEvent.MOUSE_OVER, handleMouseOver);
-			addEventListener(MouseEvent.MOUSE_OUT, handleMouseOut);
+			_tree = tree;
 			
 			initComponents();
 			buildSprite();
+			
+			setTree(_tree);
 		}
 
 		/**
@@ -70,6 +36,23 @@ package cs448b.fp.tree
 		private function initComponents():void
 		{
 			initVis();
+			
+			nodes = {
+				shape: Shapes.CIRCLE,
+				fillColor: 0x88aaaaaa,
+				lineColor: 0xdddddddd,
+				lineWidth: 1,
+				size: 1.5,
+				alpha: 1,
+				visible: true
+			}
+			
+			edges = {
+				lineColor: 0xffcccccc,
+				lineWidth: 1,
+				alpha: 1,
+				visible: true
+			}
 		}
 		
 		/**
@@ -86,55 +69,33 @@ package cs448b.fp.tree
 		private function initVis():void
 		{
 			vis = new Visualization();
-			
-			vis.addEventListener(VisualizationEvent.UPDATE, handleVisUpdate);
-		}
-		
-		/**
-		 * 
-		 */
-		public function getId():Number
-		{
-			return id;
 		}
 		
 		/**
 		 * Sets the tree data.
 		 */ 
-		public function setTree(t:Tree, i:Number):void
-		{
-			id = i;
-			
+		public function setTree(t:Tree):void
+		{			
 			// set data
 			vis.data = t;
 			
 			var data:Data = vis.data;
-			
 			data.nodes.setProperties(nodes);
 			data.edges.setProperties(edges);
+			
 			for (var j:int=0; j<data.nodes.length; ++j) {
 				data.nodes[j].data.label = String(j);
 				data.nodes[j].buttonMode = true;
 			}
 			
 			// add operators
-			vis.operators.add(new NodeLinkTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10));
+			vis.operators.add(new SimpleTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10));
 			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 			
 			vis.controls.add(new HoverControl(NodeSprite,
-				// by default, move highlighted items to front
-				HoverControl.MOVE_AND_RETURN,
-				// highlight node border on mouse over
-				function(e:SelectionEvent):void {
-					e.node.lineWidth = 2;
-					e.node.lineColor = 0x88ff0000;
-				},
-				// remove highlight on mouse out
-				function(e:SelectionEvent):void {
-					e.node.lineWidth = 0;
-					e.node.lineColor = nodes.lineColor;
-				}));
+				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
+				
 			vis.controls.add(new ExpandEventControl(NodeSprite,
 				function(evt:Event):void { 
 					vis.update(1, "nodes","main").play();
@@ -150,116 +111,14 @@ package cs448b.fp.tree
 		 */
 		public function setOrientation(or:String):void
 		{
-			vis.operators[0] = new NodeLinkTreeLayout(or,20,5,10);
+			vis.operators[0] = new SimpleTreeLayout(or,20,5,10);
 			vis.update();
-		}
-		
-		/**
-		 * Adds a tree event handler.
-		 */
-		public function addTreeEventListener(l:TreeEventListener):void
-		{
-			listeners.push(l);
-		}
-		
-		/**
-		 * Removes a tree event handler.
-		 */
-		public function removeTreeEventListener(l:TreeEventListener):void
-		{
-			listeners.splice(listeners.indexOf(l), 1);
-		}
-		
-		// Mouse Handlers
-		private function handleMouseWheel(me:MouseEvent):void
-		{ // handle zoom
-			
-			if(me.delta > 0)
-			{ // zoom in
-				if(vis.scaleX < MAX_ZOOM)
-				{
-					vis.scaleX *= 1.1;
-					vis.scaleY *= 1.1;
-				}
-			} 
-			else
-			{ // zoom out
-				if(vis.scaleX > MIN_ZOOM)
-				{
-					vis.scaleX /= 1.1;
-					vis.scaleY /= 1.1;
-				}
-			}
-		}
-		
-		private function handleMouseMove(me:MouseEvent):void
-		{ 
-			if(me.buttonDown)
-			{ // handle pan
-			
-				var sX:Number = me.stageX;
-				var sY:Number = me.stageY;
-
-				var dX:Number = sX - prevX;
-				var dY:Number = sY - prevY;
-	
-				vis.x += dX;
-				vis.y += dY;
-		
-				prevX = sX;
-				prevY = sY;
-			}
-			else
-			{
-				prevX = me.stageX;
-				prevY = me.stageY;
-			}
-		}
-		
-		private function handleMouseDown(me:MouseEvent):void
-		{			
-//			prevX = me.stageX;
-//			prevY = me.stageY;
-		}
-		
-		private function handleMouseOver(me:MouseEvent):void
-		{
-			var ns:NodeSprite = me.target as NodeSprite;
-			if(ns != null) 
-			{
-				// fire event
-				fireEvent(me);
-			}
-		}
-		
-		private function handleMouseOut(me:MouseEvent):void
-		{
-			var ns:NodeSprite = me.target as NodeSprite;
-			if(ns != null) 
-			{
-				// fire event
-				fireEvent(me);
-			}
-		}
-		
-		/**
-		 * Fire events.
-		 */
-		private function fireEvent(evt:Event):void
-		{
-			for(var o:Object in listeners)
-			{
-				var l:TreeEventListener = listeners[o] as TreeEventListener;
-				if(l != null) {
-					l.handleEvent(evt);
-				}
-			}
 		}
 		
 		/**
 		 * Handles the tree sync event
 		 */
-		public function handleSyncEvent(s:String, evt:Event):void
+		public override function handleSyncEvent(s:String, evt:Event):void
 		{
 			// TODO: handle event
 			var t:Tree = vis.data as Tree;	
@@ -296,25 +155,6 @@ package cs448b.fp.tree
 			
 		}
 		
-		public override function toString():String
-		{
-			return super.toString()+" ID : "+id;
-		}
-		
-		/**
-		 * Handles vis update.
-		 */
-		public function handleVisUpdate(ve:VisualizationEvent):void
-		{
-//			trace(ve);
-//			vis.graphics.clear();
-//			vis.graphics.beginFill(0xaaaaaa, 0.5);
-//			vis.graphics.drawRect(vis.x, vis.y, vis.width, vis.height);
-//			vis.graphics.endFill();
-//			vis.bounds = new Rectangle(0, 0, 500, 500);
-//			trace("x/y/width/height: "+vis.x+"/"+vis.y+"/"+vis.width+"/"+vis.height);
-		}
-		
 		/**
 		 * Delegates update vis.
 		 */
@@ -323,11 +163,19 @@ package cs448b.fp.tree
 			vis.x = 0;
 			vis.y = 0;
 			
-//			trace("x/y/width/height: "+vis.x+"/"+vis.y+"/"+vis.width+"/"+vis.height);
-			
-//			vis.bounds = new Rectangle(0, 0, 500, 500);
-			
 			return vis.update(t, operators);
+		}
+		
+		private function rollOver(evt:SelectionEvent):void 
+		{		
+			evt.node.lineWidth = 2;
+			evt.node.lineColor = 0x88ff0000;
+		}
+		
+		private function rollOut(evt:SelectionEvent):void 
+		{
+			evt.node.lineWidth = 0;
+			evt.node.lineColor = nodes.lineColor;
 		}
 	}
 }
