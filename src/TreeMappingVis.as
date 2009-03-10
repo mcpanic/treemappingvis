@@ -1,6 +1,7 @@
 package {
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.tree.CascadedTree;
+	import cs448b.fp.tree.TreeEventSynchronizer;
 	
 	import flare.vis.data.NodeSprite;
 	
@@ -19,6 +20,8 @@ package {
 		private var cascadedTree2:CascadedTree;
 		private var fileList:Array;
 		
+		private var tes:TreeEventSynchronizer;
+		
 		/**
 		 * Constructor
 		 */		
@@ -34,7 +37,7 @@ package {
 		
 		private function initComponents():void
 		{
-		
+			tes = new TreeEventSynchronizer();
 		}
 				
 		private function buildSprite():void
@@ -52,6 +55,8 @@ package {
 			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml");
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
+			
+			tes.setDataLoader(dataLoader);
 		}
 
 		/**
@@ -60,11 +65,15 @@ package {
 		private function displayTree():void
 		{
 			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 0, 0);
-			cascadedTree1.init();
+//			cascadedTree1.init();
 			addChild(cascadedTree1);
-			//cascadedTree2 = new CascadedTree(dataLoader.getTree(1), 550, 200);
-			//cascadedTree2.init();
-			//addChild(cascadedTree2);			
+			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 550, 200);
+//			cascadedTree2.init();
+			addChild(cascadedTree2);
+			
+			
+			tes.addTree(cascadedTree1);
+			tes.addTree(cascadedTree2);
 		}
 
 		/**
