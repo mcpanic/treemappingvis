@@ -224,10 +224,43 @@ package cs448b.fp.tree
 		 * @param s - the id of the brushed node
 		 * @param evt - the event
 		 */
-		public function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void {}
+		/**
+		 * Handles the tree sync event
+		 */
+		public function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void
+		{
+			// handle event
+			var t:Tree = vis.data as Tree;	
+				
+			t.visit(function (o:Object):Boolean{
+				
+				var n:NodeSprite = o as NodeSprite;
+				if( n == null ) return false; 
+				
+				if(n.name == s){
+					handleSyncNodeEvent(n, evt);
+					return true; 
+				}
+				
+				return false;
+			});
+			
+		}
 		
-		protected function rollOver(evt:SelectionEvent):void{}
+		protected function handleSyncNodeEvent(n:NodeSprite, evt:Event):void {}
 		
-		protected function rollOut(evt:SelectionEvent):void{}
+		protected function rollOver(evt:SelectionEvent):void 
+		{		
+			onMouseOver(evt.node);
+		}
+		
+		protected function rollOut(evt:SelectionEvent):void 
+		{
+			onMouseOut(evt.node);
+		}
+		
+		protected function onMouseOver(n:NodeSprite):void {}
+		
+		protected function onMouseOut(n:NodeSprite):void {}
 	} // end of class Demo
 }

@@ -3,13 +3,9 @@ package cs448b.fp.tree
 	import cs448b.fp.utils.*;
 	
 	import flare.util.Shapes;
-	import flare.vis.Visualization;
-	import flare.vis.controls.HoverControl;
-	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
-	import flare.vis.operator.encoder.PropertyEncoder;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -57,53 +53,27 @@ package cs448b.fp.tree
 			n.lineAlpha = 1/25;	
 		}
 		
-		/**
-		 * Handles the tree sync event
-		 */
-		public override function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void
+		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event):void
 		{
-			// handle event
-			var t:Tree = vis.data as Tree;	
-				
-			t.visit(function (o:Object):Boolean{
-				
-				var n:NodeSprite = o as NodeSprite;
-				if( n == null ) return false; 
-				
-				if(n.name == s){
-					if(evt.type == MouseEvent.MOUSE_OVER)
-					{
-						n.lineColor = 0xffFF0000; 
-						n.lineWidth = 2;
-						n.fillColor = 0xffFFFFAAAA;
-					} 
-					else if(evt.type == MouseEvent.MOUSE_OUT)
-					{
-						n.lineColor = 0; 
-						n.lineWidth = 0;
-						n.fillColor = 0xff8888FF;
-						n.fillAlpha = n.lineAlpha = 1 / 25;
-					}
-					
-					return true; 
-				}
-				
-				return false;
-			});
-			
+			if(evt.type == MouseEvent.MOUSE_OVER)
+			{
+				onMouseOver(n);
+			} 
+			else if(evt.type == MouseEvent.MOUSE_OUT)
+			{
+				onMouseOut(n);
+			}
 		}
 		
-		protected override function rollOver(evt:SelectionEvent):void 
+		protected override function onMouseOver(n:NodeSprite):void
 		{
-			var n:NodeSprite = evt.node;
 			n.lineColor = 0xffFF0000; 
 			n.lineWidth = 2;
 			n.fillColor = 0xffFFFFAAAA;
 		}
 		
-		protected override function rollOut(evt:SelectionEvent):void 
+		protected override function onMouseOut(n:NodeSprite):void
 		{
-			var n:NodeSprite = evt.node;
 			n.lineColor = 0; 
 			n.lineWidth = 0;
 			n.fillColor = 0xff8888FF;
