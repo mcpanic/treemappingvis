@@ -13,7 +13,6 @@ package cs448b.fp.tree
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Rectangle;
 	
 	public class SimpleTree extends AbstractTree
 	{	
@@ -27,6 +26,25 @@ package cs448b.fp.tree
 		 */
 		public override function init():void
 		{	
+			super.init();
+							
+			vis.controls.add(new ExpandEventControl(NodeSprite,
+				function(evt:Event):void { 
+					vis.update(1, "nodes","main").play();
+					
+					fireEvent(evt);
+				}));
+			
+//			bounds = new Rectangle(_x, _y, 100, 100);
+//			vis.bounds = bounds;
+
+			vis.update();
+			
+			addChild(vis);
+		}
+		
+		protected override function initComponents():void
+		{
 			// init values		
 			nodes = {
 				shape: Shapes.CIRCLE,
@@ -45,41 +63,13 @@ package cs448b.fp.tree
 				visible: true
 			}
 			
-			// initialize tree
-			var data:Data = _tree;
-			data.nodes.setProperties(nodes);
-			data.edges.setProperties(edges);
-			
-			for (var j:int=0; j<data.nodes.length; ++j) {
-				data.nodes[j].data.label = String(j);
-				data.nodes[j].buttonMode = true;
-			}
-			
-			// create the visualization
-			vis = new Visualization(_tree);
-			
-			// set operators
-			vis.operators.add(new SimpleTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10));
-			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
-			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
-			
-			// add controls
-			vis.controls.add(new HoverControl(NodeSprite,
-				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
-				
-			vis.controls.add(new ExpandEventControl(NodeSprite,
-				function(evt:Event):void { 
-					vis.update(1, "nodes","main").play();
-					
-					fireEvent(evt);
-				}));
-			
-//			bounds = new Rectangle(_x, _y, 100, 100);
-//			vis.bounds = bounds;
-
-			vis.update();
-			
-			addChild(vis);
+			_layout = new SimpleTreeLayout(Orientation.LEFT_TO_RIGHT,20,5,10);	
+		}
+		
+		protected override function initNode(n:NodeSprite, i:Number):void
+		{
+			n.data.label = String(i);
+			n.buttonMode = true;
 		}
 		
 		/**

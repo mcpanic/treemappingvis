@@ -1,9 +1,13 @@
 package cs448b.fp.tree
 {
 	import flare.vis.Visualization;
+	import flare.vis.controls.HoverControl;
+	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
+	import flare.vis.operator.encoder.PropertyEncoder;
+	import flare.vis.operator.layout.Layout;
 	
 	import flash.display.Loader;
 	import flash.display.Sprite;
@@ -17,6 +21,8 @@ package cs448b.fp.tree
 		
 		public var vis:Visualization;
 		protected var _tree:Tree;
+		
+		protected var _layout:Layout;
 		
 		protected var _x:Number;
 		protected var _y:Number;
@@ -67,7 +73,39 @@ package cs448b.fp.tree
 			return _id;
 		}
 		
-		public function init() : void {}
+		/** initialize **/
+		public function init() : void 
+		{
+			initComponents();
+			
+			// initialize tree
+			var data:Data = _tree;
+			data.nodes.setProperties(nodes);
+			data.edges.setProperties(edges);
+			
+			for (var j:int=0; j<data.nodes.length; ++j) 
+			{
+				initNode(data.nodes[j], j);
+			}
+			
+			// create the visualization
+			vis = new Visualization(_tree);
+			
+			// set operators
+			vis.operators.add(_layout);
+			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
+			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
+
+			// add controls
+			vis.controls.add(new HoverControl(NodeSprite,
+				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
+		}
+		
+		/** initialize components - this function should be implemented in sub class */
+		protected function initComponents():void {}
+		
+		/** initialize nodes - this function should be implemented in sub class */
+		protected function initNode(n:NodeSprite, i:Number):void {}
 		
 		public function resize():void 
 		{
