@@ -6,12 +6,13 @@ package cs448b.fp.tree
 	import flare.vis.Visualization;
 	import flare.vis.controls.HoverControl;
 	import flare.vis.data.Data;
-	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
 	
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 					
 	public class CascadedTree extends AbstractTree
@@ -27,8 +28,8 @@ package cs448b.fp.tree
 				shape: Shapes.BLOCK, // needed for treemap sqaures
 				fillColor: 0xff8888FF, 
 				lineColor: 0,
-				fillAlpha: 0,//depth / 25,
-				lineAlpha: 0//depth / 25
+				fillAlpha: 1,//depth / 25,
+				lineAlpha: 1//depth / 25
 			}
 			
 			edges = {
@@ -64,19 +65,67 @@ package cs448b.fp.tree
 			addChild(vis);
 		}
 		
-		private function rollOver(evt:SelectionEvent):void {
+		public override function resize():void
+		{
+			if (vis) {
+				vis.bounds = bounds;
+				vis.update();
+			}
+		}
+		
+		/**
+		 * Handles the tree sync event
+		 */
+		public override function handleSyncEvent(s:String, evt:Event):void
+		{
+			// TODO: handle event
+			var t:Tree = vis.data as Tree;	
+			
+			trace(s);
+				
+			t.visit(function (o:Object):Boolean{
+				
+				var n:NodeSprite = o as NodeSprite;
+				if( n == null ) return false; 
+				
+				if(n.name == s){
+					if(evt.type == MouseEvent.MOUSE_OVER)
+					{
+						n.lineColor = 0xffFF0000; 
+						n.lineWidth = 2;
+						n.fillColor = 0xffFFFFAAAA;
+					} 
+					else if(evt.type == MouseEvent.MOUSE_OUT)
+					{
+						n.lineColor = 0; 
+						n.lineWidth = 0;
+						n.fillColor = 0xff8888FF;
+						n.fillAlpha = n.lineAlpha = 1;//n.depth / 25;
+					}
+					
+					return true; 
+				}
+				
+				return false;
+			});
+			
+		}
+		
+		private function rollOver(evt:SelectionEvent):void 
+		{
 			var n:NodeSprite = evt.node;
 			n.lineColor = 0xffFF0000; 
 			n.lineWidth = 2;
 			n.fillColor = 0xffFFFFAAAA;
 		}
 		
-		private function rollOut(evt:SelectionEvent):void {
+		private function rollOut(evt:SelectionEvent):void 
+		{
 			var n:NodeSprite = evt.node;
 			n.lineColor = 0; 
 			n.lineWidth = 0;
 			n.fillColor = 0xff8888FF;
-			n.fillAlpha = n.lineAlpha = n.depth / 25;
+			n.fillAlpha = n.lineAlpha = 1;//n.depth / 25;
 		}
 		
 	}

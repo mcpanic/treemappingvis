@@ -118,7 +118,7 @@ package cs448b.fp.tree
 			listeners.splice(listeners.indexOf(l), 1);
 		}
 		
-		// Mouse Handlers
+//		// Mouse Handlers
 		private function handleMouseWheel(me:MouseEvent):void
 		{ // handle zoom
 			
@@ -204,6 +204,12 @@ package cs448b.fp.tree
 			}
 		}
 		
+		/**
+		 * Handles sync event. 
+		 * 
+		 * @param s - the id of the brushed node
+		 * @param evt - the event
+		 */
 		public function handleSyncEvent(s:String, evt:Event):void {}
 		
 	} // end of class Demo

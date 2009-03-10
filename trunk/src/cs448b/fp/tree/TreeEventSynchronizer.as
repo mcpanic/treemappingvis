@@ -56,13 +56,15 @@ package cs448b.fp.tree
 			var node:NodeSprite = evt.target as NodeSprite;
 			if(node == null) return;
 			
+			trace(evt);
+			
 			// find the sender
-			var sender:SimpleTree = evt.currentTarget as SimpleTree;
+			var sender:AbstractTree = evt.currentTarget as AbstractTree;
 			if(sender == null)
 			{
 				for(var oo:Object in trees)
 				{
-					var tt:SimpleTree = trees[oo] as SimpleTree;
+					var tt:AbstractTree = trees[oo] as AbstractTree;
 					if(tt != null && tt.contains(node)) {
 						sender = tt;
 						break;
