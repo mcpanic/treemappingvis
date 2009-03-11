@@ -52,14 +52,14 @@ package cs448b.fp.tree
 		{
 			if(dataLoader == null) return;
 			
-			// check if it was sent by a NodeSprite
+			// check if it was sent by a NodeSprite or a Loader
 			var node:NodeSprite = evt.target as NodeSprite;
-			var uil:Loader = evt.target as Loader;
-			if(node == null && uil == null) return;
+			var loader:Loader = evt.target as Loader;
+			if(node == null && loader == null) return;
 			
 			if(node == null)
 			{
-				node = uil.parent.parent.parent as NodeSprite;
+				node = loader.parent.parent.parent as NodeSprite;
 			}
 			if(node == null) return;
 			
@@ -79,7 +79,7 @@ package cs448b.fp.tree
 			}
 			if(sender == null) return;
 			
-			// send this to all trees except sender
+			// send this to all trees
 			for(var o:Object in trees)
 			{
 				var t:AbstractTree = trees[o] as AbstractTree;
@@ -96,7 +96,6 @@ package cs448b.fp.tree
 					{
 						t.handleSyncEvent(node.name, evt, node);
 					}
-					
 				}
 			}
 		}

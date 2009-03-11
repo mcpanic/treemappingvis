@@ -31,10 +31,14 @@ package cs448b.fp.tree
 				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));	
 			
 			vis.controls.add(new ExpandEventControl(NodeSprite,
-				function(evt:Event):void { 
-					vis.update(1, "nodes","main").play();
+				function(evt:Event, n:NodeSprite):void { 
+					if(n.childDegree > 0)
+					{
+						n.expanded = !n.expanded;
+						vis.update(1, "nodes","main").play();
 					
-					fireEvent(evt);
+						fireEvent(evt);
+					}
 				}));
 			
 			bounds = new Rectangle(_x, _y, 100, 100);
@@ -114,10 +118,14 @@ package cs448b.fp.tree
 					nn = loader.parent.parent.parent as NodeSprite;
 				}
 				if(nn == null) return;
+			
+				if(n.name == nn.name) return; // returned message
 				
-				n.expanded = nn.expanded;
-				
-				vis.update(1, "nodes","main").play();
+				if(n.childDegree > 0)
+				{
+					n.expanded = nn.expanded;
+					vis.update(1, "nodes","main").play();
+				}
 			}
 		}
 		

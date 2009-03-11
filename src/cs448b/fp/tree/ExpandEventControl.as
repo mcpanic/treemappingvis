@@ -20,7 +20,7 @@ package cs448b.fp.tree
 		/** Update function invoked after expanding or collapsing an item.
 		 *  By default, invokes the <code>update</code> method on the
 		 *  visualization with a 1-second transitioner. */
-		public var update:Function = function(evt:Event):void {
+		public var update:Function = function(evt:Event, n:NodeSprite):void {
 			var vis:Visualization = _object as Visualization;
 			if (vis) vis.update(1).play();
 		}
@@ -73,8 +73,6 @@ package cs448b.fp.tree
 			}
 			if(s == null) return;
 			
-//			trace(s.name + "/" + s.expanded);
-			
 			if (_filter==null || _filter(s)) 
 			{
 				_cur = s;
@@ -93,10 +91,11 @@ package cs448b.fp.tree
 		private function onMouseUp(event:MouseEvent) : void {
 			_cur.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			_cur.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDrag);
-			_cur.expanded = !_cur.expanded;
-			_cur = null;	
+//			_cur.expanded = !_cur.expanded;
 			
-			update(event);
+			update(event, _cur);
+			
+			_cur = null;	
 			
 			event.stopPropagation();
 		}
