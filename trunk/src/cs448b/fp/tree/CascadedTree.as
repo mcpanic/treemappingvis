@@ -5,11 +5,9 @@ package cs448b.fp.tree
 	import flare.util.Shapes;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
-	import flare.vis.events.SelectionEvent;
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -94,16 +92,22 @@ package cs448b.fp.tree
 			n.lineWidth = 0;
 			n.fillColor = 0xff8888FF;
 			n.fillAlpha = n.lineAlpha = 1 / 25;
+			
+			if(nodePulled) pushNodeback(n);
 		}
+		
+		private var nodePulled:Boolean = false;
 		
 		protected override function onMouseUp(n:NodeSprite):void 
 		{
 			pushNodeback(n);
+			nodePulled = false;
 		}
 		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
 			pullNodeForward(n);
+			nodePulled = true;
 		}
 		
 		private var _idx:Number;
@@ -118,26 +122,6 @@ package cs448b.fp.tree
 		private function pushNodeback(n:DisplayObject):void
 		{
 			n.parent.setChildIndex(n, _idx);
-		}
-		
-		protected function rollOverEx(evt:SelectionEvent):void 
-		{		
-			var l:Loader = evt.target as Loader;
-			if(l == null) return;
-			
-			var n:NodeSprite = l.parent.parent.parent as NodeSprite;
-			
-			onMouseOver(n);
-		}
-		
-		protected function rollOutEx(evt:SelectionEvent):void 
-		{
-			var l:Loader = evt.target as Loader;
-			if(l == null) return;
-			
-			var n:NodeSprite = l.parent.parent.parent as NodeSprite;
-			
-			onMouseOut(n);
 		}
 	}
 }

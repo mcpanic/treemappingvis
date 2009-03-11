@@ -191,8 +191,6 @@ package cs448b.fp.tree
 		
 		private function handleMouseDown(me:MouseEvent):void 
 		{			
-//			prevX = me.stageX;
-//			prevY = me.stageY;
 			var ns:NodeSprite = me.target as NodeSprite;
 			var uil:Loader = me.target as Loader;
 			if(ns == null && uil == null) return;
@@ -212,6 +210,16 @@ package cs448b.fp.tree
 		}
 		
 		private function handleMouseOut(me:MouseEvent):void
+		{
+			var ns:NodeSprite = me.target as NodeSprite;
+			var uil:Loader = me.target as Loader;
+			if(ns == null && uil == null) return;
+			
+			// fire event
+			fireEvent(me);
+		}
+		
+		private function handleMouseDrag(me:MouseEvent):void 
 		{
 			var ns:NodeSprite = me.target as NodeSprite;
 			var uil:Loader = me.target as Loader;
@@ -289,5 +297,7 @@ package cs448b.fp.tree
 		protected function onMouseUp(n:NodeSprite):void {}
 		
 		protected function onMouseDown(n:NodeSprite):void {}
+		
+		protected function onMouseMove(n:NodeSprite):void {}
 	} // end of class Demo
 }
