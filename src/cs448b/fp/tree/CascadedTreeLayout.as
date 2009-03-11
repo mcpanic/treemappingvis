@@ -367,7 +367,7 @@ package cs448b.fp.tree
 	        	
 	        	var o:Object = _t.$(n);
 				if (1) {
-					trace(n.name + " " + n.props["height"]);
+//					trace(n.name + " " + n.props["height"]);
 //	        		o.u = n.props["image"].x;
 //	        		o.v = n.props["image"].y;
 //	        		o.w = n.props["image"].width;

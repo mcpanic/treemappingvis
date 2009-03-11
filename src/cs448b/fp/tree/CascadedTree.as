@@ -7,6 +7,9 @@ package cs448b.fp.tree
 	import flare.vis.data.Tree;
 	import flare.vis.events.SelectionEvent;
 	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -22,6 +25,9 @@ package cs448b.fp.tree
 		public override function init():void
 		{	
 			super.init();
+			
+//			vis.controls.add(new ExtendedHoverControl(Loader,
+//				ExtendedHoverControl.MOVE_AND_RETURN, rollOverEx, rollOutEx));
 
 			bounds = new Rectangle(_x, _y, 1024, 768);
 			vis.bounds = bounds;
@@ -63,21 +69,75 @@ package cs448b.fp.tree
 			{
 				onMouseOut(n);
 			}
+			else if(evt.type == MouseEvent.MOUSE_UP)
+			{
+				onMouseUp(n);
+			}
+			else if(evt.type == MouseEvent.MOUSE_DOWN)
+			{
+				onMouseDown(n);
+			}
 		}
 		
 		protected override function onMouseOver(n:NodeSprite):void
 		{
+			if(n == null) return;
 			n.lineColor = 0xffFF0000; 
-			n.lineWidth = 2;
+			n.lineWidth = 15;
 			n.fillColor = 0xffFFFFAAAA;
 		}
 		
 		protected override function onMouseOut(n:NodeSprite):void
 		{
+			if(n == null) return;
 			n.lineColor = 0; 
 			n.lineWidth = 0;
 			n.fillColor = 0xff8888FF;
 			n.fillAlpha = n.lineAlpha = 1 / 25;
+		}
+		
+		protected override function onMouseUp(n:NodeSprite):void 
+		{
+			pushNodeback(n);
+		}
+		
+		protected override function onMouseDown(n:NodeSprite):void 
+		{
+			pullNodeForward(n);
+		}
+		
+		private var _idx:Number;
+		
+		private function pullNodeForward(n:DisplayObject):void
+		{
+			var p:DisplayObjectContainer = n.parent;
+			_idx = p.getChildIndex(n);
+			p.setChildIndex(n, p.numChildren-1);
+		}
+		
+		private function pushNodeback(n:DisplayObject):void
+		{
+			n.parent.setChildIndex(n, _idx);
+		}
+		
+		protected function rollOverEx(evt:SelectionEvent):void 
+		{		
+			var l:Loader = evt.target as Loader;
+			if(l == null) return;
+			
+			var n:NodeSprite = l.parent.parent.parent as NodeSprite;
+			
+			onMouseOver(n);
+		}
+		
+		protected function rollOutEx(evt:SelectionEvent):void 
+		{
+			var l:Loader = evt.target as Loader;
+			if(l == null) return;
+			
+			var n:NodeSprite = l.parent.parent.parent as NodeSprite;
+			
+			onMouseOut(n);
 		}
 	}
 }

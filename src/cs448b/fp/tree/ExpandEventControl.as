@@ -5,6 +5,7 @@ package cs448b.fp.tree
 	import flare.vis.data.NodeSprite;
 	
 	import flash.display.InteractiveObject;
+	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
@@ -60,10 +61,22 @@ package cs448b.fp.tree
 		}
 		
 		private function onMouseDown(event:MouseEvent) : void {
+		
 			var s:NodeSprite = event.target as NodeSprite;
-			if (s==null) return; // exit if not a NodeSprite
+			var loader:Loader = event.target as Loader;
+			if (s == null && loader == null) return; // exit if not a NodeSprite
 			
-			if (_filter==null || _filter(s)) {
+			if(s == null)
+			{
+				var n:NodeSprite = loader.parent.parent.parent as NodeSprite; 
+				s = n;
+			}
+			if(s == null) return;
+			
+//			trace(s.name + "/" + s.expanded);
+			
+			if (_filter==null || _filter(s)) 
+			{
 				_cur = s;
 				_cur.stage.addEventListener(MouseEvent.MOUSE_MOVE, onDrag);
 				_cur.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);

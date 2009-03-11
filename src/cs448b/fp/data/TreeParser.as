@@ -70,7 +70,7 @@ package cs448b.fp.data
 			n.props["y"] = Number(xml.position.@y);
 			n.props["width"] = Number(xml.position.@width);
 			n.props["height"] = Number(xml.position.@height);
-			trace (n.name + " " + 	n.props["width"] + " " + n.props["height"]);	 
+//			trace (n.name + " " + 	n.props["width"] + " " + n.props["height"]);	 
 		}
 				
 		/**

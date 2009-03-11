@@ -59,6 +59,8 @@ package cs448b.fp.tree
 			// add mouse listeners
 			addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
 			addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			
+			addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
 			
 			addEventListener(MouseEvent.MOUSE_OVER, handleMouseOver);
@@ -96,9 +98,9 @@ package cs448b.fp.tree
 			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 
-			// add controls
-			vis.controls.add(new HoverControl(NodeSprite,
-				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
+//			// add controls
+//			vis.controls.add(new HoverControl(NodeSprite,
+//				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
 		}
 		
 		/** initialize components - this function should be implemented in sub class */
@@ -177,10 +179,26 @@ package cs448b.fp.tree
 			}
 		}
 		
+		private function handleMouseUp(me:MouseEvent):void 
+		{
+			var ns:NodeSprite = me.target as NodeSprite;
+			var uil:Loader = me.target as Loader;
+			if(ns == null && uil == null) return;
+			
+			// fire event
+			fireEvent(me);
+		}
+		
 		private function handleMouseDown(me:MouseEvent):void 
 		{			
 //			prevX = me.stageX;
 //			prevY = me.stageY;
+			var ns:NodeSprite = me.target as NodeSprite;
+			var uil:Loader = me.target as Loader;
+			if(ns == null && uil == null) return;
+			
+			// fire event
+			fireEvent(me);
 		}
 		
 		private function handleMouseOver(me:MouseEvent):void
@@ -191,7 +209,6 @@ package cs448b.fp.tree
 			
 			// fire event
 			fireEvent(me);
-			
 		}
 		
 		private function handleMouseOut(me:MouseEvent):void
@@ -268,5 +285,9 @@ package cs448b.fp.tree
 		protected function onMouseOver(n:NodeSprite):void {}
 		
 		protected function onMouseOut(n:NodeSprite):void {}
+		
+		protected function onMouseUp(n:NodeSprite):void {}
+		
+		protected function onMouseDown(n:NodeSprite):void {}
 	} // end of class Demo
 }
