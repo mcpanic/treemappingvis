@@ -84,15 +84,16 @@ package cs448b.fp.tree
 			{
 				var t:AbstractTree = trees[o] as AbstractTree;
 				if(t != null) {
-					if(t != sender) {
+					if(t != sender) 
+					{
 						// Get mapped value
 						var mappedIdx:Number = dataLoader.getMappedIndex(Number(node.name), t.getId());
-						
 						var mv:String = String(mappedIdx);
 
 						t.handleSyncEvent(mv, evt, node);
 					} 
-					else {
+					else 
+					{
 						t.handleSyncEvent(node.name, evt, node);
 					}
 					

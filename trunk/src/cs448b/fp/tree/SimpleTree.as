@@ -3,12 +3,14 @@ package cs448b.fp.tree
 	import flare.animate.Transitioner;
 	import flare.util.Orientation;
 	import flare.util.Shapes;
+	import flare.vis.controls.HoverControl;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
-	import flare.vis.events.SelectionEvent;
 	
+	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	
 	public class SimpleTree extends AbstractTree
 	{	
@@ -23,7 +25,11 @@ package cs448b.fp.tree
 		public override function init():void
 		{	
 			super.init();
-							
+			
+			// add controls
+			vis.controls.add(new HoverControl(NodeSprite,
+				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));	
+			
 			vis.controls.add(new ExpandEventControl(NodeSprite,
 				function(evt:Event):void { 
 					vis.update(1, "nodes","main").play();
@@ -31,8 +37,8 @@ package cs448b.fp.tree
 					fireEvent(evt);
 				}));
 			
-//			bounds = new Rectangle(_x, _y, 100, 100);
-//			vis.bounds = bounds;
+			bounds = new Rectangle(_x, _y, 100, 100);
+			vis.bounds = bounds;
 
 			vis.update();
 			
@@ -101,6 +107,14 @@ package cs448b.fp.tree
 			else if(evt.type == MouseEvent.MOUSE_UP)
 			{
 				var nn:NodeSprite = evt.target as NodeSprite; 
+				var loader:Loader = evt.target as Loader;
+				if(nn == null && loader == null) return;
+				if(nn == null)
+				{
+					nn = loader.parent.parent.parent as NodeSprite;
+				}
+				if(nn == null) return;
+				
 				n.expanded = nn.expanded;
 				
 				vis.update(1, "nodes","main").play();
