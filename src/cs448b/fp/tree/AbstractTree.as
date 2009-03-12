@@ -162,7 +162,7 @@ package cs448b.fp.tree
 		
 		private function handleMouseMove(me:MouseEvent):void
 		{ 
-			if(me.buttonDown)
+			if(me.ctrlKey && me.buttonDown)
 			{ // handle pan
 			
 				var sX:Number = me.stageX;
@@ -181,34 +181,40 @@ package cs448b.fp.tree
 			{
 				prevX = me.stageX;
 				prevY = me.stageY;
+					
+				var ns:NodeSprite = me.target as NodeSprite;
+				var uil:Loader = me.target as Loader;
+				if(ns == null && uil == null) return;
+				
+				// fire event
+				fireEvent(me);
 			}
-			
-			var ns:NodeSprite = me.target as NodeSprite;
-			var uil:Loader = me.target as Loader;
-			if(ns == null && uil == null) return;
-			
-			// fire event
-			fireEvent(me);
 		}
 		
 		private function handleMouseUp(me:MouseEvent):void 
 		{
-			var ns:NodeSprite = me.target as NodeSprite;
-			var uil:Loader = me.target as Loader;
-			if(ns == null && uil == null) return;
-			
-			// fire event
-			fireEvent(me);
+			if(!me.ctrlKey)
+			{
+				var ns:NodeSprite = me.target as NodeSprite;
+				var uil:Loader = me.target as Loader;
+				if(ns == null && uil == null) return;
+				
+				// fire event
+				fireEvent(me);	
+			}
 		}
 		
 		private function handleMouseDown(me:MouseEvent):void 
-		{			
-			var ns:NodeSprite = me.target as NodeSprite;
-			var uil:Loader = me.target as Loader;
-			if(ns == null && uil == null) return;
-			
-			// fire event
-			fireEvent(me);
+		{	
+			if(!me.ctrlKey)
+			{		
+				var ns:NodeSprite = me.target as NodeSprite;
+				var uil:Loader = me.target as Loader;
+				if(ns == null && uil == null) return;
+				
+				// fire event
+				fireEvent(me);
+			}
 		}
 		
 		private function handleMouseOver(me:MouseEvent):void
