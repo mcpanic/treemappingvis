@@ -95,7 +95,11 @@ package cs448b.fp.tree
 			n.fillColor = 0xff8888FF;
 			n.fillAlpha = n.lineAlpha = 1 / 25;
 			
-			if(nodePulled) pushNodeback(n);
+			if(nodePulled)
+			{
+				pushNodeback(n);
+				nodePulled = false;
+			}
 		}
 		
 		private var nodePulled:Boolean = false;
