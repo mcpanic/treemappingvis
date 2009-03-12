@@ -11,7 +11,7 @@ package {
 	
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
-	[SWF(width='1024', height='768', backgroundColor='#ffffff', frameRate='30')]
+	[SWF(width='1250', height='770', backgroundColor='#ffffff', frameRate='30')]
 	
 	public class TreeMappingVis extends Sprite
 	{

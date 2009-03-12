@@ -4,10 +4,10 @@ package cs448b.fp.tree
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.*;
 	
-	import flash.geom.Rectangle;
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterQuality;
 	import flash.filters.DropShadowFilter;
-    import flash.filters.BitmapFilter;
-    import flash.filters.BitmapFilterQuality;
+	import flash.geom.Rectangle;
     	
 	/**
 	 * Layout that places node in a TreeMap layout that optimizes for low
@@ -42,6 +42,7 @@ package cs448b.fp.tree
 		private var _r:Rectangle = new Rectangle();
 		
 		private var _size:Property = Property.$("size");
+		private var _cascadeOffset:Number = 5;
 		
 		private var _x:Number;
 		private var _y:Number;
@@ -88,39 +89,13 @@ package cs448b.fp.tree
 	        o.h = root.props["height"];//_r.height;
 	
 	        // layout the tree
-	        updateArea(root, _r);
+	        //updateArea(root, _r);
 	        doLayout(root, _r);
-	        	        	        
-			/*
-	        // setup
-	        var root:NodeSprite = layoutRoot as NodeSprite;
-	        var b:Rectangle = layoutBounds;
-	        //_r.x=b.x; 
-	        //_r.y=b.y; 
-	        _r.x = _x; 
-	        _r.y = _y; 
-	        _r.width=b.width-1; 
-	        _r.height=b.height-1;
-	        
-	        // process size values
-	        computeAreas(root);
-	        
-	        // layout root node
-	        var o:Object = _t.$(root);
-	        o.x = 0;//_r.x + _r.width/2;
-	        o.y = 0;//_r.y + _r.height/2;
-	        o.u = _r.x;
-	        o.v = _r.y;
-	        o.w = _r.width;
-	        o.h = _r.height;
-	
-	        // layout the tree
-	        updateArea(root, _r);
-	        doLayout(root, _r);
-	        */
 		}
 
-
+	    /**
+    	 * Drop shadow filter for the nodes
+	     */
  		private function getBitmapFilter():BitmapFilter {
             var color:Number = 0x000000;
             var angle:Number = 45;
@@ -163,29 +138,17 @@ package cs448b.fp.tree
 	            myFilters.push(filter);
 				n.filters = myFilters;	        	
 	        });
-        
-	        // set raw sizes, compute leaf count
-	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
-// mcpanic fixes	        		
-//	        	if (n.childDegree == 0) {
-//	        		var sz:Number = _size.getValue(_t.$(n));
-//	        		n.props[AREA] = sz;
-//	        		var p:NodeSprite = n.parentNode;
-//	        		for (; p != null; p=p.parentNode)
-//	        			p.props[AREA] += sz;
-//	        		++leafCount;
-//	        	}
-	        });
-	                
+
 	        // reset all sizes to zero
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
 	        	//trace(n.name);
-	        	n.x = Number(n.props["x"]) + n.depth * 10;
-	        	n.y = Number(n.props["y"]) + n.depth * 10;
+//	        	n.x = Number(n.props["x"]) + n.depth * 10;
+//	        	n.y = Number(n.props["y"]) + n.depth * 10;
 				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
-				n.props["image"].x = Number(n.props["x"]);
-				n.props["image"].y = Number(n.props["y"]);	     
-				   	
+				//n.props["image"].visible = false;
+				n.props["image"].x = Number(n.props["x"]) + n.depth * _cascadeOffset;
+				n.props["image"].y = Number(n.props["y"]) + n.depth * _cascadeOffset;	     
+		   	
 	        });
         
         
@@ -197,42 +160,13 @@ package cs448b.fp.tree
 	        	n.props[AREA] *= scale;
 	        });
 	    }
-	    	     
-	    private function computeAreasOld(root:NodeSprite):void
-	    {
-	    	var leafCount:int = 0;
-        
-	        // reset all sizes to zero
-	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
-	        	n.props[AREA] = 0;
-	        });
-        
-	        // set raw sizes, compute leaf count
-	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
-	        	if (n.childDegree == 0) {
-	        		var sz:Number = _size.getValue(_t.$(n));
-	        		n.props[AREA] = sz;
-	        		var p:NodeSprite = n.parentNode;
-	        		for (; p != null; p=p.parentNode)
-	        			p.props[AREA] += sz;
-	        		++leafCount;
-	        	}
-	        });
-        
-	        // scale sizes by display area factor
-	        var b:Rectangle = layoutBounds;
-	        var area:Number = (b.width-1)*(b.height-1);
-	        var scale:Number = area / root.props[AREA];
-	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
-	        	n.props[AREA] *= scale;
-	        });
-	    }
-	    
+
 	    /**
 	     * Compute the tree map layout.
 	     */
 	    private function doLayout(p:NodeSprite, r:Rectangle):void
 	    {
+	    	
 	        // create sorted list of children's properties
 	        for (var i:uint = 0; i < p.childDegree; ++i) {
 	        	_kids.push(p.getChildNode(i).props);
@@ -247,59 +181,27 @@ package cs448b.fp.tree
 	        var w:Number = Math.min(r.width, r.height);
 	        squarify(_kids, _row, w, r); 
 	        _kids.splice(0, _kids.length); // clear _kids
-	        
+      
 	        // recurse
 	        for (i=0; i<p.childDegree; ++i) {
 	        	var c:NodeSprite = p.getChildNode(i);
 	        	if (c.childDegree > 0) {
-	        		updateArea(c, r);
+	        		//updateArea(c, r);
 	        		doLayout(c, r);
 	        	}
 	        }
 	    }
-	    
+/*	    
 	    private function updateArea(n:NodeSprite, r:Rectangle):void
 	    {
 	    	var o:Object = _t.$(n);
-			r.x = o.u;
-			r.y = o.v;
+			r.x = o.u;// + o.depth * 10;
+			r.y = o.v;// + o.depth * 10;
 			r.width = o.w;
 			r.height = o.h;
 			return;
-			
-			/*
-	        Rectangle2D b = n.getBounds();
-	        if ( m_frame == 0.0 ) {
-	            // if no framing, simply update bounding rectangle
-	            r.setRect(b);
-	            return;
-	        }
-	        
-	        // compute area loss due to frame
-	        double dA = 2*m_frame*(b.getWidth()+b.getHeight()-2*m_frame);
-	        double A = n.getDouble(AREA) - dA;
-	        
-	        // compute renormalization factor
-	        double s = 0;
-	        Iterator childIter = n.children();
-	        while ( childIter.hasNext() )
-	            s += ((NodeItem)childIter.next()).getDouble(AREA);
-	        double t = A/s;
-	        
-	        // re-normalize children areas
-	        childIter = n.children();
-	        while ( childIter.hasNext() ) {
-	            NodeItem c = (NodeItem)childIter.next();
-	            c.setDouble(AREA, c.getDouble(AREA)*t);
-	        }
-	        
-	        // set bounding rectangle and return
-	        r.setRect(b.getX()+m_frame,       b.getY()+m_frame, 
-	                  b.getWidth()-2*m_frame, b.getHeight()-2*m_frame);
-	        return;
-	        */
 	    }
-	    
+*/	    
 	    private function squarify(c:Array, row:Array, w:Number, r:Rectangle):void
 	    {
 	    	var worst:Number = Number.MAX_VALUE, nworst:Number;
@@ -366,84 +268,23 @@ package cs448b.fp.tree
 	        	var nw:Number = n.props[AREA]/hh;
 	        	
 	        	var o:Object = _t.$(n);
-				if (1) {
 //					trace(n.name + " " + n.props["height"]);
 //	        		o.u = n.props["image"].x;
 //	        		o.v = n.props["image"].y;
 //	        		o.w = n.props["image"].width;
 //	        		o.h = n.props["height"].height;	       
-	        		o.u = n.props["x"];
-	        		o.v = n.props["y"];
+	        		o.u = n.props["x"] + n.depth * _cascadeOffset;
+	        		o.v = n.props["y"] + n.depth * _cascadeOffset;
 	        		o.w = n.props["width"];
-	        		o.h = n.props["height"];	  	        		 		
-	        	} else {
-	        		o.u = xx;
-	        		o.v = yy + d;
-	        		o.w = hh;
-	        		o.h = nw;
-	        		//o.x = xx + hh/2;
-	        		//o.y = yy + d + nw/2;
-	        	}
+	        		o.h = n.props["height"];	  	
+
 	        	o.x = 0;
 	        	o.y = 0;
 	        	d += nw;
 	        }
-	        
-	        // update space available in rectangle r
-	        if (1) {
-	        	//r.x = xx; 
-	        	//r.y = yy+hh; 
-	        	//r.height -= hh;
-	        } else {
-	        	r.x = xx+hh; r.y = yy; r.width -= hh;
-	        }
+
 	        return r;
 	    }
-	    	    
-	    private function layoutRowOld(row:Array, ww:Number, r:Rectangle):Rectangle
-	    {
-	    	var s:Number = 0; // sum of row areas
-	        for each (var n:NodeSprite in row) {
-	        	s += n.props[AREA];
-	        }
-			
-			var xx:Number = r.x, yy:Number = r.y, d:Number = 0;
-			var hh:Number = ww==0 ? 0 : s/ww;
-			var horiz:Boolean = (ww == r.width);
-	        
-	        // set node positions and dimensions
-	        for each (n in row) {
-	        	var p:NodeSprite = n.parentNode;
-	        	var nw:Number = n.props[AREA]/hh;
-	        	
-	        	var o:Object = _t.$(n);
-				if (horiz) {
-	        		o.u = xx + d;
-	        		o.v = yy;
-	        		o.w = nw;
-	        		o.h = hh;	        		
-	        		//o.x = xx + d + nw/2;
-	        		//o.y = yy + hh/2;
-	        	} else {
-	        		o.u = xx;
-	        		o.v = yy + d;
-	        		o.w = hh;
-	        		o.h = nw;
-	        		//o.x = xx + hh/2;
-	        		//o.y = yy + d + nw/2;
-	        	}
-	        	o.x = 0;
-	        	o.y = 0;
-	        	d += nw;
-	        }
-	        
-	        // update space available in rectangle r
-	        if (horiz) {
-	        	r.x = xx; r.y = yy+hh; r.height -= hh;
-	        } else {
-	        	r.x = xx+hh; r.y = yy; r.width -= hh;
-	        }
-	        return r;
-	    }
+
 	}
 }
