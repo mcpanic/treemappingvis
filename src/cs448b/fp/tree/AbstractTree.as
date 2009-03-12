@@ -1,7 +1,6 @@
 package cs448b.fp.tree
 {
 	import flare.vis.Visualization;
-	import flare.vis.controls.HoverControl;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
@@ -117,6 +116,11 @@ package cs448b.fp.tree
 				vis.update();
 			}
 		}
+		
+		/**
+		 * Sets the visible depth. Override in subclass
+		 */
+		public function setVisibleDepth(d:Number):void {}
 		
 		/**
 		 * Adds a tree event handler.
