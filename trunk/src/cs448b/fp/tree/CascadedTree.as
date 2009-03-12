@@ -108,15 +108,17 @@ package cs448b.fp.tree
 		{
 			if(nodePulled)
 			{
+				unblurOtherNodes(n);
 				pushNodeback(n);
 				nodePulled = false;
 			}
 		}
-		
+   		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
 			if(!nodePulled)
 			{
+				blurOtherNodes(n);
 				pullNodeForward(n);
 				nodePulled = true;
 			}
@@ -134,7 +136,29 @@ package cs448b.fp.tree
 		private function pushNodeback(n:DisplayObject):void
 		{
 			n.parent.setChildIndex(n, _idx);
-		}
+		}	
+
+		private function blurOtherNodes(n:NodeSprite):void
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (n != nn)
+				{
+					//nn.fillAlpha = 0.5;
+					nn.props["image"].alpha = 0.5;
+				}
+			});
+	 	}
+
+		private function unblurOtherNodes(n:NodeSprite):void
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+					//nn.fillAlpha = 1;
+					nn.props["image"].alpha = 1;
+			});
+	 	}
+
 		
 		public override function setVisibleDepth(d:Number):void 
 		{
@@ -155,5 +179,6 @@ package cs448b.fp.tree
 			
 			vis.update(1, "nodes").play();
 		}
+
 	}
 }

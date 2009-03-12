@@ -333,8 +333,11 @@ package cs448b.fp.tree
 		private function setSizes(n:NodeSprite):void
 		{
 			_t.endSize(n, _rect);
-			n.w = _rect.width;
-			n.h = _rect.height;
+			//n.w = _rect.width;
+			//n.h = _rect.height;
+			// mcpanic - save image size on initial load
+			n.w = n.props["image"].width;
+			n.h = n.props["image"].height;
 		}
 		
 		private function spacing(l:NodeSprite, r:NodeSprite, siblings:Boolean):Number
