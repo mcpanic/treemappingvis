@@ -152,12 +152,10 @@ package cs448b.fp.tree
 					if(n.depth >= d)
 					{
 						n.expanded = false;
-						trace("collapse"+n.depth);
 					}
 					else
 					{
 						n.expanded = true;
-						trace("collapse"+n.depth);
 					}
 				}, Data.NODES);
 			

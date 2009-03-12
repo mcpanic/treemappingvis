@@ -3,6 +3,7 @@ package cs448b.fp.tree
 	import cs448b.fp.utils.*;
 	
 	import flare.util.Shapes;
+	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
@@ -132,6 +133,28 @@ package cs448b.fp.tree
 		private function pushNodeback(n:DisplayObject):void
 		{
 			n.parent.setChildIndex(n, _idx);
+		}
+		
+		public override function setVisibleDepth(d:Number):void 
+		{
+			var tree:Tree = vis.data as Tree;
+			if(tree == null ) return;
+			
+			tree.visit(function(n:NodeSprite):void
+				{
+					if(n.depth > d)
+					{
+						n.visible = false;
+						trace("hide: "+n.depth);
+					}
+					else
+					{
+						n.visible = true;
+						trace("show: "+n.depth);
+					}
+				}, Data.NODES);
+			
+			vis.update(1, "nodes","main").play();
 		}
 	}
 }

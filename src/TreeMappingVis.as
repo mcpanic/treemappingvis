@@ -7,6 +7,7 @@ package {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 
 	
 	// Convenient way to pass in compiler arguments
@@ -27,6 +28,8 @@ package {
 		 */		
 		public function TreeMappingVis()
 		{
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
+			
 			initComponents();
 			buildSprite();
 			loadData();			
@@ -94,6 +97,25 @@ package {
 		{
 			//printTree(dataLoader.getTree(0).root, 3);
 			displayTree();			
+		}
+		
+		private function handleKeyDown(ke:KeyboardEvent):void
+		{
+			if(ke.keyCode == 48) // 0(zero)
+			{
+				cascadedTree1.setVisibleDepth(0);
+				cascadedTree2.setVisibleDepth(0);
+			}
+			else if(ke.keyCode == 49) // 1
+			{
+				cascadedTree1.setVisibleDepth(1);
+				cascadedTree2.setVisibleDepth(1);	
+			}
+			else if(ke.keyCode == 50) // 2
+			{
+				cascadedTree1.setVisibleDepth(2);
+				cascadedTree2.setVisibleDepth(2);
+			}
 		}
 	}
 }
