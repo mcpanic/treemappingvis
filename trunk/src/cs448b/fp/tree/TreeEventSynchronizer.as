@@ -44,24 +44,13 @@ package cs448b.fp.tree
 			
 			tree.removeTreeEventListener(this);
 		}
-		
+		 		
 		/**
 		 * Handles event
 		 */
-		public function handleEvent(evt:Event):void
+		public function handleEvent(node:NodeSprite, evt:Event):void
 		{
 			if(dataLoader == null) return;
-			
-			// check if it was sent by a NodeSprite or a Loader
-			var node:NodeSprite = evt.target as NodeSprite;
-			var loader:Loader = evt.target as Loader;
-			if(node == null && loader == null) return;
-			
-			if(node == null)
-			{
-				node = loader.parent.parent.parent as NodeSprite;
-			}
-			if(node == null) return;
 			
 			// find the sender
 			var sender:AbstractTree = evt.currentTarget as AbstractTree;
