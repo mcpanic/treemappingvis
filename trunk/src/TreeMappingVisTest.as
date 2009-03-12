@@ -99,17 +99,26 @@ package {
 		{
 			if(ke.keyCode == Keyboard.LEFT)
 			{
-//				simpleTree.vis.width = 500;
-//				simpleTree.vis.height = 500;
-//				simpleTree.vis.setAspectRatio(1, 100, 100);
 				simpleTree.updateVis();
 			}
 			else if(ke.keyCode == Keyboard.RIGHT)
 			{
-//				simpleTree2.vis.width = 300;
-//				simpleTree2.vis.height = 300;
-//				simpleTree2.vis.setAspectRatio(1, 300, 300);
 				simpleTree2.updateVis();
+			}
+			else if(ke.keyCode == 48) // 0(zero)
+			{
+				simpleTree.setVisibleDepth(0);
+				simpleTree2.setVisibleDepth(0);
+			}
+			else if(ke.keyCode == 49) // 1
+			{
+				simpleTree.setVisibleDepth(1);
+				simpleTree2.setVisibleDepth(1);	
+			}
+			else if(ke.keyCode == 50) // 2
+			{
+				simpleTree.setVisibleDepth(2);
+				simpleTree2.setVisibleDepth(2);
 			}
 		}
 	}
