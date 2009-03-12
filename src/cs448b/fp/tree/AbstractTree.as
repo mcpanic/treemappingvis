@@ -48,7 +48,8 @@ package cs448b.fp.tree
 		}
 		// --------------------------------------------------------------------
 		
-		public function AbstractTree(i:Number, tree:Tree, x:Number, y:Number) {
+		public function AbstractTree(i:Number, tree:Tree, x:Number, y:Number) 
+		{
 			_id = i;
 			_tree = tree;
 			_x = x;
@@ -177,6 +178,13 @@ package cs448b.fp.tree
 				prevX = me.stageX;
 				prevY = me.stageY;
 			}
+			
+			var ns:NodeSprite = me.target as NodeSprite;
+			var uil:Loader = me.target as Loader;
+			if(ns == null && uil == null) return;
+			
+			// fire event
+			fireEvent(me);
 		}
 		
 		private function handleMouseUp(me:MouseEvent):void 
@@ -255,7 +263,7 @@ package cs448b.fp.tree
 		public function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void
 		{
 			// handle event
-			var t:Tree = vis.data as Tree;	
+			var t:Tree = vis.data as Tree;
 				
 			t.visit(function (o:Object):Boolean{
 				

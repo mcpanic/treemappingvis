@@ -75,6 +75,10 @@ package cs448b.fp.tree
 			{
 				onMouseDown(n);
 			}
+			else if(evt.type == MouseEvent.MOUSE_MOVE)
+			{
+				onMouseUp(n);
+			}
 		}
 		
 		protected override function onMouseOver(n:NodeSprite):void
@@ -100,14 +104,20 @@ package cs448b.fp.tree
 		
 		protected override function onMouseUp(n:NodeSprite):void 
 		{
-			pushNodeback(n);
-			nodePulled = false;
+			if(nodePulled)
+			{
+				pushNodeback(n);
+				nodePulled = false;
+			}
 		}
 		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
-			pullNodeForward(n);
-			nodePulled = true;
+			if(!nodePulled)
+			{
+				pullNodeForward(n);
+				nodePulled = true;
+			}
 		}
 		
 		private var _idx:Number;
