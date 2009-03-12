@@ -101,17 +101,17 @@ package {
 		
 		private function handleKeyDown(ke:KeyboardEvent):void
 		{
-			if(ke.keyCode == 48) // 0(zero)
+			if(ke.keyCode == 49) // 1
 			{
 				cascadedTree1.setVisibleDepth(0);
 				cascadedTree2.setVisibleDepth(0);
 			}
-			else if(ke.keyCode == 49) // 1
+			else if(ke.keyCode == 50) // 2
 			{
 				cascadedTree1.setVisibleDepth(1);
 				cascadedTree2.setVisibleDepth(1);	
 			}
-			else if(ke.keyCode == 50) // 2
+			else if(ke.keyCode == 51) // 3
 			{
 				cascadedTree1.setVisibleDepth(2);
 				cascadedTree2.setVisibleDepth(2);
