@@ -105,17 +105,17 @@ package {
 			{
 				simpleTree2.updateVis();
 			}
-			else if(ke.keyCode == 48) // 0(zero)
+			else if(ke.keyCode == 49) // 1
 			{
 				simpleTree.setVisibleDepth(0);
 				simpleTree2.setVisibleDepth(0);
 			}
-			else if(ke.keyCode == 49) // 1
+			else if(ke.keyCode == 50) // 2
 			{
 				simpleTree.setVisibleDepth(1);
 				simpleTree2.setVisibleDepth(1);	
 			}
-			else if(ke.keyCode == 50) // 2
+			else if(ke.keyCode == 51) // 3
 			{
 				simpleTree.setVisibleDepth(2);
 				simpleTree2.setVisibleDepth(2);
