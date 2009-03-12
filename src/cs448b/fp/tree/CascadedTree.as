@@ -145,12 +145,10 @@ package cs448b.fp.tree
 					if(n.depth > d)
 					{
 						n.visible = false;
-						trace("hide: "+n.depth);
 					}
 					else
 					{
 						n.visible = true;
-						trace("show: "+n.depth);
 					}
 				}, Data.NODES);
 			
