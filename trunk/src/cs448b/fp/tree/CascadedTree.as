@@ -24,9 +24,6 @@ package cs448b.fp.tree
 		public override function init():void
 		{	
 			super.init();
-			
-//			vis.controls.add(new ExtendedHoverControl(Loader,
-//				ExtendedHoverControl.MOVE_AND_RETURN, rollOverEx, rollOutEx));
 
 			bounds = new Rectangle(_x, _y, 1024, 768);
 			vis.bounds = bounds;
@@ -152,7 +149,7 @@ package cs448b.fp.tree
 					}
 				}, Data.NODES);
 			
-			vis.update(1, "nodes","main").play();
+			vis.update(1, "nodes").play();
 		}
 	}
 }
