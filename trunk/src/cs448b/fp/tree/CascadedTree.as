@@ -97,6 +97,7 @@ package cs448b.fp.tree
 			
 			if(nodePulled)
 			{
+				unblurOtherNodes(n);
 				pushNodeback(n);
 				nodePulled = false;
 			}
