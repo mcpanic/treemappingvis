@@ -19,7 +19,8 @@ package cs448b.fp.tree
 		protected var _id:Number;
 		
 		public var vis:Visualization;
-		protected var _tree:Tree;
+		protected var _tree:Tree;		
+		public function get tree():Tree{ return _tree; }
 		
 		protected var _layout:Layout;
 		
