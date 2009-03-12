@@ -36,6 +36,7 @@ package cs448b.fp.tree
 					if(n.childDegree > 0)
 					{
 						n.expanded = !n.expanded;
+//						n.visible = n.expanded;
 						vis.update(1, "nodes","main").play();
 					
 						fireEvent(evt);
@@ -98,7 +99,24 @@ package cs448b.fp.tree
 			
 			return vis.update(t, operators);
 		}
-		
+
+		/**
+		 * Return the matching
+		 */
+		private function matchLoaderWithNode(loader:Loader):NodeSprite
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+			var result:NodeSprite;
+	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
+				if (loader.name == n.name)
+				{
+					result = n;
+				}
+			});
+			return result;
+
+		}
+				
 		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event):void
 		{
 			if(evt.type == MouseEvent.MOUSE_OVER)
@@ -117,6 +135,8 @@ package cs448b.fp.tree
 				if(nn == null)
 				{
 					nn = loader.parent.parent.parent as NodeSprite;
+//					nn = matchLoaderWithNode(loader);
+
 				}
 				if(nn == null) return;
 			
@@ -125,6 +145,7 @@ package cs448b.fp.tree
 				if(n.childDegree > 0)
 				{
 					n.expanded = nn.expanded;
+//					n.visible = n.expanded;
 					vis.update(1, "nodes","main").play();
 				}
 			}

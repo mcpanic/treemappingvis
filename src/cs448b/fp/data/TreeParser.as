@@ -5,7 +5,7 @@ package cs448b.fp.data
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
-	import flash.display.Sprite;
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -78,22 +78,23 @@ package cs448b.fp.data
 		 */			
 		private function addImageNode(n:NodeSprite, xml:XML):void
 		{
-			var image:Sprite = addImage(n, xml);
+			var image:DisplayObject = addImage(n, xml);
 			n.props["image"] = image;
 			n.addChild(image);
+			
 		}
 
 		/**
 		 * Load images
 		 */			
-		private function addImage(n:NodeSprite, xml:XML):Sprite
-
+		private function addImage(n:NodeSprite, xml:XML):DisplayObject
 		{
 			var ldr:UILoader = new UILoader();
 
 			var url:String = "../data/thumbnails/"+xml.label+".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
+			ldr.name = xml.label.toString();
 			ldr.addEventListener(Event.COMPLETE,
 				function(evt:Event):void
 				{	

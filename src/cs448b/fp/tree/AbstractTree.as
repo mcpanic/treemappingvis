@@ -8,6 +8,7 @@ package cs448b.fp.tree
 	import flare.vis.operator.encoder.PropertyEncoder;
 	import flare.vis.operator.layout.Layout;
 	
+	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -183,9 +184,9 @@ package cs448b.fp.tree
 				prevX = me.stageX;
 				prevY = me.stageY;
 					
-				var ns:NodeSprite = me.target as NodeSprite;
-				var uil:Loader = me.target as Loader;
-				if(ns == null && uil == null) return;
+//				var ns:NodeSprite = me.target as NodeSprite;
+//				var uil:Loader = me.target as Loader;
+//				if(ns == null && uil == null) return;
 				
 				// fire event
 				fireEvent(me);
@@ -196,9 +197,9 @@ package cs448b.fp.tree
 		{
 			if(!me.ctrlKey)
 			{
-				var ns:NodeSprite = me.target as NodeSprite;
-				var uil:Loader = me.target as Loader;
-				if(ns == null && uil == null) return;
+//				var ns:NodeSprite = me.target as NodeSprite;
+//				var uil:Loader = me.target as Loader;
+//				if(ns == null && uil == null) return;
 				
 				// fire event
 				fireEvent(me);	
@@ -209,9 +210,9 @@ package cs448b.fp.tree
 		{	
 			if(!me.ctrlKey)
 			{		
-				var ns:NodeSprite = me.target as NodeSprite;
-				var uil:Loader = me.target as Loader;
-				if(ns == null && uil == null) return;
+//				var ns:NodeSprite = me.target as NodeSprite;
+//				var uil:Loader = me.target as Loader;
+//				if(ns == null && uil == null) return;
 				
 				// fire event
 				fireEvent(me);
@@ -220,9 +221,9 @@ package cs448b.fp.tree
 		
 		private function handleMouseOver(me:MouseEvent):void
 		{
-			var ns:NodeSprite = me.target as NodeSprite;
-			var uil:Loader = me.target as Loader;
-			if(ns == null && uil == null) return;
+//			var ns:NodeSprite = me.target as NodeSprite;
+//			var uil:Loader = me.target as Loader;
+//			if(ns == null && uil == null) return;
 			
 			// fire event
 			fireEvent(me);
@@ -230,9 +231,9 @@ package cs448b.fp.tree
 		
 		private function handleMouseOut(me:MouseEvent):void
 		{
-			var ns:NodeSprite = me.target as NodeSprite;
-			var uil:Loader = me.target as Loader;
-			if(ns == null && uil == null) return;
+//			var ns:NodeSprite = me.target as NodeSprite;
+//			var uil:Loader = me.target as Loader;
+//			if(ns == null && uil == null) return;
 			
 			// fire event
 			fireEvent(me);
@@ -240,12 +241,29 @@ package cs448b.fp.tree
 		
 		private function handleMouseDrag(me:MouseEvent):void 
 		{
-			var ns:NodeSprite = me.target as NodeSprite;
-			var uil:Loader = me.target as Loader;
-			if(ns == null && uil == null) return;
+//			var ns:NodeSprite = me.target as NodeSprite;
+//			var uil:Loader = me.target as Loader;
+//			if(ns == null && uil == null) return;
 			
 			// fire event
 			fireEvent(me);
+		}
+		
+		/**
+		 * Return the matching
+		 */
+		private function matchLoaderWithNode(loader:DisplayObject):NodeSprite
+		{
+			var root:NodeSprite = _tree.root as NodeSprite;
+			var result:NodeSprite;
+	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
+				if (loader.name == n.name)
+				{
+					result = n;
+				}
+			});
+			return result;
+
 		}
 		
 		/**
@@ -253,11 +271,23 @@ package cs448b.fp.tree
 		 */
 		protected function fireEvent(evt:Event):void
 		{
+			var node:NodeSprite = evt.target as NodeSprite;
+			var loader:Loader = evt.target as Loader;
+			if(node == null && loader == null) return;
+			
+			if(node == null)
+			{
+				node = loader.parent.parent.parent as NodeSprite;
+//				trace(loader.name);
+//				node = matchLoaderWithNode(loader.parent.parent);
+			}
+			if(node == null) return;
+			
 			for(var o:Object in listeners)
 			{				
 				var l:TreeEventListener = listeners[o] as TreeEventListener;
 				if(l != null) {
-					l.handleEvent(evt);
+					l.handleEvent(node, evt);
 				}
 			}
 		}
