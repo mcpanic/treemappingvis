@@ -70,8 +70,11 @@ package {
 			var fileList:Array = new Array(2);
 			fileList[0] = "../data/tree_dog.xml";
 			fileList[1] = "../data/tree_cat.xml";
-		
-			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml");
+			var imageList:Array = new Array(2);
+			imageList = new Array(2);
+			imageList[0] = "../data/dog/";
+			imageList[1] = "../data/cat/";			
+			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml", imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 		}

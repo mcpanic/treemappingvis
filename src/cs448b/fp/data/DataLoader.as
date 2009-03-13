@@ -15,7 +15,7 @@ package cs448b.fp.data
 		/**
 		 * Constructor
 		 */
-		public function DataLoader(numTrees:Number, fileNameArray:Array, mappingFileName:String)
+		public function DataLoader(numTrees:Number, fileNameArray:Array, mappingFileName:String, imageNameArray:Array)
 		{
 			_cb = null;
 			_numFiles = numTrees + 1;	// 1 is for the mapping
@@ -29,7 +29,7 @@ package cs448b.fp.data
 			// Add each tree info to the list of trees
 			for (var i:uint = 0; i<_numFiles; i++)
 			{
-				_treeList[i] = new TreeInfo(i, fileNameArray[i]);
+				_treeList[i] = new TreeInfo(i, fileNameArray[i], imageNameArray[i]);
 				_treeList[i].parser.addLoadEventListener(handleLoaded);
 			}
 	
@@ -104,10 +104,10 @@ package cs448b.fp.data
 		private var _parser:TreeParser;		
 		private var _isLoadComplete:Boolean;
 
-		public function TreeInfo(index:Number, fileName:String)
+		public function TreeInfo(index:Number, fileName:String, imageLocation:String)
 		{
 			_fileName = fileName; 
-			_parser = new TreeParser(index, _fileName);
+			_parser = new TreeParser(index, _fileName, imageLocation);
 		}
 
 		public function get fileName():String
