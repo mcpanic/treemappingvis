@@ -16,16 +16,18 @@ package cs448b.fp.data
 		
 		private var _tree:Tree;
 		private var _fileName:String;
+		private var _imageLocation:String;
 		private var _cb:Function;
 		private var _index:Number;
 		
 		private var _numNodes:Number;
 		private var _numNodesLoaded:Number;	// number of trees loaded so far
 						
-		public function TreeParser(index:Number, fileName:String)
+		public function TreeParser(index:Number, fileName:String, imageLocation:String)
 		{
 			_tree = new Tree();
 			_fileName = fileName;
+			_imageLocation = imageLocation;
 			_cb = null;
 			_index = index;
 			_numNodes = 0;
@@ -91,7 +93,7 @@ package cs448b.fp.data
 		{
 			var ldr:UILoader = new UILoader();
 
-			var url:String = "../data/thumbnails/"+xml.label+".PNG";
+			var url:String = _imageLocation + xml.label + ".PNG";
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
 			ldr.name = xml.label.toString();

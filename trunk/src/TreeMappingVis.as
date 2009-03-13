@@ -2,13 +2,14 @@ package {
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.tree.CascadedTree;
 	import cs448b.fp.tree.TreeEventSynchronizer;
+	import cs448b.fp.utils.Controls;
 	
 	import flare.vis.data.NodeSprite;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-
+	import fl.events.SliderEvent;
 	
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
@@ -20,7 +21,8 @@ package {
 		private var cascadedTree1:CascadedTree;
 		private var cascadedTree2:CascadedTree;
 		private var fileList:Array;
-		
+		private var imageList:Array;
+		private var controls:Controls;
 		private var tes:TreeEventSynchronizer;
 		
 		/**
@@ -41,10 +43,13 @@ package {
 		private function initComponents():void
 		{
 			tes = new TreeEventSynchronizer();
+			controls = new Controls();
+			//controls.addControlListener(handleDepthChange);			
 		}
 				
 		private function buildSprite():void
 		{
+			addChild(controls);
 		}
 		
 		/**
@@ -55,7 +60,10 @@ package {
 			fileList = new Array(2);
 			fileList[0] = "../data/tree_dog.xml";
 			fileList[1] = "../data/tree_cat.xml";
-			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml");
+			imageList = new Array(2);
+			imageList[0] = "../data/dog/";
+			imageList[1] = "../data/cat/";			
+			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml", imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 			
@@ -117,6 +125,25 @@ package {
 				cascadedTree2.setVisibleDepth(2);
 			}
 		}
+		
+		private function handleDepthChange(se:SliderEvent):void
+		{
+			if(se.value == 1) // 1
+			{
+				cascadedTree1.setVisibleDepth(0);
+				cascadedTree2.setVisibleDepth(0);
+			}
+			else if(se.value == 2) // 2
+			{
+				cascadedTree1.setVisibleDepth(1);
+				cascadedTree2.setVisibleDepth(1);	
+			}
+			else if(se.value == 3) // 3
+			{
+				cascadedTree1.setVisibleDepth(2);
+				cascadedTree2.setVisibleDepth(2);
+			}
+		}		
 	}
 }
 
