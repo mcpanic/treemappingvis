@@ -4,12 +4,14 @@ package {
 	import cs448b.fp.tree.TreeEventSynchronizer;
 	import cs448b.fp.utils.Controls;
 	
+	import fl.events.SliderEvent;
+	
 	import flare.vis.data.NodeSprite;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import fl.events.SliderEvent;
+	import flash.events.MouseEvent;
 	
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
@@ -44,7 +46,7 @@ package {
 		{
 			tes = new TreeEventSynchronizer();
 			controls = new Controls();
-			//controls.addControlListener(handleDepthChange);			
+			controls.addLoadEventListener(handleDepthChange);			
 		}
 				
 		private function buildSprite():void
@@ -58,11 +60,15 @@ package {
 		private function loadData():void
 		{
 			fileList = new Array(2);
-			fileList[0] = "../data/tree_dog.xml";
-			fileList[1] = "../data/tree_cat.xml";
+			fileList[0] = "../data/tree_content.xml";
+			fileList[1] = "../data/tree_moo.xml";			
+//			fileList[0] = "../data/tree_dog.xml";
+//			fileList[1] = "../data/tree_cat.xml";
 			imageList = new Array(2);
-			imageList[0] = "../data/dog/";
-			imageList[1] = "../data/cat/";			
+			imageList[0] = "../data/content/";
+			imageList[1] = "../data/moo/";			
+//			imageList[0] = "../data/dog/";
+//			imageList[1] = "../data/cat/";			
 			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml", imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
@@ -124,25 +130,51 @@ package {
 				cascadedTree1.setVisibleDepth(2);
 				cascadedTree2.setVisibleDepth(2);
 			}
+			else if(ke.keyCode == 52) // 4
+			{
+				cascadedTree1.setVisibleDepth(3);
+				cascadedTree2.setVisibleDepth(3);	
+			}
+			else if(ke.keyCode == 53) // 5
+			{
+				cascadedTree1.setVisibleDepth(4);
+				cascadedTree2.setVisibleDepth(4);
+			}			
 		}
 		
-		private function handleDepthChange(se:SliderEvent):void
+		private function handleDepthChange(e:Event):void
 		{
-			if(se.value == 1) // 1
+			var se:SliderEvent = e as SliderEvent;
+			var me:MouseEvent = e as MouseEvent;
+			
+			if (se != null)
+			{
+				cascadedTree1.setVisibleDepth(se.value);
+				cascadedTree2.setVisibleDepth(se.value);
+			}
+			
+			if (me != null)
+			{
+				cascadedTree1.setVisualToggle();
+				cascadedTree2.setVisualToggle();
+			}
+/*			
+			if(se.value == 0) // 1
 			{
 				cascadedTree1.setVisibleDepth(0);
 				cascadedTree2.setVisibleDepth(0);
 			}
-			else if(se.value == 2) // 2
+			else if(se.value == 1) // 2
 			{
 				cascadedTree1.setVisibleDepth(1);
 				cascadedTree2.setVisibleDepth(1);	
 			}
-			else if(se.value == 3) // 3
+			else if(se.value == 2) // 3
 			{
 				cascadedTree1.setVisibleDepth(2);
 				cascadedTree2.setVisibleDepth(2);
 			}
+*/			
 		}		
 	}
 }
