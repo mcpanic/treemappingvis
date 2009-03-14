@@ -15,7 +15,7 @@ package {
 	
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
-	[SWF(width='1250', height='770', backgroundColor='#ffffff', frameRate='30')]
+	[SWF(width='1250', height='770', backgroundColor='#101010', frameRate='30')]
 	
 	public class TreeMappingVis extends Sprite
 	{
@@ -87,7 +87,11 @@ package {
 			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 0, 0);
 //			cascadedTree2.init();
 			addChild(cascadedTree2);
-					
+			
+			var maxDepth:uint = 0;
+			maxDepth = (cascadedTree1.getDepth() > cascadedTree2.getDepth())? cascadedTree1.getDepth(): cascadedTree2.getDepth();
+			trace(cascadedTree1.getDepth() + " " + cascadedTree2.getDepth() + " " + maxDepth);
+			controls.setSliderDepth(maxDepth);	
 			tes.addTree(cascadedTree1);
 			tes.addTree(cascadedTree2);
 		}
@@ -108,8 +112,7 @@ package {
 		 * Upon data load complete, display the tree
 		 */		
 		private function handleLoaded(event:Event):void
-		{
-			//printTree(dataLoader.getTree(0).root, 3);
+		{		
 			displayTree();			
 		}
 		
