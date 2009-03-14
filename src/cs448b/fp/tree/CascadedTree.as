@@ -234,7 +234,7 @@ package cs448b.fp.tree
 		/**
 		 * Delegates update vis.
 		 */
-		public function updateVis(t:Object = null, ...operators):Transitioner
+		public function resetPosition(t:Object = null, ...operators):Transitioner
 		{
 			vis.x = 0;
 			vis.y = 0;
