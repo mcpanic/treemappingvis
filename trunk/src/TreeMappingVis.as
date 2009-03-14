@@ -82,16 +82,15 @@ package {
 		private function displayTree():void
 		{
 			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 0, 0);
-//			cascadedTree1.init();
-			addChild(cascadedTree1);
 			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 0, 0);
-//			cascadedTree2.init();
+
 			addChild(cascadedTree2);
 			
 			var maxDepth:uint = 0;
 			maxDepth = (cascadedTree1.getDepth() > cascadedTree2.getDepth())? cascadedTree1.getDepth(): cascadedTree2.getDepth();
 			trace(cascadedTree1.getDepth() + " " + cascadedTree2.getDepth() + " " + maxDepth);
-			controls.setSliderDepth(maxDepth);	
+			controls.setSliderDepth(maxDepth);
+
 			tes.addTree(cascadedTree1);
 			tes.addTree(cascadedTree2);
 		}

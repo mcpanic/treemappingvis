@@ -76,7 +76,7 @@ package cs448b.fp.tree
 	
 		/** @inheritDoc */
 		protected override function layout():void
-		{
+		{			
         	Arrays.fill(_depths, 0);
         	_maxDepth = 0;
         	
@@ -331,13 +331,53 @@ package cs448b.fp.tree
 		}
 		
 		private function setSizes(n:NodeSprite):void
-		{
-			_t.endSize(n, _rect);
-			//n.w = _rect.width;
-			//n.h = _rect.height;
+		{			
+//			_t.endSize(n, _rect);
+//			n.w = _rect.width;
+//			n.h = _rect.height;
+
+			var imageWidth:Number = n.props["width"];
+			var imageHeight:Number = n.props["height"];
+			var ratio:Number = imageWidth/imageHeight;
+			
+			var nodeSize:Number = 100;
+			
+			if(!n.expanded || n.childDegree == 0)
+			{
+				nodeSize = 400/(n.depth+1);
+			}
+			
+			if(ratio > 1)
+			{ // wide				
+				n.props["image"].width = nodeSize;
+				n.props["image"].height = nodeSize/ratio;
+				
+				n.w = nodeSize;
+				n.h = n.props["image"].height + 30;
+			}
+			else
+			{ // narrow
+				n.props["image"].width = nodeSize*ratio;
+				n.props["image"].height = nodeSize;
+				
+				n.w = n.props["image"].width;
+				n.h = nodeSize + 30;
+			}
+			
+			if(_orient == Orientation.RIGHT_TO_LEFT)
+			{
+				n.props["image"].x = -n.props["image"].width/2;
+			}
+			else
+			{
+				n.props["image"].x = -n.props["image"].width/2;
+			}
+			
+			n.props["image"].y = -n.props["image"].height/2;
+
 			// mcpanic - save image size on initial load
-			n.w = n.props["image"].width;
-			n.h = n.props["image"].height;
+//			n.w = n.props["image"].width;
+//			n.h = n.props["image"].height;
 		}
 		
 		private function spacing(l:NodeSprite, r:NodeSprite, siblings:Boolean):Number

@@ -83,7 +83,6 @@ package cs448b.fp.data
 			var image:DisplayObject = addImage(n, xml);
 			n.props["image"] = image;
 			n.addChild(image);
-			
 		}
 
 		/**
