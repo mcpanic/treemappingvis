@@ -109,6 +109,23 @@ package cs448b.fp.tree
 			
 			return vis.update(t, operators);
 		}
+		
+		public function adjustScale(w:Number, h:Number):void
+		{	
+			var sX:Number = w/(vis.width/vis.scaleX);		
+			var sY:Number = h/(vis.height/vis.scaleY);
+			
+			var scale:Number = Math.min(sX, sY);
+			
+			vis.scaleY = scale;
+			vis.scaleX = scale;
+		}
+		
+		public function resetScale():void
+		{
+			vis.scaleY = 1;
+			vis.scaleX = 1;
+		}
 
 		/**
 		 * Return the matching
