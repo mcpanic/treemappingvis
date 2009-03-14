@@ -68,12 +68,17 @@ package {
 		private function loadData():void
 		{
 			var fileList:Array = new Array(2);
-			fileList[0] = "../data/tree_dog.xml";
-			fileList[1] = "../data/tree_cat.xml";
 			var imageList:Array = new Array(2);
+			fileList = new Array(2);
+			fileList[0] = "../data/tree_content.xml";
+			fileList[1] = "../data/tree_moo.xml";			
+//			fileList[0] = "../data/tree_dog.xml";
+//			fileList[1] = "../data/tree_cat.xml";
 			imageList = new Array(2);
-			imageList[0] = "../data/dog/";
-			imageList[1] = "../data/cat/";			
+			imageList[0] = "../data/content/";
+			imageList[1] = "../data/moo/";			
+//			imageList[0] = "../data/dog/";
+//			imageList[1] = "../data/cat/";			
 			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml", imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();

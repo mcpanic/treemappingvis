@@ -28,6 +28,8 @@ package cs448b.fp.tree
 		protected var _x:Number;
 		protected var _y:Number;
 		
+		protected var _visualToggle:Boolean;
+		
 		protected var nodes:Object;
 		protected var edges:Object;
 		
@@ -55,6 +57,7 @@ package cs448b.fp.tree
 			_tree = tree;
 			_x = x;
 			_y = y;
+			_visualToggle = true;
 
 			init();
 			

@@ -38,7 +38,7 @@ package cs448b.fp.tree
 			// init values		
 			nodes = {
 				shape: Shapes.BLOCK, // needed for treemap sqaures
-				fillColor: 0xff8888FF, 
+				fillColor: 0x88D5D5FF, 
 				lineColor: 0
 			}
 			
@@ -92,8 +92,8 @@ package cs448b.fp.tree
 			if(n == null) return;
 			n.lineColor = 0; 
 			n.lineWidth = 0;
-			n.fillColor = 0xff8888FF;
-			n.fillAlpha = n.lineAlpha = 1 / 25;
+			n.fillColor = nodes.fillColor;//0xff8888FF;
+			//n.fillAlpha = n.lineAlpha = 1 / 25;
 			
 			if(nodePulled)
 			{
@@ -181,5 +181,21 @@ package cs448b.fp.tree
 			vis.update(1, "nodes").play();
 		}
 
+		public function setVisualToggle():void 
+		{	
+			var tree:Tree = vis.data as Tree;
+			trace(_visualToggle);
+			_visualToggle = !_visualToggle;
+			if(tree == null ) return;
+			
+			tree.visit(function(n:NodeSprite):void
+			{
+				n.props["image"].visible = _visualToggle;
+				//n.props["image"].alpha = 0.5;
+					
+			}, Data.NODES);
+		
+			vis.update(1, "nodes").play();
+		}
 	}
 }
