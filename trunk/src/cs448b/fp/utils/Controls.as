@@ -5,10 +5,11 @@ package cs448b.fp.utils
 	import fl.controls.Slider;
 	import fl.controls.SliderDirection;
 	import fl.events.SliderEvent;
-	import flash.events.MouseEvent;
+	
 	import flare.display.TextSprite;
 	
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.text.TextFormat;
 	import flash.utils.*;
 					        			
@@ -34,6 +35,12 @@ package cs448b.fp.utils
 			layout();
 		}
 
+		public function setSliderDepth(depth:uint):void
+		{
+			if (_depthSlider != null)
+				_depthSlider.maximum = depth;
+		}
+		
 		private function addDepthControl():void
 		{
 			_depthSlider = new Slider();

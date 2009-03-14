@@ -160,6 +160,16 @@ package cs448b.fp.tree
 			});
 	 	}
 
+		public function getDepth():uint
+		{
+			var maxDepth:uint = 0;
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (maxDepth < nn.depth)
+					maxDepth = nn.depth;
+			});			
+			return maxDepth;
+		}
 		
 		public override function setVisibleDepth(d:Number):void 
 		{
