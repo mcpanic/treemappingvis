@@ -103,9 +103,7 @@ package cs448b.fp.tree
 			vis.setOperator("nodes", new PropertyEncoder(nodes, "nodes"));
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 
-//			// add controls
-//			vis.controls.add(new HoverControl(NodeSprite,
-//				HoverControl.MOVE_AND_RETURN, rollOver, rollOut));
+			// add controls
 		}
 		
 		/** initialize components - this function should be implemented in sub class */
@@ -120,6 +118,13 @@ package cs448b.fp.tree
 				vis.bounds = bounds;
 				vis.update();
 			}
+		}
+		
+		public function resetPositions():void
+		{
+			vis.x = 0;
+			vis.y = 0;
+			vis.update(1).play();
 		}
 		
 		/**
@@ -187,10 +192,6 @@ package cs448b.fp.tree
 				prevX = me.stageX;
 				prevY = me.stageY;
 					
-//				var ns:NodeSprite = me.target as NodeSprite;
-//				var uil:Loader = me.target as Loader;
-//				if(ns == null && uil == null) return;
-				
 				// fire event
 				fireEvent(me);
 			}
@@ -199,11 +200,7 @@ package cs448b.fp.tree
 		private function handleMouseUp(me:MouseEvent):void 
 		{
 			if(!me.ctrlKey)
-			{
-//				var ns:NodeSprite = me.target as NodeSprite;
-//				var uil:Loader = me.target as Loader;
-//				if(ns == null && uil == null) return;
-				
+			{				
 				// fire event
 				fireEvent(me);	
 			}
@@ -212,42 +209,26 @@ package cs448b.fp.tree
 		private function handleMouseDown(me:MouseEvent):void 
 		{	
 			if(!me.ctrlKey)
-			{		
-//				var ns:NodeSprite = me.target as NodeSprite;
-//				var uil:Loader = me.target as Loader;
-//				if(ns == null && uil == null) return;
-				
+			{						
 				// fire event
 				fireEvent(me);
 			}
 		}
 		
 		private function handleMouseOver(me:MouseEvent):void
-		{
-//			var ns:NodeSprite = me.target as NodeSprite;
-//			var uil:Loader = me.target as Loader;
-//			if(ns == null && uil == null) return;
-			
+		{			
 			// fire event
 			fireEvent(me);
 		}
 		
 		private function handleMouseOut(me:MouseEvent):void
-		{
-//			var ns:NodeSprite = me.target as NodeSprite;
-//			var uil:Loader = me.target as Loader;
-//			if(ns == null && uil == null) return;
-			
+		{			
 			// fire event
 			fireEvent(me);
 		}
 		
 		private function handleMouseDrag(me:MouseEvent):void 
-		{
-//			var ns:NodeSprite = me.target as NodeSprite;
-//			var uil:Loader = me.target as Loader;
-//			if(ns == null && uil == null) return;
-			
+		{	
 			// fire event
 			fireEvent(me);
 		}

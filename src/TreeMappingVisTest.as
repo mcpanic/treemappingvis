@@ -14,7 +14,7 @@ package {
 	
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
-	[SWF(width='1024', height='768', backgroundColor='#ffffff', frameRate='30')]
+	[SWF(width='1250', height='770', backgroundColor='#101010', frameRate='30')]
 	
 	public class TreeMappingVisTest extends Sprite
 	{
@@ -56,9 +56,12 @@ package {
 		 */				
 		private function buildSprite():void
 		{
+			simpleTree.x = 0;
+			simpleTree.y = 300;
 			addChild(simpleTree);
 			
-//			simpleTree2.x = 500;
+			simpleTree2.x = 1100;
+			simpleTree2.y = 300;
 			addChild(simpleTree2);
 		}
 		
@@ -103,30 +106,21 @@ package {
 			buildSprite();
 		}
 		
+		/**
+		 * Handles key down event
+		 */
 		private function handleKeyDown(ke:KeyboardEvent):void
 		{
-			if(ke.keyCode == Keyboard.LEFT)
+			if(ke.keyCode > 48 && ke.keyCode < 54) // numbers
 			{
-				simpleTree.updateVis();
+				// set depth
+				simpleTree.setVisibleDepth(ke.keyCode - 49);
+				simpleTree2.setVisibleDepth(ke.keyCode - 49);
 			}
-			else if(ke.keyCode == Keyboard.RIGHT)
-			{
-				simpleTree2.updateVis();
-			}
-			else if(ke.keyCode == 49) // 1
-			{
-				simpleTree.setVisibleDepth(0);
-				simpleTree2.setVisibleDepth(0);
-			}
-			else if(ke.keyCode == 50) // 2
-			{
-				simpleTree.setVisibleDepth(1);
-				simpleTree2.setVisibleDepth(1);	
-			}
-			else if(ke.keyCode == 51) // 3
-			{
-				simpleTree.setVisibleDepth(2);
-				simpleTree2.setVisibleDepth(2);
+			else if(ke.keyCode == 90) // Z
+			{ // reset			
+				simpleTree.resetPosition(1).play();
+				simpleTree2.resetPosition(1).play();
 			}
 		}
 	}

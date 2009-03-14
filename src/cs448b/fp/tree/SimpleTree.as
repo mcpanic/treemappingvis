@@ -8,7 +8,9 @@ package cs448b.fp.tree
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
+	import flash.display.Graphics;
 	import flash.display.Loader;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -35,9 +37,10 @@ package cs448b.fp.tree
 				function(evt:Event, n:NodeSprite):void { 
 					if(n.childDegree > 0)
 					{
-						n.expanded = !n.expanded;
-//						n.visible = n.expanded;
-						vis.update(1, "nodes","main").play();
+//						n.expanded = !n.expanded;
+//						vis.update(1, "nodes","main").play();
+						
+						expandNode(!n.expanded, n);
 					
 						fireEvent(evt);
 					}
@@ -56,7 +59,7 @@ package cs448b.fp.tree
 			// init values		
 			nodes = {
 				shape: Shapes.CIRCLE,
-				fillColor: 0x88aaaaaa,
+				fillColor: 0xffaaaaaa,
 				lineColor: 0xdddddddd,
 				lineWidth: 1,
 				size: 1.5,
@@ -65,7 +68,7 @@ package cs448b.fp.tree
 			}
 			
 			edges = {
-				lineColor: 0xffcccccc,
+				lineColor: 0xff555555,
 				lineWidth: 1,
 				alpha: 1,
 				visible: true
@@ -92,7 +95,7 @@ package cs448b.fp.tree
 		/**
 		 * Delegates update vis.
 		 */
-		public function updateVis(t:Object = null, ...operators):Transitioner
+		public function resetPosition(t:Object = null, ...operators):Transitioner
 		{
 			vis.x = 0;
 			vis.y = 0;
@@ -135,19 +138,12 @@ package cs448b.fp.tree
 				if(nn == null)
 				{
 					nn = loader.parent.parent.parent as NodeSprite;
-//					nn = matchLoaderWithNode(loader);
-
 				}
 				if(nn == null) return;
 			
 				if(n.name == nn.name) return; // returned message
 				
-				if(n.childDegree > 0)
-				{
-					n.expanded = nn.expanded;
-//					n.visible = n.expanded;
-					vis.update(1, "nodes","main").play();
-				}
+				expandNode(nn.expanded, n);
 			}
 		}
 		
@@ -155,12 +151,33 @@ package cs448b.fp.tree
 		{
 			n.lineWidth = 2;
 			n.lineColor = 0x88ff0000;
+			
+			var image:Sprite = n.props["image"];
+			
+			image.graphics.clear();
+			image.graphics.lineStyle(10, n.lineColor, 0.8);
+			image.graphics.drawRect(0, 0, image.width, image.height);
 		}
 		
 		protected override function onMouseOut(n:NodeSprite):void
 		{
 			n.lineWidth = 0;
 			n.lineColor = nodes.lineColor;
+			
+			var image:Sprite = n.props["image"];
+			
+			image.graphics.clear();
+			image.graphics.lineStyle(1, n.lineColor, 0);
+			image.graphics.drawRect(0, 0, image.width, image.height);
+		}
+		
+		private function expandNode(e:Boolean, n:NodeSprite):void
+		{
+			if(n.childDegree > 0)
+			{
+				n.expanded = e;
+				vis.update(1, "nodes","main").play();
+			}
 		}
 		
 		public override function setVisibleDepth(d:Number):void 
@@ -170,13 +187,16 @@ package cs448b.fp.tree
 			
 			tree.visit(function(n:NodeSprite):void
 				{
-					if(n.depth >= d)
+					if(n.childDegree > 0)
 					{
-						n.expanded = false;
-					}
-					else
-					{
-						n.expanded = true;
+						if(n.depth >= d)
+						{
+							n.expanded = false;
+						}
+						else
+						{
+							n.expanded = true;
+						}
 					}
 				}, Data.NODES);
 			

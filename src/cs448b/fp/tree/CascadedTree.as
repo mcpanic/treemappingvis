@@ -182,10 +182,11 @@ package cs448b.fp.tree
 					{
 						n.visible = false;
 					}
-					else
+					else 
 					{
 						n.visible = true;
 					}
+					
 				}, Data.NODES);
 			
 			vis.update(1, "nodes").play();
