@@ -374,12 +374,6 @@ package cs448b.fp.tree
 			}
 			
 			n.props["image"].y = -n.props["image"].height/2;
-
-			// mcpanic - save image size on initial load
-//			n.w = n.props["image"].width;
-//			n.h = n.props["image"].height;
-			//n.w = n.props["width"];
-			//n.h = n.props["height"];
 		}
 		
 		private function spacing(l:NodeSprite, r:NodeSprite, siblings:Boolean):Number
