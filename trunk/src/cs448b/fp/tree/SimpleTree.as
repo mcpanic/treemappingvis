@@ -8,7 +8,6 @@ package cs448b.fp.tree
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
-	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -17,6 +16,9 @@ package cs448b.fp.tree
 	
 	public class SimpleTree extends AbstractTree
 	{	
+		public static var EXPANDABLE_COLOR:uint = 0xaa6767ff;
+		public static var HIGHLIGHT_COLOR:uint = 0x88ff0000;
+		
 		public function SimpleTree(i:Number, tree:Tree, x:Number, y:Number)
 		{
 			super(i, tree, x, y);
@@ -37,9 +39,6 @@ package cs448b.fp.tree
 				function(evt:Event, n:NodeSprite):void { 
 					if(n.childDegree > 0)
 					{
-//						n.expanded = !n.expanded;
-//						vis.update(1, "nodes","main").play();
-						
 						expandNode(!n.expanded, n);
 					
 						fireEvent(evt);
@@ -50,6 +49,14 @@ package cs448b.fp.tree
 			vis.bounds = bounds;
 
 			vis.update();
+			
+			// post node setting
+			var data:Data = _tree;
+			
+			for (var j:int=0; j<data.nodes.length; ++j) 
+			{
+				setBorderColor(data.nodes[j]);
+			}
 			
 			addChild(vis);
 		}
@@ -62,7 +69,7 @@ package cs448b.fp.tree
 				fillColor: 0xffaaaaaa,
 				lineColor: 0xdddddddd,
 				lineWidth: 1,
-				size: 1.5,
+				size: 0.1,
 				alpha: 1,
 				visible: true
 			}
@@ -150,7 +157,7 @@ package cs448b.fp.tree
 		protected override function onMouseOver(n:NodeSprite):void
 		{
 			n.lineWidth = 2;
-			n.lineColor = 0x88ff0000;
+			n.lineColor = HIGHLIGHT_COLOR;
 			
 			var image:Sprite = n.props["image"];
 			
@@ -164,11 +171,24 @@ package cs448b.fp.tree
 			n.lineWidth = 0;
 			n.lineColor = nodes.lineColor;
 			
+			setBorderColor(n);
+		}
+		
+		private function setBorderColor(n:NodeSprite):void
+		{
 			var image:Sprite = n.props["image"];
 			
 			image.graphics.clear();
-			image.graphics.lineStyle(1, n.lineColor, 0);
-			image.graphics.drawRect(0, 0, image.width, image.height);
+			if(n.childDegree > 0)
+			{
+				image.graphics.lineStyle(7, EXPANDABLE_COLOR, 0.8);
+				image.graphics.drawRect(0, 0, image.width, image.height);
+			}
+			else
+			{
+				image.graphics.lineStyle(3, n.lineColor, 0.5);
+				image.graphics.drawRect(0, 0, image.width, image.height);	
+			}
 		}
 		
 		private function expandNode(e:Boolean, n:NodeSprite):void
@@ -177,6 +197,8 @@ package cs448b.fp.tree
 			{
 				n.expanded = e;
 				vis.update(1, "nodes","main").play();
+				
+				setBorderColor(n);
 			}
 		}
 		
@@ -201,6 +223,11 @@ package cs448b.fp.tree
 				}, Data.NODES);
 			
 			vis.update(1, "nodes","main").play();
+			
+			tree.visit(function(n:NodeSprite):void
+				{
+					setBorderColor(n);
+				}, Data.NODES);
 		}
 	}
 }
