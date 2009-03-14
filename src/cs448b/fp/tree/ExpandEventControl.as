@@ -79,7 +79,7 @@ package cs448b.fp.tree
 				_cur.stage.addEventListener(MouseEvent.MOUSE_MOVE, onDrag);
 				_cur.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			}
-			event.stopPropagation();
+//			event.stopPropagation();
 		}
 		
 		private function onDrag(event:MouseEvent) : void {
