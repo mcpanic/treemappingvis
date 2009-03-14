@@ -13,6 +13,7 @@ package cs448b.fp.tree
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.text.TextField;
 	
 	public class SimpleTree extends AbstractTree
 	{	
@@ -30,6 +31,15 @@ package cs448b.fp.tree
 		public override function init():void
 		{	
 			super.init();
+			
+			tf.y = -300;
+			tf.x = 0;
+			tf.textColor = 0xffffffff;
+			tf.scaleX = 2;
+			tf.scaleY = 2;
+			tf.height = 30;
+			
+			addChild(tf);
 			
 			// add controls
 			vis.controls.add(new HoverControl(NodeSprite,
@@ -95,6 +105,8 @@ package cs448b.fp.tree
 		 */
 		public function setOrientation(or:String):void
 		{
+			tf.x = 30;
+			
 			vis.operators[0] = new SimpleTreeLayout(or,20,5,10);
 			vis.update();
 		}
@@ -153,6 +165,10 @@ package cs448b.fp.tree
 			else if(evt.type == MouseEvent.MOUSE_OUT)
 			{
 				onMouseOut(n);
+			}
+			else if(evt.type == MouseEvent.MOUSE_DOWN)
+			{
+				tf.text = n.name;
 			}
 			else if(evt.type == MouseEvent.MOUSE_UP)
 			{

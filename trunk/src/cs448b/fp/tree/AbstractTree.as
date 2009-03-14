@@ -14,6 +14,7 @@ package cs448b.fp.tree
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.text.TextField;
 			
 	public class AbstractTree extends Sprite
 	{
@@ -43,6 +44,8 @@ package cs448b.fp.tree
 		
 		private var _init:Boolean = false;
 		private var _bounds:Rectangle;
+		
+		protected var tf:TextField = new TextField();
 		
 		public function get bounds():Rectangle { return _bounds; }
 		public function set bounds(b:Rectangle):void {
@@ -104,6 +107,8 @@ package cs448b.fp.tree
 			vis.setOperator("edges", new PropertyEncoder(edges, "edges"));
 
 			// add controls
+			
+			
 		}
 		
 		/** initialize components - this function should be implemented in sub class */
@@ -262,10 +267,15 @@ package cs448b.fp.tree
 			if(node == null)
 			{
 				node = loader.parent.parent.parent as NodeSprite;
-//				trace(loader.name);
-//				node = matchLoaderWithNode(loader.parent.parent);
 			}
 			if(node == null) return;
+			
+			// this is very bad coding...
+			if(evt.type == MouseEvent.MOUSE_DOWN)
+			{
+//				trace(node.name);
+				tf.text = node.name;
+			}
 			
 			for(var o:Object in listeners)
 			{				

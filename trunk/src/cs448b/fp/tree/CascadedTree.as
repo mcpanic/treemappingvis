@@ -4,7 +4,6 @@ package cs448b.fp.tree
 	
 	import flare.animate.Transitioner;
 	import flare.util.Shapes;
-	import flare.vis.controls.TooltipControl;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
@@ -22,7 +21,7 @@ package cs448b.fp.tree
 		private var _canvasWidth:Number = 550;
 		private var _canvasHeight:Number = 700;
 		
-		private var tf:TextField = new TextField();
+//		private var tf:TextField = new TextField();
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number)
 		{
@@ -70,8 +69,9 @@ package cs448b.fp.tree
 			// init values		
 			nodes = {
 				shape: Shapes.BLOCK, // needed for treemap sqaures
-				fillColor: 0x88D5D5FF, 
-				lineColor: 0
+				fillColor: 0x88D5D5ff, 
+				lineColor: 0x00000000,
+				lineWidth: 1
 			}
 			
 			edges = {
@@ -123,8 +123,8 @@ package cs448b.fp.tree
 		protected override function onMouseOut(n:NodeSprite):void
 		{
 			if(n == null) return;
-			n.lineColor = 0; 
-			n.lineWidth = 0;
+			n.lineColor = nodes.lineColor; 
+			n.lineWidth = nodes.lineWidth;
 			n.fillColor = nodes.fillColor;//0xff8888FF;
 			//n.fillAlpha = n.lineAlpha = 1 / 25;
 			
@@ -150,6 +150,8 @@ package cs448b.fp.tree
    		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
+			super.onMouseDown(n);
+			
 			if(!nodePulled)
 			{
 				blurOtherNodes(n);
@@ -230,7 +232,7 @@ package cs448b.fp.tree
 		public function setVisualToggle():void 
 		{	
 			var tree:Tree = vis.data as Tree;
-			trace(_visualToggle);
+//			trace(_visualToggle);
 			_visualToggle = !_visualToggle;
 			if(tree == null ) return;
 			
