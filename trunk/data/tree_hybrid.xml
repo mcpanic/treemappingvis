@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <node>
   <label><![CDATA[291]]></label>
-  <url><![CDATA[../html/snippet_291.html]]></url>
+  <url><![CDATA[../data/hybrid/291.png]]></url>
   <position x="0" y="25" width="1007" height="899"></position>
   <children>
     <node>
       <label><![CDATA[324]]></label>
-      <url><![CDATA[../html/snippet_324.html]]></url>
+      <url><![CDATA[../data/hybrid/324.png]]></url>
       <position x="6" y="25" width="995" height="44"></position>
       <children>
         <node>
           <label><![CDATA[735]]></label>
-          <url><![CDATA[../html/snippet_735.html]]></url>
+          <url><![CDATA[../data/hybrid/735.png]]></url>
           <position x="6" y="25" width="460" height="44"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[737]]></label>
-          <url><![CDATA[../html/snippet_737.html]]></url>
+          <url><![CDATA[../data/hybrid/737.png]]></url>
           <position x="566" y="47" width="395" height="17"></position>
           <children></children>
         </node>
@@ -25,53 +25,53 @@
     </node>
     <node>
       <label><![CDATA[358]]></label>
-      <url><![CDATA[../html/snippet_358.html]]></url>
+      <url><![CDATA[../data/hybrid/358.png]]></url>
       <position x="0" y="639" width="1007" height="228"></position>
       <children>
         <node>
           <label><![CDATA[749]]></label>
-          <url><![CDATA[../html/snippet_749.html]]></url>
+          <url><![CDATA[../data/hybrid/749.png]]></url>
           <position x="6" y="649" width="995" height="25"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[753]]></label>
-          <url><![CDATA[../html/snippet_753.html]]></url>
+          <url><![CDATA[../data/hybrid/753.png]]></url>
           <position x="6" y="674" width="995" height="17"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[763]]></label>
-          <url><![CDATA[../html/snippet_763.html]]></url>
+          <url><![CDATA[../data/hybrid/763.png]]></url>
           <position x="0" y="691" width="1007" height="146"></position>
           <children>
             <node>
               <label><![CDATA[887]]></label>
-              <url><![CDATA[../html/snippet_887.html]]></url>
+              <url><![CDATA[../data/hybrid/887.png]]></url>
               <position x="13" y="696" width="185" height="120"></position>
               <children></children>
             </node>
             <node>
               <label><![CDATA[900]]></label>
-              <url><![CDATA[../html/snippet_900.html]]></url>
+              <url><![CDATA[../data/hybrid/900.png]]></url>
               <position x="212" y="696" width="185" height="120"></position>
               <children></children>
             </node>
             <node>
               <label><![CDATA[913]]></label>
-              <url><![CDATA[../html/snippet_913.html]]></url>
+              <url><![CDATA[../data/hybrid/913.png]]></url>
               <position x="411" y="696" width="185" height="120"></position>
               <children></children>
             </node>
             <node>
               <label><![CDATA[926]]></label>
-              <url><![CDATA[../html/snippet_926.html]]></url>
+              <url><![CDATA[../data/hybrid/926.png]]></url>
               <position x="610" y="696" width="185" height="120"></position>
               <children></children>
             </node>
             <node>
               <label><![CDATA[939]]></label>
-              <url><![CDATA[../html/snippet_939.html]]></url>
+              <url><![CDATA[../data/hybrid/939.png]]></url>
               <position x="809" y="696" width="185" height="120"></position>
               <children></children>
             </node>
@@ -81,17 +81,17 @@
     </node>
     <node>
       <label><![CDATA[335]]></label>
-      <url><![CDATA[../html/snippet_335.html]]></url>
+      <url><![CDATA[../data/hybrid/335.png]]></url>
       <position x="6" y="69" width="995" height="570"></position>
       <children>
         <node>
           <label><![CDATA[427]]></label>
-          <url><![CDATA[../html/snippet_427.html]]></url>
+          <url><![CDATA[../data/hybrid/427.png]]></url>
           <position x="817" y="89" width="184" height="62"></position>
           <children>
             <node>
               <label><![CDATA[464]]></label>
-              <url><![CDATA[../html/snippet_464.html]]></url>
+              <url><![CDATA[../data/hybrid/464.png]]></url>
               <position x="827" y="94" width="164" height="17"></position>
               <children></children>
             </node>
@@ -99,18 +99,18 @@
         </node>
         <node>
           <label><![CDATA[413]]></label>
-          <url><![CDATA[../html/snippet_413.html]]></url>
+          <url><![CDATA[../data/hybrid/413.png]]></url>
           <position x="6" y="79" width="400" height="81"></position>
           <children>
             <node>
               <label><![CDATA[729]]></label>
-              <url><![CDATA[../html/snippet_729.html]]></url>
+              <url><![CDATA[../data/hybrid/729.png]]></url>
               <position x="6" y="79" width="380" height="30"></position>
               <children></children>
             </node>
             <node>
               <label><![CDATA[731]]></label>
-              <url><![CDATA[../html/snippet_731.html]]></url>
+              <url><![CDATA[../data/hybrid/731.png]]></url>
               <position x="6" y="109" width="380" height="50"></position>
               <children></children>
             </node>
@@ -118,18 +118,18 @@
         </node>
         <node>
           <label><![CDATA[420]]></label>
-          <url><![CDATA[../html/snippet_420.html]]></url>
+          <url><![CDATA[../data/hybrid/420.png]]></url>
           <position x="406" y="79" width="400" height="97"></position>
           <children>
             <node>
               <label><![CDATA[473]]></label>
-              <url><![CDATA[../html/snippet_473.html]]></url>
+              <url><![CDATA[../data/hybrid/473.png]]></url>
               <position x="406" y="79" width="380" height="30"></position>
               <children></children>
             </node>
             <node>
               <label><![CDATA[475]]></label>
-              <url><![CDATA[../html/snippet_475.html]]></url>
+              <url><![CDATA[../data/hybrid/475.png]]></url>
               <position x="406" y="109" width="380" height="67"></position>
               <children></children>
             </node>
@@ -137,40 +137,40 @@
         </node>
         <node>
           <label><![CDATA[444]]></label>
-          <url><![CDATA[../html/snippet_444.html]]></url>
+          <url><![CDATA[../data/hybrid/444.png]]></url>
           <position x="43" y="186" width="950" height="446"></position>
           <children>
             <node>
               <label><![CDATA[482]]></label>
-              <url><![CDATA[../html/snippet_482.html]]></url>
+              <url><![CDATA[../data/hybrid/482.png]]></url>
               <position x="43" y="191" width="190" height="436"></position>
               <children>
                 <node>
                   <label><![CDATA[702]]></label>
-                  <url><![CDATA[../html/snippet_702.html]]></url>
+                  <url><![CDATA[../data/hybrid/702.png]]></url>
                   <position x="43" y="191" width="190" height="402"></position>
                   <children>
                     <node>
                       <label><![CDATA[720]]></label>
-                      <url><![CDATA[../html/snippet_720.html]]></url>
+                      <url><![CDATA[../data/hybrid/720.png]]></url>
                       <position x="43" y="211" width="81" height="12"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[724]]></label>
-                      <url><![CDATA[../html/snippet_724.html]]></url>
+                      <url><![CDATA[../data/hybrid/724.png]]></url>
                       <position x="43" y="336" width="162" height="90"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[722]]></label>
-                      <url><![CDATA[../html/snippet_722.html]]></url>
+                      <url><![CDATA[../data/hybrid/722.png]]></url>
                       <position x="43" y="238" width="162" height="98"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[726]]></label>
-                      <url><![CDATA[../html/snippet_726.html]]></url>
+                      <url><![CDATA[../data/hybrid/726.png]]></url>
                       <position x="43" y="426" width="162" height="167"></position>
                       <children></children>
                     </node>
@@ -180,35 +180,35 @@
             </node>
             <node>
               <label><![CDATA[524]]></label>
-              <url><![CDATA[../html/snippet_524.html]]></url>
+              <url><![CDATA[../data/hybrid/524.png]]></url>
               <position x="613" y="191" width="190" height="436"></position>
               <children>
                 <node>
                   <label><![CDATA[594]]></label>
-                  <url><![CDATA[../html/snippet_594.html]]></url>
+                  <url><![CDATA[../data/hybrid/594.png]]></url>
                   <position x="613" y="191" width="190" height="402"></position>
                   <children>
                     <node>
                       <label><![CDATA[612]]></label>
-                      <url><![CDATA[../html/snippet_612.html]]></url>
+                      <url><![CDATA[../data/hybrid/612.png]]></url>
                       <position x="613" y="211" width="126" height="12"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[616]]></label>
-                      <url><![CDATA[../html/snippet_616.html]]></url>
+                      <url><![CDATA[../data/hybrid/616.png]]></url>
                       <position x="613" y="336" width="162" height="90"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[614]]></label>
-                      <url><![CDATA[../html/snippet_614.html]]></url>
+                      <url><![CDATA[../data/hybrid/614.png]]></url>
                       <position x="613" y="238" width="162" height="98"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[618]]></label>
-                      <url><![CDATA[../html/snippet_618.html]]></url>
+                      <url><![CDATA[../data/hybrid/618.png]]></url>
                       <position x="613" y="426" width="162" height="167"></position>
                       <children></children>
                     </node>
@@ -218,35 +218,35 @@
             </node>
             <node>
               <label><![CDATA[496]]></label>
-              <url><![CDATA[../html/snippet_496.html]]></url>
+              <url><![CDATA[../data/hybrid/496.png]]></url>
               <position x="233" y="191" width="190" height="436"></position>
               <children>
                 <node>
                   <label><![CDATA[666]]></label>
-                  <url><![CDATA[../html/snippet_666.html]]></url>
+                  <url><![CDATA[../data/hybrid/666.png]]></url>
                   <position x="233" y="191" width="190" height="402"></position>
                   <children>
                     <node>
                       <label><![CDATA[684]]></label>
-                      <url><![CDATA[../html/snippet_684.html]]></url>
+                      <url><![CDATA[../data/hybrid/684.png]]></url>
                       <position x="233" y="211" width="108" height="12"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[688]]></label>
-                      <url><![CDATA[../html/snippet_688.html]]></url>
+                      <url><![CDATA[../data/hybrid/688.png]]></url>
                       <position x="233" y="336" width="162" height="90"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[686]]></label>
-                      <url><![CDATA[../html/snippet_686.html]]></url>
+                      <url><![CDATA[../data/hybrid/686.png]]></url>
                       <position x="233" y="238" width="162" height="98"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[690]]></label>
-                      <url><![CDATA[../html/snippet_690.html]]></url>
+                      <url><![CDATA[../data/hybrid/690.png]]></url>
                       <position x="233" y="426" width="162" height="167"></position>
                       <children></children>
                     </node>
@@ -256,35 +256,35 @@
             </node>
             <node>
               <label><![CDATA[538]]></label>
-              <url><![CDATA[../html/snippet_538.html]]></url>
+              <url><![CDATA[../data/hybrid/538.png]]></url>
               <position x="803" y="191" width="190" height="436"></position>
               <children>
                 <node>
                   <label><![CDATA[558]]></label>
-                  <url><![CDATA[../html/snippet_558.html]]></url>
+                  <url><![CDATA[../data/hybrid/558.png]]></url>
                   <position x="803" y="191" width="190" height="402"></position>
                   <children>
                     <node>
                       <label><![CDATA[576]]></label>
-                      <url><![CDATA[../html/snippet_576.html]]></url>
+                      <url><![CDATA[../data/hybrid/576.png]]></url>
                       <position x="803" y="211" width="97" height="12"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[580]]></label>
-                      <url><![CDATA[../html/snippet_580.html]]></url>
+                      <url><![CDATA[../data/hybrid/580.png]]></url>
                       <position x="803" y="336" width="162" height="90"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[578]]></label>
-                      <url><![CDATA[../html/snippet_578.html]]></url>
+                      <url><![CDATA[../data/hybrid/578.png]]></url>
                       <position x="803" y="238" width="162" height="98"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[582]]></label>
-                      <url><![CDATA[../html/snippet_582.html]]></url>
+                      <url><![CDATA[../data/hybrid/582.png]]></url>
                       <position x="803" y="426" width="162" height="167"></position>
                       <children></children>
                     </node>
@@ -294,35 +294,35 @@
             </node>
             <node>
               <label><![CDATA[510]]></label>
-              <url><![CDATA[../html/snippet_510.html]]></url>
+              <url><![CDATA[../data/hybrid/510.png]]></url>
               <position x="423" y="191" width="190" height="436"></position>
               <children>
                 <node>
                   <label><![CDATA[630]]></label>
-                  <url><![CDATA[../html/snippet_630.html]]></url>
+                  <url><![CDATA[../data/hybrid/630.png]]></url>
                   <position x="423" y="191" width="190" height="402"></position>
                   <children>
                     <node>
                       <label><![CDATA[648]]></label>
-                      <url><![CDATA[../html/snippet_648.html]]></url>
+                      <url><![CDATA[../data/hybrid/648.png]]></url>
                       <position x="423" y="211" width="125" height="12"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[652]]></label>
-                      <url><![CDATA[../html/snippet_652.html]]></url>
+                      <url><![CDATA[../data/hybrid/652.png]]></url>
                       <position x="423" y="336" width="162" height="90"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[650]]></label>
-                      <url><![CDATA[../html/snippet_650.html]]></url>
+                      <url><![CDATA[../data/hybrid/650.png]]></url>
                       <position x="423" y="238" width="162" height="98"></position>
                       <children></children>
                     </node>
                     <node>
                       <label><![CDATA[654]]></label>
-                      <url><![CDATA[../html/snippet_654.html]]></url>
+                      <url><![CDATA[../data/hybrid/654.png]]></url>
                       <position x="423" y="426" width="162" height="167"></position>
                       <children></children>
                     </node>
@@ -336,18 +336,18 @@
     </node>
     <node>
       <label><![CDATA[379]]></label>
-      <url><![CDATA[../html/snippet_379.html]]></url>
+      <url><![CDATA[../data/hybrid/379.png]]></url>
       <position x="6" y="867" width="995" height="57"></position>
       <children>
         <node>
           <label><![CDATA[396]]></label>
-          <url><![CDATA[../html/snippet_396.html]]></url>
+          <url><![CDATA[../data/hybrid/396.png]]></url>
           <position x="6" y="887" width="281" height="17"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[405]]></label>
-          <url><![CDATA[../html/snippet_405.html]]></url>
+          <url><![CDATA[../data/hybrid/405.png]]></url>
           <position x="827" y="887" width="134" height="17"></position>
           <children></children>
         </node>
