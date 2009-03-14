@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<node>
+	<info numMappings='15' contentID='0' layoutID='1'></info>
+	<mapping content='1' layout='117'></mapping>
+	<mapping content='16' layout='121'></mapping>
+	<mapping content='112' layout='225'></mapping>
+	<mapping content='115' layout='227'></mapping>
+	<mapping content='41' layout='144'></mapping>
+	<mapping content='52' layout='158'></mapping>
+	<mapping content='56' layout='162'></mapping>
+	<mapping content='32' layout='137'></mapping>
+	<mapping content='96' layout='212'></mapping>
+	<mapping content='23' layout='130'></mapping>
+	<mapping content='105' layout='220'></mapping>
+	<mapping content='107' layout='222'></mapping>
+	<mapping content='48' layout='153'></mapping>
+	<mapping content='99' layout='215'></mapping>
+	<mapping content='102' layout='217'></mapping>
+</node>
