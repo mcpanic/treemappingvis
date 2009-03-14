@@ -18,6 +18,7 @@ package cs448b.fp.utils
 		private var _controlListener:ControlListener;		
 		private var _depthSlider:Slider;
 		private var _depthText:TextSprite;
+		private var _depthTitle:TextSprite;
 		private var _visualToggle:CheckBox;
 		private var cb:Function = null;
 		private var _textFormat:TextFormat;
@@ -29,6 +30,7 @@ package cs448b.fp.utils
 //			_sectionFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,true);
 //			_legendFormat = new TextFormat("Verdana,Tahoma,Arial",11,0,true);
 			_textFormat = new TextFormat("Verdana,Tahoma,Arial",10,0,false);
+			_textFormat.color = "0xFFFFFF";
 
 			addDepthControl();
 			addVisualToggle();
@@ -43,6 +45,12 @@ package cs448b.fp.utils
 		
 		private function addDepthControl():void
 		{
+
+            _depthTitle = new TextSprite("", _textFormat);
+            _depthTitle.horizontalAnchor = TextSprite.CENTER;
+            _depthTitle.text = "Current Depth";
+            this.addChild( _depthTitle );
+            			
 			_depthSlider = new Slider();
             _depthSlider.addEventListener( SliderEvent.CHANGE, onSliderChange );
             _depthSlider.direction = SliderDirection.VERTICAL;
@@ -75,6 +83,7 @@ package cs448b.fp.utils
 			_visualToggle.label = "View Visual Nodes";
 			_visualToggle.selected = true;
            	_visualToggle.addEventListener(MouseEvent.CLICK, onVisualToggle);
+           	_visualToggle.setStyle("textFormat", _textFormat);
            	addChild(_visualToggle);
 		}
 
@@ -97,24 +106,31 @@ package cs448b.fp.utils
 		{
 
 			var x:Number = 1200;
-			var y:Number = 500;				
+			var y:Number = 600;				
 
+			if (_depthTitle)
+			{
+				_depthTitle.x = x-10;
+				_depthTitle.y = y;
+			}
 			if (_depthSlider) 
 			{
             	_depthSlider.x = x;
-            	_depthSlider.y = y;
+            	_depthSlider.y = y+30;
 				//_depthSlider.setSize(500, 30);
 				_depthSlider.tickInterval = 1;            	
 			}					
 			if (_depthText)
 			{
 				_depthText.x = x;
-				_depthText.y = y+100;
+				_depthText.y = y+115;
 			}
 			if (_visualToggle)
 			{
-				_visualToggle.x = x-70;
-				_visualToggle.y = y+130;
+				_visualToggle.width = 150;
+				_visualToggle.x = x-80;
+				_visualToggle.y = y+135;
+
 			}
 		}
   		

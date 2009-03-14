@@ -11,6 +11,7 @@ package {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;	
 	import flash.events.MouseEvent;
 	
 	// Convenient way to pass in compiler arguments
@@ -60,15 +61,15 @@ package {
 		private function loadData():void
 		{
 			fileList = new Array(2);
-			fileList[0] = "../data/tree_content.xml";
-			fileList[1] = "../data/tree_moo.xml";			
-//			fileList[0] = "../data/tree_dog.xml";
-//			fileList[1] = "../data/tree_cat.xml";
+//			fileList[0] = "../data/tree_content.xml";
+//			fileList[1] = "../data/tree_moo.xml";			
+			fileList[0] = "../data/tree_dog.xml";
+			fileList[1] = "../data/tree_cat.xml";
 			imageList = new Array(2);
-			imageList[0] = "../data/content/";
-			imageList[1] = "../data/moo/";			
-//			imageList[0] = "../data/dog/";
-//			imageList[1] = "../data/cat/";			
+//			imageList[0] = "../data/content/";
+//			imageList[1] = "../data/moo/";			
+			imageList[0] = "../data/dog/";
+			imageList[1] = "../data/cat/";			
 			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml", imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
@@ -81,8 +82,8 @@ package {
 		 */
 		private function displayTree():void
 		{
-			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 0, 0);
-			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 0, 0);
+			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 25, 25);
+			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 600, 25);
 
 			addChild(cascadedTree2);
 			
@@ -117,7 +118,15 @@ package {
 		
 		private function handleKeyDown(ke:KeyboardEvent):void
 		{
-			if(ke.keyCode == 49) // 1
+			if(ke.keyCode == Keyboard.LEFT)
+			{
+				cascadedTree1.updateVis();
+			}
+			else if(ke.keyCode == Keyboard.RIGHT)
+			{
+				cascadedTree2.updateVis();
+			}			
+			else if(ke.keyCode == 49) // 1
 			{
 				cascadedTree1.setVisibleDepth(0);
 				cascadedTree2.setVisibleDepth(0);
