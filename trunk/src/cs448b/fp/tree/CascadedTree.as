@@ -2,6 +2,7 @@ package cs448b.fp.tree
 {
 	import cs448b.fp.utils.*;
 	
+	import flare.animate.Transitioner;
 	import flare.util.Shapes;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
@@ -15,10 +16,15 @@ package cs448b.fp.tree
 
 						
 	public class CascadedTree extends AbstractTree
-	{								
+	{							
+		private var _canvasWidth:Number = 550;
+		private var _canvasHeight:Number = 700;
+			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number)
 		{
 			super(i, tree, x, y);
+			this.x = x;
+			this.y = y;
 		}
 		
 		public override function init():void
@@ -30,7 +36,22 @@ package cs448b.fp.tree
 			
 			vis.update();
 			
+			vis.scaleX = getScale();
+			vis.scaleY = getScale();							
 			addChild(vis);
+		}
+		
+		
+		private function getScale():Number
+		{
+			var zoomScale:Number;			
+			// compute the scale of the original web page vs. canvas
+			var wScale:Number = _canvasWidth / tree.root.width;
+			var hScale:Number = _canvasHeight / tree.root.height;
+			trace (wScale +  " " + hScale);
+			// choose the smaller scale and apply
+			zoomScale = (wScale > hScale) ? hScale : wScale;
+			return zoomScale;
 		}
 		
 		protected override function initComponents():void
@@ -47,6 +68,7 @@ package cs448b.fp.tree
 			}
 			
 			_layout = new CascadedTreeLayout(_x, _y);
+			
 		}
 		
 		protected override function initNode(n:NodeSprite, i:Number):void
@@ -208,5 +230,18 @@ package cs448b.fp.tree
 		
 			vis.update(1, "nodes").play();
 		}
+		
+		/**
+		 * Delegates update vis.
+		 */
+		public function updateVis(t:Object = null, ...operators):Transitioner
+		{
+			vis.x = 0;
+			vis.y = 0;
+			vis.scaleX = getScale();
+			vis.scaleY = getScale();			
+			return vis.update(t, operators);
+		}		
+		
 	}
 }
