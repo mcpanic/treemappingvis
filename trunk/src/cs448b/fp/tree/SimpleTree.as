@@ -213,6 +213,7 @@ package cs448b.fp.tree
 			if(n.childDegree > 0)
 			{
 				n.expanded = e;
+				
 				vis.update(1, "nodes","main").play();
 				
 				setBorderColor(n);
