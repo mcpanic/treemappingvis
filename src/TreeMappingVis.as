@@ -92,6 +92,7 @@ package {
 				mappingFile = "../data/map_cat.xml";			
 			}					
 			dataLoader = new DataLoader(2, fileList, mappingFile, imageList);
+
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 			
@@ -149,31 +150,12 @@ package {
 			{
 				cascadedTree2.resetPosition(1).play();
 			}			
-			else if(ke.keyCode == 49) // 1
+			if(ke.keyCode > 48 && ke.keyCode < 56) // numbers
 			{
-				cascadedTree1.setVisibleDepth(0);
-				cascadedTree2.setVisibleDepth(0);
-			}
-			else if(ke.keyCode == 50) // 2
-			{
-				cascadedTree1.setVisibleDepth(1);
-				cascadedTree2.setVisibleDepth(1);	
-			}
-			else if(ke.keyCode == 51) // 3
-			{
-				cascadedTree1.setVisibleDepth(2);
-				cascadedTree2.setVisibleDepth(2);
-			}
-			else if(ke.keyCode == 52) // 4
-			{
-				cascadedTree1.setVisibleDepth(3);
-				cascadedTree2.setVisibleDepth(3);	
-			}
-			else if(ke.keyCode == 53) // 5
-			{
-				cascadedTree1.setVisibleDepth(4);
-				cascadedTree2.setVisibleDepth(4);
-			}			
+				// set depth
+				cascadedTree1.setVisibleDepth(ke.keyCode - 49);
+				cascadedTree2.setVisibleDepth(ke.keyCode - 49);
+			}		
 		}
 
 

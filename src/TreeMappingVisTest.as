@@ -143,7 +143,7 @@ package {
 		 */
 		private function handleKeyDown(ke:KeyboardEvent):void
 		{
-			if(ke.keyCode > 48 && ke.keyCode < 54) // numbers
+			if(ke.keyCode > 48 && ke.keyCode < 56) // numbers
 			{
 				// set depth
 				simpleTree.setVisibleDepth(ke.keyCode - 49);

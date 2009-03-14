@@ -56,11 +56,18 @@ package cs448b.fp.data
        				if (externalXML.mapping[i] != null && externalXML.mapping[i] != undefined)
        					contentID = Number(externalXML.mapping[i].@content);
        				else
+       				{
        					trace("MappingParser.onXMLLoadComplete error: number of mappings and entities do not match");
+       					trace(Number(externalXML.info.@numMappings)+"/"+i);
+       				}
+       					
        				if (externalXML.mapping[i] != null && externalXML.mapping[i] != undefined)
        					layoutID = Number(externalXML.mapping[i].@layout);
        				else
+       				{
        					trace("MappingParser.onXMLLoadComplete error: number of mappings and entities do not match");
+       					trace(Number(externalXML.info.@numMappings)+"/"+i);
+       				}
        					 
        				_mapping.createMap(contentID, layoutID);
        			}

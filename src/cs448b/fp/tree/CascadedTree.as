@@ -4,6 +4,7 @@ package cs448b.fp.tree
 	
 	import flare.animate.Transitioner;
 	import flare.util.Shapes;
+	import flare.vis.controls.TooltipControl;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
@@ -13,12 +14,15 @@ package cs448b.fp.tree
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.text.TextField;
 
 						
 	public class CascadedTree extends AbstractTree
 	{							
 		private var _canvasWidth:Number = 550;
 		private var _canvasHeight:Number = 700;
+		
+		private var tf:TextField = new TextField();
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number)
 		{
@@ -37,10 +41,17 @@ package cs448b.fp.tree
 			vis.update();
 			
 			vis.scaleX = getScale();
-			vis.scaleY = getScale();							
+			vis.scaleY = getScale();
+			
+			tf.y = -30;
+			tf.textColor = 0xffffffff;
+			tf.scaleX = 2;
+			tf.scaleY = 2;
+			tf.height = 30;
+			addChild(tf);
+										
 			addChild(vis);
 		}
-		
 		
 		private function getScale():Number
 		{
@@ -144,6 +155,8 @@ package cs448b.fp.tree
 				blurOtherNodes(n);
 				pullNodeForward(n);
 				nodePulled = true;
+			
+				tf.text = n.name;
 			}
 		}
 		
