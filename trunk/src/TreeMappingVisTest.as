@@ -2,7 +2,9 @@ package {
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.tree.SimpleTree;
 	import cs448b.fp.tree.TreeEventSynchronizer;
-	
+	import cs448b.fp.utils.SimpleTreeControls;
+	import cs448b.fp.utils.ControlsEvent;
+		
 	import flare.util.Orientation;
 	import flare.vis.data.NodeSprite;
 	
@@ -24,6 +26,7 @@ package {
 		private var simpleTree2:SimpleTree;
 		
 		private var tes:TreeEventSynchronizer;
+		private var controls:SimpleTreeControls;
 		
 		/**
 		 * Constructor
@@ -49,6 +52,9 @@ package {
 			
 			tes.addTree(simpleTree);
 			tes.addTree(simpleTree2);
+			
+			controls = new SimpleTreeControls();
+			controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );				
 		}
 
 		/**
@@ -63,6 +69,14 @@ package {
 			simpleTree2.x = 1150;
 			simpleTree2.y = 300;
 			addChild(simpleTree2);
+			
+			addChild(controls);
+			
+			var maxDepth:uint = 0;
+			maxDepth = (simpleTree.getDepth() > simpleTree2.getDepth())? simpleTree.getDepth(): simpleTree2.getDepth();
+			controls.setSliderDepth(maxDepth);
+			controls.setSliderValue(maxDepth);
+
 		}
 		
 		/**
@@ -131,5 +145,28 @@ package {
 				simpleTree2.resetScale();
 			}
 		}
+		
+		private function onControlsEvent( event:ControlsEvent ):void
+		{
+			//trace( event.name );
+			if (event.name == "fit")	// fit to screen event
+			{
+				simpleTree.adjustScale(600, 770);
+				simpleTree2.adjustScale(600, 770);
+			
+				simpleTree.resetPosition(1).play();
+				simpleTree2.resetPosition(1).play();
+			}
+//			else if (event.name == "visual")	// visual toggle
+//			{
+//				simpleTree.setVisualToggle();
+//				simpleTree2.setVisualToggle();				
+//			}
+			else if (event.name == "slider")
+			{
+				simpleTree.setVisibleDepth(event.value);
+				simpleTree2.setVisibleDepth(event.value);				
+			}
+		}		
 	}
 }
