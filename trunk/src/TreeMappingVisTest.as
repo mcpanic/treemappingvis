@@ -2,16 +2,15 @@ package {
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.tree.SimpleTree;
 	import cs448b.fp.tree.TreeEventSynchronizer;
-	import cs448b.fp.utils.SimpleTreeControls;
 	import cs448b.fp.utils.ControlsEvent;
-		
+	import cs448b.fp.utils.SimpleTreeControls;
+	
 	import flare.util.Orientation;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.ui.Keyboard;
 
 	
 	// Convenient way to pass in compiler arguments
@@ -84,19 +83,38 @@ package {
 		 */
 		private function loadData():void
 		{
+			var mappingID:Number = 1;	// 1: moo, 2: hybrid, 3: cat
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);
+			var mappingFile:String;
 			fileList = new Array(2);
-			fileList[0] = "../data/tree_content.xml";
-			fileList[1] = "../data/tree_moo.xml";			
-//			fileList[0] = "../data/tree_dog.xml";
-//			fileList[1] = "../data/tree_cat.xml";
 			imageList = new Array(2);
-			imageList[0] = "../data/content/";
-			imageList[1] = "../data/moo/";			
-//			imageList[0] = "../data/dog/";
-//			imageList[1] = "../data/cat/";			
-			dataLoader = new DataLoader(2, fileList, "../data/Mappings.xml", imageList);
+	
+			if (mappingID == 1)
+			{
+				fileList[0] = "../data/tree_content.xml";
+				fileList[1] = "../data/tree_moo.xml";			
+				imageList[0] = "../data/content/";
+				imageList[1] = "../data/moo/";
+				mappingFile = "../data/map_moo.xml";			
+			}
+			else if (mappingID == 2)
+			{
+				fileList[0] = "../data/tree_content.xml";
+				fileList[1] = "../data/tree_hybrid.xml";			
+				imageList[0] = "../data/content/";
+				imageList[1] = "../data/hybrid/";
+				mappingFile = "../data/map_hybrid.xml";			
+			}	
+			else if (mappingID == 3)
+			{
+				fileList[0] = "../data/tree_dog.xml";
+				fileList[1] = "../data/tree_cat.xml";			
+				imageList[0] = "../data/dog/";
+				imageList[1] = "../data/cat/";
+				mappingFile = "../data/map_cat.xml";			
+			}					
+			dataLoader = new DataLoader(2, fileList, mappingFile, imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 		}
