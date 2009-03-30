@@ -4,15 +4,15 @@ package {
 	import cs448b.fp.tree.TreeEventSynchronizer;
 	import cs448b.fp.utils.CascadedTreeControls;
 	import cs448b.fp.utils.ControlsEvent;
+	import cs448b.fp.utils.MappingManager;
 	
-	import fl.events.SliderEvent;
 	import flare.vis.data.NodeSprite;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.ui.Keyboard;
 	import flash.system.Security;
+	import flash.ui.Keyboard;
 		
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
@@ -28,6 +28,8 @@ package {
 		private var controls:CascadedTreeControls;
 		private var tes:TreeEventSynchronizer;
 		private var mappingID:Number;
+		
+		private var mappingManager:MappingManager;
 		/**
 		 * Constructor
 		 */		
@@ -139,7 +141,11 @@ package {
 		 */		
 		private function handleLoaded(event:Event):void
 		{		
-			displayTree();			
+			displayTree();	
+			
+			mappingManager = new MappingManager();	
+			mappingManager.setContentTree(cascadedTree1);
+			mappingManager.setLayoutTree(cascadedTree2);
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void

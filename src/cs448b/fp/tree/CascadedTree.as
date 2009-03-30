@@ -153,6 +153,10 @@ package cs448b.fp.tree
 		{
 			super.onMouseDown(n);
 			blurOtherNodes(n);
+			
+			// dispatch mapping event
+			dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN));
+			
 //			if(!nodePulled)
 //			{
 //				blurOtherNodes(n);
