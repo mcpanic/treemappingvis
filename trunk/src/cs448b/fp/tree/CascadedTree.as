@@ -269,6 +269,18 @@ package cs448b.fp.tree
 	        	unblurOtherNodes();
 	        	if (nodeCount == _currentStep)	// found the current node to look at
 	        	{
+					if (nn.numChildren == 0) // don't do anything, onto the next node
+					{
+						return;
+					}
+					else	// show on the screen
+					{
+						nn.visible = true;
+						nn.lineColor = 0xffFF0000; 
+						nn.lineWidth = 15;
+						nn.fillColor = 0xffFFFFAAAA;
+						blurOtherNodes(nn);								
+					}	        		
 //					if (_currentStep != nn.depth)
 //					{
 //						//nn.props["image"].alpha = 0.5;
@@ -278,12 +290,7 @@ package cs448b.fp.tree
 //						nn.visible = false;				
 //					}
 //					else
-//					{
-						nn.visible = true;
-						nn.lineColor = 0xffFF0000; 
-						nn.lineWidth = 15;
-						nn.fillColor = 0xffFFFFAAAA;
-						blurOtherNodes(nn);					
+//					{										
 //					}
 	        	}
 	        	nodeCount++;
