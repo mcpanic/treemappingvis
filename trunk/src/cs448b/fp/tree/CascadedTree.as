@@ -16,17 +16,24 @@ package cs448b.fp.tree
 
 						
 	public class CascadedTree extends AbstractTree
-	{							
+	{		
+		private var _isContentTree:Boolean;					
 		private var _canvasWidth:Number = 550;
 		private var _canvasHeight:Number = 700;
 		
 //		private var tf:TextField = new TextField();
 			
-		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number)
+		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, isContentTree:Boolean)
 		{
 			super(i, tree, x, y);
 			this.x = x;
 			this.y = y;
+			this._isContentTree = isContentTree;
+		}
+		
+		public function get isContentTree():Boolean
+		{
+			return _isContentTree;
 		}
 		
 		public override function init():void
@@ -115,9 +122,12 @@ package cs448b.fp.tree
 		{
 			if(n == null) 
 				return;
-			n.lineColor = 0xffFF0000; 
-			n.lineWidth = 15;
-			n.fillColor = 0xffFFFFAAAA;
+			if (n.props["activated"] == true)	// only when activated
+			{
+				n.lineColor = 0xffFF0000; 
+				n.lineWidth = 15;
+				n.fillColor = 0xffFFFFAAAA;
+			}
 		}
 		
 		protected override function onMouseOut(n:NodeSprite):void
@@ -151,12 +161,14 @@ package cs448b.fp.tree
    		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
-			super.onMouseDown(n);
-			blurOtherNodes(n);
-			
-			// dispatch mapping event
-			dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN));
-			
+			if (n.props["activated"] == true)
+			{
+				super.onMouseDown(n);
+				blurOtherNodes(n);
+				
+				// dispatch mapping event
+				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN));
+			}
 //			if(!nodePulled)
 //			{
 //				blurOtherNodes(n);
@@ -199,6 +211,10 @@ package cs448b.fp.tree
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
 					//nn.fillAlpha = 1;
 					nn.props["image"].alpha = 1;
+					nn.lineColor = nodes.lineColor; 
+					nn.lineWidth = nodes.lineWidth;
+					nn.fillColor = nodes.fillColor;
+					nn.props["activated"] = false;
 			});
 	 	}
 
@@ -267,15 +283,18 @@ package cs448b.fp.tree
 		public function showNextStep():void
 		{
 			_currentStep++;
+			unblurOtherNodes();	// initialize visual attributes
+			
 			var root:NodeSprite = tree.root as NodeSprite;
-			var nodeCount:Number = 0;
+			var nodeCount:Number = 1;
+				
 	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-	        	unblurOtherNodes();
 	        	if (nodeCount == _currentStep)	// found the current node to look at
 	        	{
-					if (nn.numChildren == 0) // don't do anything, onto the next node
+					if (nn.childDegree == 0) // don't do anything, onto the next node
 					{
-						return;
+						_currentStep++;
+						//nodeCount++;
 					}
 					else	// show on the screen
 					{
@@ -283,19 +302,17 @@ package cs448b.fp.tree
 						nn.lineColor = 0xffFF0000; 
 						nn.lineWidth = 15;
 						nn.fillColor = 0xffFFFFAAAA;
-						blurOtherNodes(nn);								
+						nn.props["activated"] = true;
+						blurOtherNodes(nn);		
+						for(var i:uint=0; i<nn.childDegree; i++)
+						{
+							nn.getChildNode(i).props["activated"] = true;
+							nn.getChildNode(i).lineColor = 0xffFF0000; 
+							nn.getChildNode(i).lineWidth = 15;
+							nn.getChildNode(i).fillColor = 0xffFFFFAAAA;
+							nn.getChildNode(i).props["image"].alpha = 1;
+						}					
 					}	        		
-//					if (_currentStep != nn.depth)
-//					{
-//						//nn.props["image"].alpha = 0.5;
-//						nn.lineColor = nodes.lineColor; 
-//						nn.lineWidth = nodes.lineWidth;
-//						nn.fillColor = nodes.fillColor;//0xff8888FF;	
-//						nn.visible = false;				
-//					}
-//					else
-//					{										
-//					}
 	        	}
 	        	nodeCount++;
 			});			

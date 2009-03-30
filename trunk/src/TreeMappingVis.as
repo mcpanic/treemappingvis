@@ -108,8 +108,8 @@ package {
 		 */
 		private function displayTree():void
 		{
-			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 25, 25);
-			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 600, 25);
+			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 25, 25, true);
+			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 600, 25, false);
 
 			addChild(cascadedTree1);
 			addChild(cascadedTree2);
