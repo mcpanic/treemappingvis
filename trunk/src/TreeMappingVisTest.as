@@ -11,7 +11,7 @@ package {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-
+	import flash.system.Security;
 	
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
@@ -32,6 +32,7 @@ package {
 		 */		
 		public function TreeMappingVisTest()
 		{
+			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/treeview/crossdomain.xml");				
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 			
 			loadData();			
@@ -83,7 +84,7 @@ package {
 		 */
 		private function loadData():void
 		{
-			var mappingID:Number = 1;	// 1: moo, 2: hybrid, 3: cat
+			var mappingID:Number = 3;	// 1: moo, 2: hybrid, 3: cat
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);
 			var mappingFile:String;

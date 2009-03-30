@@ -13,7 +13,6 @@ package cs448b.fp.tree
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
-	import flash.text.TextField;
 
 						
 	public class CascadedTree extends AbstractTree
@@ -114,7 +113,8 @@ package cs448b.fp.tree
 		
 		protected override function onMouseOver(n:NodeSprite):void
 		{
-			if(n == null) return;
+			if(n == null) 
+				return;
 			n.lineColor = 0xffFF0000; 
 			n.lineWidth = 15;
 			n.fillColor = 0xffFFFFAAAA;
@@ -122,7 +122,8 @@ package cs448b.fp.tree
 		
 		protected override function onMouseOut(n:NodeSprite):void
 		{
-			if(n == null) return;
+			if(n == null) 
+				return;
 			n.lineColor = nodes.lineColor; 
 			n.lineWidth = nodes.lineWidth;
 			n.fillColor = nodes.fillColor;//0xff8888FF;
@@ -130,7 +131,7 @@ package cs448b.fp.tree
 			
 			if(nodePulled)
 			{
-				unblurOtherNodes(n);
+				unblurOtherNodes();
 				pushNodeback(n);
 				nodePulled = false;
 			}
@@ -140,26 +141,26 @@ package cs448b.fp.tree
 		
 		protected override function onMouseUp(n:NodeSprite):void 
 		{
-			if(nodePulled)
-			{
-				unblurOtherNodes(n);
-				pushNodeback(n);
-				nodePulled = false;
-			}
+//			if(nodePulled)
+//			{
+//				unblurOtherNodes(n);
+//				pushNodeback(n);
+//				nodePulled = false;
+//			}
 		}
    		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
 			super.onMouseDown(n);
-			
-			if(!nodePulled)
-			{
-				blurOtherNodes(n);
-				pullNodeForward(n);
-				nodePulled = true;
-			
-				tf.text = n.name;
-			}
+			blurOtherNodes(n);
+//			if(!nodePulled)
+//			{
+//				blurOtherNodes(n);
+//				pullNodeForward(n);
+//				nodePulled = true;
+//			
+//				tf.text = n.name;
+//			}
 		}
 		
 		private var _idx:Number;
@@ -188,7 +189,7 @@ package cs448b.fp.tree
 			});
 	 	}
 
-		private function unblurOtherNodes(n:NodeSprite):void
+		private function unblurOtherNodes():void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
@@ -214,17 +215,17 @@ package cs448b.fp.tree
 			if(tree == null ) return;
 			
 			tree.visit(function(n:NodeSprite):void
+			{
+				if(n.depth > d)
 				{
-					if(n.depth > d)
-					{
-						n.visible = false;
-					}
-					else 
-					{
-						n.visible = true;
-					}
-					
-				}, Data.NODES);
+					n.visible = false;
+				}
+				else 
+				{
+					n.visible = true;
+				}
+				
+			}, Data.NODES);
 			
 			vis.update(1, "nodes").play();
 		}
@@ -258,5 +259,35 @@ package cs448b.fp.tree
 			return vis.update(t, operators);
 		}		
 		
+		private var _currentStep:Number = 0;
+		public function showNextStep():void
+		{
+			_currentStep++;
+			var root:NodeSprite = tree.root as NodeSprite;
+			var nodeCount:Number = 0;
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+	        	unblurOtherNodes();
+	        	if (nodeCount == _currentStep)	// found the current node to look at
+	        	{
+//					if (_currentStep != nn.depth)
+//					{
+//						//nn.props["image"].alpha = 0.5;
+//						nn.lineColor = nodes.lineColor; 
+//						nn.lineWidth = nodes.lineWidth;
+//						nn.fillColor = nodes.fillColor;//0xff8888FF;	
+//						nn.visible = false;				
+//					}
+//					else
+//					{
+						nn.visible = true;
+						nn.lineColor = 0xffFF0000; 
+						nn.lineWidth = 15;
+						nn.fillColor = 0xffFFFFAAAA;
+						blurOtherNodes(nn);					
+//					}
+	        	}
+	        	nodeCount++;
+			});			
+		}
 	}
 }

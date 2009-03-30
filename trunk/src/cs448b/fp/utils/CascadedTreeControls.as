@@ -1,8 +1,5 @@
 package cs448b.fp.utils
 {
-	import cs448b.fp.utils.ControlsEvent;
-	
-// Data related	
 	import fl.controls.Button;
 	import fl.controls.CheckBox;
 	import fl.controls.Slider;
@@ -24,6 +21,7 @@ package cs448b.fp.utils
 		private var _depthTitle:TextSprite;
 		private var _visualToggle:CheckBox;
 		private var _fitToScreen:Button;
+		private var _continueButton:Button;
 		private var _textFormat:TextFormat;
 							
 		public function CascadedTreeControls()
@@ -38,6 +36,7 @@ package cs448b.fp.utils
 			addDepthControl();
 			addVisualToggle();
 			addFitToScreen();
+			addContinueButton();
 			layout();
 		}
 
@@ -113,6 +112,21 @@ package cs448b.fp.utils
         {
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "fit") );        			 
         }
+        
+		private function addContinueButton():void
+		{	   
+			_continueButton = new Button();
+			_continueButton.label = "Continue";
+			_continueButton.toggle = true;
+           	_continueButton.addEventListener(MouseEvent.CLICK, onContinueButton);
+           	_continueButton.setStyle("textFormat", _textFormat);
+           	addChild(_continueButton);  
+		}    
+
+        private function onContinueButton( mouseEvent:MouseEvent ):void
+        {
+			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "continue") );        			 
+        }		    
 //                        		
 //        /**
 //         * Adds a load event listener 
@@ -156,6 +170,11 @@ package cs448b.fp.utils
 				_fitToScreen.x = x-60;
 				_fitToScreen.y = y+135;
 			}
+			if (_continueButton)
+			{
+				_continueButton.x = 100;
+				_continueButton.y = y+50;
+			}			
 		}
 		
 	}
