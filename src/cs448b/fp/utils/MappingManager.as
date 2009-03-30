@@ -31,7 +31,7 @@ package cs448b.fp.utils
 		private function onContentTreeEvent(e:Event):void
 		{
 			// TODO: handle mapping event here
-			trace("ContentTree - Mouse Down!");	
+			trace("ContentTree - Mouse Down!");
 		}
 		
 		private function onLayoutTreeEvent(e:Event):void
