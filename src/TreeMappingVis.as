@@ -12,7 +12,8 @@ package {
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
-	
+	import flash.system.Security;
+		
 	// Convenient way to pass in compiler arguments
 	// Place after import statements and before first class declaration 
 	[SWF(width='1250', height='770', backgroundColor='#101010', frameRate='30')]
@@ -26,12 +27,14 @@ package {
 		private var imageList:Array;
 		private var controls:CascadedTreeControls;
 		private var tes:TreeEventSynchronizer;
-		
+		private var mappingID:Number;
 		/**
 		 * Constructor
 		 */		
 		public function TreeMappingVis()
 		{
+			mappingID = 3;	// 1: moo, 2: hybrid, 3: cat
+			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 			
 			initComponents();
@@ -60,7 +63,6 @@ package {
 		 */
 		private function loadData():void
 		{
-			var mappingID:Number = 3;	// 1: moo, 2: hybrid, 3: cat
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);
 			var mappingFile:String;
@@ -176,6 +178,11 @@ package {
 			{
 				cascadedTree1.setVisibleDepth(event.value);
 				cascadedTree2.setVisibleDepth(event.value);				
+			}
+			else if (event.name == "continue")
+			{
+				cascadedTree1.showNextStep();
+				cascadedTree2.showNextStep();					
 			}
 		}
 //		

@@ -18,7 +18,8 @@ package cs448b.fp.data
 		public function DataLoader(numTrees:Number, fileNameArray:Array, mappingFileName:String, imageNameArray:Array)
 		{
 			_cb = null;
-			_numFiles = numTrees + 1;	// 1 is for the mapping
+			//_numFiles = numTrees + 1;	// 1 is for the mapping
+			_numFiles = numTrees;
 			_numFilesLoaded = 0;
 			_treeList = new Array(_numFiles);
 			if (fileNameArray.length != numTrees)
@@ -33,8 +34,8 @@ package cs448b.fp.data
 				_treeList[i].parser.addLoadEventListener(handleLoaded);
 			}
 	
-			_mappingParser = new MappingParser(mappingFileName);
-			_mappingParser.addLoadEventListener(handleLoaded);
+			//_mappingParser = new MappingParser(mappingFileName);
+			//_mappingParser.addLoadEventListener(handleLoaded);
 		}
 		
 		/**
@@ -58,11 +59,12 @@ package cs448b.fp.data
 		 */
         public function loadData():void
         {		            			
-			for (var i:uint = 0; i<_numFiles-1; i++)
+			//for (var i:uint = 0; i<_numFiles-1; i++)
+			for (var i:uint = 0; i<_numFiles; i++)
 			{
 				_treeList[i].parser.parseXML();
 			}
-			_mappingParser.parseXML();
+			//_mappingParser.parseXML();
         }
 
 		/**
