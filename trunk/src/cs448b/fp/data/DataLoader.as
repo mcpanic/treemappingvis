@@ -51,6 +51,8 @@ package cs448b.fp.data
 		 */
 		public function getMappedIndex(idx:Number, treeId:Number):Number
 		{
+			if(_mappingParser == null) return 0;
+			
 			return _mappingParser.mapping.getMappedIndex(idx, treeId);
 		}
 		
