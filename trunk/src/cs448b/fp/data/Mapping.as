@@ -11,6 +11,16 @@ package cs448b.fp.data
 			// createMap();
 		}
 
+		public function printMapping():void
+		{
+			for(var o:Object in map)
+			{
+				var p:Point = map[o] as Point;
+
+				trace("(" + p.x + "--" + p.y + ") ");
+			}			
+		}
+		
 		public function createMap(num1:Number, num2:Number):void
 		{
 			addMapping(num1, num2);
