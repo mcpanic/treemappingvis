@@ -275,6 +275,35 @@ package cs448b.fp.tree
 			});
 	 	}
 
+		
+		// Mark the nodes that are mapped, both internally and visually
+		public function markMapping(id:Number):void
+		{	
+			var root:NodeSprite = tree.root as NodeSprite;				        
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {			
+	        	if (id == Number(nn.name))
+	        	{	
+	        		nn.props["mapped"] = 1;	// 1: mapped, 2: unmapped, 0: null (default)
+					nn.fillColor = 0xffFFFFAAAA;
+					nn.props["image"].visible = false;	        		
+	        	}
+	        });
+	    }
+
+		// Unmark the nodes that are mapped, both internally and visually
+		public function unmarkMapping(id:Number):void
+		{		
+			var root:NodeSprite = tree.root as NodeSprite;						
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {			
+	        	if (id == Number(nn.name))
+	        	{
+	        		nn.props["mapped"] = 2;	// 1: mapped, 2: unmapped, 0: null (default)
+	        		nn.fillColor = nodes.fillColor;
+	        		nn.props["image"].visible = true;	
+	        	}
+	        });
+	    }	
+	    
 		public function getDepth():uint
 		{
 			var maxDepth:uint = 0;

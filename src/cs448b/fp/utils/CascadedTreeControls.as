@@ -24,6 +24,7 @@ package cs448b.fp.utils
 		private var _continueButton:Button;
 		private var _notice:TextSprite;
 		private var _feedback:TextSprite;
+		private var _mappings:TextSprite;
 		private var _textFormat:TextFormat;
 							
 		public function CascadedTreeControls()
@@ -40,6 +41,7 @@ package cs448b.fp.utils
 			//addFitToScreen();
 			addNotice();
 			addFeedback();
+			addMappings();
 			addContinueButton();
 			layout();
 		}
@@ -120,7 +122,7 @@ package cs448b.fp.utils
 		private function addContinueButton():void
 		{	   
 			_continueButton = new Button();
-			_continueButton.label = "Continue";
+			_continueButton.label = "Start";
 			_continueButton.toggle = true;
            	_continueButton.addEventListener(MouseEvent.CLICK, onContinueButton);
            	_continueButton.setStyle("textFormat", _textFormat);
@@ -135,7 +137,7 @@ package cs448b.fp.utils
 		private function addFeedback():void
 		{
             _feedback = new TextSprite("", _textFormat);
-            _feedback.horizontalAnchor = TextSprite.CENTER;
+            _feedback.horizontalAnchor = TextSprite.LEFT;
             _feedback.text = "Page loaded.";
             this.addChild( _feedback );        
         }
@@ -148,7 +150,7 @@ package cs448b.fp.utils
 		private function addNotice():void
 		{
             _notice = new TextSprite("", _textFormat);
-            _notice.horizontalAnchor = TextSprite.CENTER;
+            _notice.horizontalAnchor = TextSprite.LEFT;
             _notice.text = "Stage: Initialization";
 //            _notice.text = "Stage: Hierarchical Matching";
             this.addChild( _notice );        
@@ -157,13 +159,29 @@ package cs448b.fp.utils
         public function displayStage(index:Number):void
         {
         	if (index == 1)
+        	{
+        		_continueButton.label = "Continue";
         		_notice.text = "Stage: Hierarchical Matching";
+        	}
         	else if (index == 2)
         	{
         		_continueButton.label = "Finish";
         		_notice.text = "Stage: Quasi-Hierarchical Matching";
         	}
-        }	    
+        }	
+        
+		private function addMappings():void
+		{
+            _mappings = new TextSprite("", _textFormat);
+            _mappings.horizontalAnchor = TextSprite.LEFT;
+            _mappings.text = "Mappings: None";
+            this.addChild( _mappings );        
+        }   
+        
+        public function displayMappings(message:String):void
+        {
+        	_mappings.text = "Mappings: " + message;
+        }	                 
 //                        		
 //        /**
 //         * Adds a load event listener 
@@ -214,13 +232,18 @@ package cs448b.fp.utils
 			}		
 			if (_notice)
 			{
-				_notice.x = 350;
+				_notice.x = 250;
 				_notice.y = y+50;
 			}	
 			if (_feedback)
 			{
-				_feedback.x = 350;
+				_feedback.x = 250;
 				_feedback.y = y+80;
+			}
+			if (_mappings)
+			{
+				_mappings.x = 250;
+				_mappings.y = y+110;
 			}
 		}
 		

@@ -11,14 +11,15 @@ package cs448b.fp.data
 			// createMap();
 		}
 
-		public function printMapping():void
+		public function printMapping():String
 		{
+			var result:String = "";
 			for(var o:Object in map)
 			{
 				var p:Point = map[o] as Point;
-
-				trace("(" + p.x + "--" + p.y + ") ");
+				result += "(" + p.x + "--" + p.y + ") ";
 			}			
+			return result;
 		}
 		
 		public function createMap(num1:Number, num2:Number):void

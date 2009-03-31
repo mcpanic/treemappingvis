@@ -209,7 +209,10 @@ package {
 			{
 				controls.displayFeedback(event.message);
 			}
-
+			else if (event.name == "mappings")
+			{
+				controls.displayMappings(event.message);
+			}
 		}
 	}
 }
