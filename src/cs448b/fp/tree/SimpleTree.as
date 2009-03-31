@@ -34,7 +34,6 @@ package cs448b.fp.tree
 			
 			tf.y = -300;
 			tf.x = 0;
-			tf.textColor = 0xffffffff;
 			tf.scaleX = 2;
 			tf.scaleY = 2;
 			tf.height = 30;

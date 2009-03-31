@@ -22,6 +22,8 @@ package cs448b.fp.utils
 		private var _visualToggle:CheckBox;
 		private var _fitToScreen:Button;
 		private var _continueButton:Button;
+		private var _notice:TextSprite;
+		private var _feedback:TextSprite;
 		private var _textFormat:TextFormat;
 							
 		public function CascadedTreeControls()
@@ -30,12 +32,14 @@ package cs448b.fp.utils
 //			_titleFormat = new TextFormat("Verdana,Tahoma,Arial",16,0,true);
 //			_sectionFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,true);
 //			_legendFormat = new TextFormat("Verdana,Tahoma,Arial",11,0,true);
-			_textFormat = new TextFormat("Verdana,Tahoma,Arial",10,0,false);
+			_textFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
 			_textFormat.color = "0xFFFFFF";
 
-			addDepthControl();
-			addVisualToggle();
-			addFitToScreen();
+			//addDepthControl();
+			//addVisualToggle();
+			//addFitToScreen();
+			addNotice();
+			addFeedback();
 			addContinueButton();
 			layout();
 		}
@@ -126,7 +130,40 @@ package cs448b.fp.utils
         private function onContinueButton( mouseEvent:MouseEvent ):void
         {
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "continue") );        			 
-        }		    
+        }	
+
+		private function addFeedback():void
+		{
+            _feedback = new TextSprite("", _textFormat);
+            _feedback.horizontalAnchor = TextSprite.CENTER;
+            _feedback.text = "Page loaded.";
+            this.addChild( _feedback );        
+        }
+
+        public function displayFeedback(message:String):void
+        {
+        	_feedback.text = message;
+        }	
+                        
+		private function addNotice():void
+		{
+            _notice = new TextSprite("", _textFormat);
+            _notice.horizontalAnchor = TextSprite.CENTER;
+            _notice.text = "Stage: Initialization";
+//            _notice.text = "Stage: Hierarchical Matching";
+            this.addChild( _notice );        
+        }
+        
+        public function displayStage(index:Number):void
+        {
+        	if (index == 1)
+        		_notice.text = "Stage: Hierarchical Matching";
+        	else if (index == 2)
+        	{
+        		_continueButton.label = "Finish";
+        		_notice.text = "Stage: Quasi-Hierarchical Matching";
+        	}
+        }	    
 //                        		
 //        /**
 //         * Adds a load event listener 
@@ -174,7 +211,17 @@ package cs448b.fp.utils
 			{
 				_continueButton.x = 100;
 				_continueButton.y = y+50;
-			}			
+			}		
+			if (_notice)
+			{
+				_notice.x = 350;
+				_notice.y = y+50;
+			}	
+			if (_feedback)
+			{
+				_feedback.x = 350;
+				_feedback.y = y+80;
+			}
 		}
 		
 	}

@@ -7,6 +7,7 @@ package cs448b.fp.tree
 	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
 	import flare.vis.operator.layout.Layout;
+	import flare.display.TextSprite;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -15,7 +16,8 @@ package cs448b.fp.tree
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
-			
+	import flash.text.TextFormat;
+				
 	public class AbstractTree extends Sprite
 	{
 		protected var _id:Number;
@@ -45,7 +47,8 @@ package cs448b.fp.tree
 		private var _init:Boolean = false;
 		private var _bounds:Rectangle;
 		
-		protected var tf:TextField = new TextField();
+		protected var tf:TextSprite;// = new TextField();
+		private var _textFormat:TextFormat;
 		
 		public function get bounds():Rectangle { return _bounds; }
 		public function set bounds(b:Rectangle):void {
@@ -61,7 +64,12 @@ package cs448b.fp.tree
 			_x = x;
 			_y = y;
 			_visualToggle = true;
-
+			
+			_textFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
+			_textFormat.color = "0xFFFFFF";			
+			tf = new TextSprite("", _textFormat);
+            tf.horizontalAnchor = TextSprite.CENTER;
+            
 			init();
 			
 			// add mouse listeners

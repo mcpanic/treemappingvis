@@ -52,7 +52,8 @@ package {
 			tes = new TreeEventSynchronizer();
 			controls = new CascadedTreeControls();
 //			controls.addLoadEventListener(handleDepthChange);		
-			controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );			
+			controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );		
+
 		}
 				
 		private function buildSprite():void
@@ -147,6 +148,7 @@ package {
 			mappingManager.setContentTree(cascadedTree1);
 			mappingManager.setLayoutTree(cascadedTree2);
 			mappingManager.init();	// add root-root mapping
+			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);				
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void
@@ -195,18 +197,20 @@ package {
 				mappingManager.showNextStepLayout();			
 			}
 		}
-//		
-//		private function handleDepthChange(e:Event):void
-//		{
-//			var se:SliderEvent = e as SliderEvent;
-//			
-//			if (se != null)
-//			{
-//				cascadedTree1.setVisibleDepth(se.value);
-//				cascadedTree2.setVisibleDepth(se.value);
-//			}
-//		
-//		}		
+		
+		private function onControlsStatusEvent( event:ControlsEvent ):void
+		{
+			//trace( event.name );
+			if (event.name == "stage")	// fit to screen event
+			{
+				controls.displayStage(event.value);
+			}
+			else if (event.name == "feedback")
+			{
+				controls.displayFeedback(event.message);
+			}
+
+		}
 	}
 }
 

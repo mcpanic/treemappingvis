@@ -7,7 +7,8 @@ package cs448b.fp.tree
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
-	
+	import flare.display.TextSprite;
+	import flash.text.TextFormat;	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
@@ -20,15 +21,18 @@ package cs448b.fp.tree
 		private var _isContentTree:Boolean;					
 		private var _canvasWidth:Number = 550;
 		private var _canvasHeight:Number = 700;
-		
+		private var _title:TextSprite;
+		private var _textFormat:TextFormat;
+				
 //		private var tf:TextField = new TextField();
 			
-		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, isContentTree:Boolean)
+		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean)
 		{
+			this._isContentTree = bContentTree;			
 			super(i, tree, x, y);
 			this.x = x;
 			this.y = y;
-			this._isContentTree = isContentTree;
+
 		}
 		
 		public function get isContentTree():Boolean
@@ -48,11 +52,24 @@ package cs448b.fp.tree
 			vis.scaleX = getScale();
 			vis.scaleY = getScale();
 			
-			tf.y = -30;
-			tf.textColor = 0xffffffff;
-			tf.scaleX = 2;
-			tf.scaleY = 2;
-			tf.height = 30;
+			_textFormat = new TextFormat("Verdana,Tahoma,Arial",14,0,false);
+			_textFormat.color = "0xFFFFFF";
+            _title = new TextSprite("", _textFormat);
+            _title.horizontalAnchor = TextSprite.CENTER;
+            if (_isContentTree == true)
+            	_title.text = "Content";
+            else
+            	_title.text = "Layout";
+            	
+            _title.x = 270;
+            _title.y = -20;
+            addChild( _title );
+            						
+			tf.x = 10;
+			tf.y = -20;
+			//tf.scaleX = 2;
+			//tf.scaleY = 2;
+			//tf.height = 30;
 			addChild(tf);
 										
 			addChild(vis);

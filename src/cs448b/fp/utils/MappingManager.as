@@ -4,20 +4,26 @@ package cs448b.fp.utils
 	import cs448b.fp.tree.CascadedTree;
 	
 	import flare.vis.data.NodeSprite;
+	
+	import flash.display.Sprite;
+	import flash.events.*;
+	import flash.utils.*;
 		
-	public class MappingManager
+	public class MappingManager extends Sprite
 	{
 		private var _mapping:Mapping;
 		private var _contentTree:CascadedTree = null;
 		private var _layoutTree:CascadedTree = null;
 		private var _selectedContentID:Number;
 		private var _selectedLayoutID:Number;
+		private var _currentStage:Number;
 		
 		public function MappingManager()
 		{
 			_mapping = new Mapping();	
 			_selectedContentID = 0;
 			_selectedLayoutID = 0;
+			_currentStage = 0;
 		}
 
 		public function init():void
@@ -40,9 +46,10 @@ package cs448b.fp.utils
 		
 		private function onContentTreeEvent(e:MappingEvent):void
 		{
-			// TODO: handle mapping event here
 			trace("ContentTree - Mouse Down! " + e.name + " " + e.value);	
-			
+			// give feedback to users	
+			var message:String = "Select a mapped segment on the Layout page";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
 			if (_selectedLayoutID != 0 && e.name == "add")
 			{
 				// relinking only happens in layout selection
@@ -59,7 +66,6 @@ package cs448b.fp.utils
 		
 		private function onLayoutTreeEvent(e:MappingEvent):void
 		{
-			// TODO: handle mapping event here
 			trace("LayoutTree - Mouse Down! " + e.name + " " + e.value);	
 			
 			if (_selectedContentID != 0 && e.name == "add")
@@ -72,11 +78,16 @@ package cs448b.fp.utils
 								
 				_mapping.addMapping(_selectedContentID, e.value);	
 				
-				// TODO: give feedback to users	
+				// give feedback to users	
+				var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   
 			}
 			else if (_selectedContentID != 0 && e.name == "remove")
 			{
 				_mapping.removeMapping(false, e.value);	
+				// give feedback to users	
+				message = "Mapping removed: " + _selectedContentID + "--" + e.value;
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   				
 			}
 			_selectedLayoutID = e.value;
 			_mapping.printMapping();
@@ -93,10 +104,23 @@ package cs448b.fp.utils
 			
 			var root:NodeSprite = _contentTree.tree.root as NodeSprite;
 			var nodeCount:Number = 1;
-				
+	        
+	        if (_currentStage == 0)	// To the hierarchical stage
+	       	{
+	       		_currentStage = 1;
+		        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   				
+	       	}
+	       	trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
+    		
+        	if (_contentTree.tree.nodes.length >= _contentTree._currentStep)	// whole tree traversed
+        	{
+        		_currentStage = 2;
+	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
+        	}		       	
 	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 	        	if (nodeCount == _contentTree._currentStep)	// found the current node to look at
 	        	{
+        		
 					if (nn.childDegree == 0) // don't do anything, onto the next node
 					{
 						_contentTree._currentStep++;
@@ -123,6 +147,7 @@ package cs448b.fp.utils
 					}	        		
 	        	}
 	        	nodeCount++;
+    	        	
 			});			
 		}
 
@@ -173,6 +198,9 @@ package cs448b.fp.utils
 	        	if (a != null && Number(nn.name) == _mapping.getMappedIndex(Number(a.name), 1))	
 	        	{
 	        		// nn is M(a)
+	        		
+	        		if (nn.childDegree == 0)	// skip this node on the content
+	        			_contentTree._currentStep++;
 					_layoutTree.blurOtherNodes(nn);	        		
 	        		_layoutTree.activateAllDescendants(nn);
 	        	}
