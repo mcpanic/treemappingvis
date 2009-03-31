@@ -122,7 +122,9 @@ package cs448b.fp.tree
 		{
 			if(n == null) 
 				return;
-			if (n.props["activated"] == true)	// only when activated
+			if (n.props["selected"] == true)
+			;
+			else if (n.props["activated"] == true)	// only when activated
 			{
 				n.lineColor = 0xffFF0000; 
 				n.lineWidth = 15;
@@ -134,17 +136,25 @@ package cs448b.fp.tree
 		{
 			if(n == null) 
 				return;
-			n.lineColor = nodes.lineColor; 
-			n.lineWidth = nodes.lineWidth;
-			n.fillColor = nodes.fillColor;//0xff8888FF;
+			if (n.props["selected"] == true)
+			;
+			else if (n.props["activated"] == true)
+			{
+				n.lineColor = 0xff0000FF; 
+				n.lineWidth = 15;
+				n.fillColor = 0xffFFFFAAAA;				
+			}
+//			n.lineColor = nodes.lineColor;
+//			n.lineWidth = nodes.lineWidth;
+//			n.fillColor = nodes.fillColor;//0xff8888FF;
 			//n.fillAlpha = n.lineAlpha = 1 / 25;
 			
-			if(nodePulled)
-			{
-				unblurOtherNodes();
-				pushNodeback(n);
-				nodePulled = false;
-			}
+//			if(nodePulled)
+//			{
+//				unblurOtherNodes();
+//				pushNodeback(n);
+//				nodePulled = false;
+//			}
 		}
 		
 		private var nodePulled:Boolean = false;
@@ -161,22 +171,49 @@ package cs448b.fp.tree
    		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
-			if (n.props["activated"] == true)
+			//var isUnselect:Boolean = false;
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (n != nn && nn.props["selected"] == true)	// unselect previously selected node
+				{	
+					nn.props["selected"] = false;
+				}
+				if (nn.props["activated"] == true)
+				{
+					nn.lineColor = 0xff0000FF;
+					nn.lineWidth = 15;
+					nn.fillColor = 0xffFFFFAAAA;		
+				}			
+			});			
+			
+			if (n.props["selected"] == true)
+			{
+				n.props["selected"] = false;
+				// dispatch mapping event
+				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "remove", Number(n.name)));				
+			}
+			else if (n.props["activated"] == true)
 			{
 				super.onMouseDown(n);
 				blurOtherNodes(n);
-				
+				n.lineColor = 0xffFF0000; 
+				n.lineWidth = 15;
+				n.fillColor = 0xffFFFFAAAA;
+				n.props["image"].alpha = 1;
+				n.props["selected"] = true;
 				// dispatch mapping event
-				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN));
+				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));				
+//				if(!nodePulled)
+//				{
+//					//blurOtherNodes(n);
+//					//pullNodeForward(n);
+//					//nodePulled = true;
+//				
+//					tf.text = n.name;
+//				}				
 			}
-//			if(!nodePulled)
-//			{
-//				blurOtherNodes(n);
-//				pullNodeForward(n);
-//				nodePulled = true;
-//			
-//				tf.text = n.name;
-//			}
+			
+
 		}
 		
 		private var _idx:Number;
@@ -193,11 +230,12 @@ package cs448b.fp.tree
 			n.parent.setChildIndex(n, _idx);
 		}	
 
-		private function blurOtherNodes(n:NodeSprite):void
+		public function blurOtherNodes(n:NodeSprite):void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				if (n != nn)
+				if (n != nn && nn.props["activated"] == false)
+				//if (n != nn)
 				{
 					//nn.fillAlpha = 0.5;
 					nn.props["image"].alpha = 0.5;
@@ -205,12 +243,14 @@ package cs448b.fp.tree
 			});
 	 	}
 
-		private function unblurOtherNodes():void
+		public function unblurOtherNodes():void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
 					//nn.fillAlpha = 1;
+					nn.props["image"].visible = true;
 					nn.props["image"].alpha = 1;
+					nn.visible = true;
 					nn.lineColor = nodes.lineColor; 
 					nn.lineWidth = nodes.lineWidth;
 					nn.fillColor = nodes.fillColor;
@@ -279,43 +319,55 @@ package cs448b.fp.tree
 			return vis.update(t, operators);
 		}		
 		
-		private var _currentStep:Number = 0;
-		public function showNextStep():void
+		/**
+		 * Hide all descendents of the given node from the screen
+		 */		
+		public function hideAllDescendants(n:NodeSprite):void
 		{
-			_currentStep++;
-			unblurOtherNodes();	// initialize visual attributes
-			
+			for(var i:uint=0; i<n.childDegree; i++)
+			{
+				n.getChildNode(i).visible = false;
+				n.getChildNode(i).props["image"].visible = false;
+				hideAllDescendants(n.getChildNode(i));
+			}			
+		}
+		
+		/**
+		 * Activate all descendents of the given node from the screen
+		 */
+		public function activateAllDescendants(n:NodeSprite):void
+		{
+			n.visible = true;
+			n.lineColor = 0xff0000FF; 
+			n.lineWidth = 15;
+			n.fillColor = 0xffFFFFAAAA;
+			n.props["activated"] = true;
+			n.props["image"].alpha = 1;			
+			for(var i:uint=0; i<n.childDegree; i++)
+			{
+				activateAllDescendants(n.getChildNode(i));
+			}				
+		}
+		
+		public var _currentStep:Number = 0;
+
+		/**
+		 * Get the current node shown in the hierarchical matching
+		 */					
+		public function getCurrentProcessingNode():Number
+		{
+			if (!_isContentTree)	// nothing if layout tree
+				return -1;
 			var root:NodeSprite = tree.root as NodeSprite;
 			var nodeCount:Number = 1;
-				
+			var ret:Number = -1;	
 	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-	        	if (nodeCount == _currentStep)	// found the current node to look at
-	        	{
-					if (nn.childDegree == 0) // don't do anything, onto the next node
-					{
-						_currentStep++;
-						//nodeCount++;
-					}
-					else	// show on the screen
-					{
-						nn.visible = true;
-						nn.lineColor = 0xffFF0000; 
-						nn.lineWidth = 15;
-						nn.fillColor = 0xffFFFFAAAA;
-						nn.props["activated"] = true;
-						blurOtherNodes(nn);		
-						for(var i:uint=0; i<nn.childDegree; i++)
-						{
-							nn.getChildNode(i).props["activated"] = true;
-							nn.getChildNode(i).lineColor = 0xffFF0000; 
-							nn.getChildNode(i).lineWidth = 15;
-							nn.getChildNode(i).fillColor = 0xffFFFFAAAA;
-							nn.getChildNode(i).props["image"].alpha = 1;
-						}					
-					}	        		
-	        	}
+	        	if (nodeCount == _currentStep)
+	        		ret = Number(nn.name);
 	        	nodeCount++;
-			});			
+	        });
+	        trace(ret);
+	        return ret;			
 		}
 	}
 }

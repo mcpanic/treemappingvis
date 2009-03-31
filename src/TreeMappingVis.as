@@ -146,6 +146,7 @@ package {
 			mappingManager = new MappingManager();	
 			mappingManager.setContentTree(cascadedTree1);
 			mappingManager.setLayoutTree(cascadedTree2);
+			mappingManager.init();	// add root-root mapping
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void
@@ -187,8 +188,11 @@ package {
 			}
 			else if (event.name == "continue")
 			{
-				cascadedTree1.showNextStep();
-				cascadedTree2.showNextStep();					
+//				cascadedTree1.showNextStepContent();
+//				cascadedTree2.showNextStepLayout();		
+				
+				mappingManager.showNextStepContent();
+				mappingManager.showNextStepLayout();			
 			}
 		}
 //		
