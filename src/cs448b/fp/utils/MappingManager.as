@@ -53,6 +53,8 @@ package cs448b.fp.utils
 			// give feedback to users	
 			var message:String = "Select a mapped segment on the Layout page";
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
+			_selectedContentID = e.value;	
+/*			
 			if (_selectedLayoutID != 0 && e.name == "add")
 			{
 				// relinking only happens in layout selection
@@ -63,8 +65,7 @@ package cs448b.fp.utils
 			{
 				//_mapping.removeMapping(true, e.value);	
 			}
-			_selectedContentID = e.value;			
-			//_mapping.printMapping();
+*/					
 		}
 	
 		
@@ -75,17 +76,23 @@ package cs448b.fp.utils
 			if (_selectedContentID != 0 && e.name == "add")
 			{
 				// first, remove the old mapping if any
+				// case 1: content needs to remove its old mapping
 				if (_mapping.getMappedIndex(e.value, 0) != -1)
-				{
+				{					
+					_contentTree.markMapping(_mapping.getMappedIndex(e.value, 0), 0);
+					_layoutTree.markMapping(e.value, 0);		
+								
+					//trace("case 1: " + _mapping.getMappedIndex(e.value, 0));
 					_mapping.removeMapping(false, e.value);	
-					_contentTree.markMapping(_selectedContentID, 0);
-					_layoutTree.markMapping(e.value, 0);					
 				}
+				// case 2: layout needs to remove its old mapping
 				if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
-				{
-					_mapping.removeMapping(true, _selectedContentID);
+				{				
 					_contentTree.markMapping(_selectedContentID, 0);
-					_layoutTree.markMapping(e.value, 0);						
+					_layoutTree.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), 0);	
+					
+					//trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
+					_mapping.removeMapping(true, _selectedContentID);					
 				}				
 				_mapping.addMapping(_selectedContentID, e.value);	
 				_contentTree.markMapping(_selectedContentID, 1);
@@ -99,19 +106,58 @@ package cs448b.fp.utils
 			{
 				_mapping.removeMapping(false, e.value);	
 				_contentTree.markMapping(_selectedContentID, 0);
-				_layoutTree.markMapping(e.value, 0);				
+				_layoutTree.markMapping(e.value, 0);		
+						
 				// give feedback to users	
 				message = "Mapping removed: " + _selectedContentID + "--" + e.value;
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   				
 			}
+			
 			_selectedLayoutID = e.value;
-			//_mapping.printMapping();
+			
 			message = _mapping.printMapping();
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  
+			
+			if (_selectedContentID == 0)	// layout is selected alone.
+			{
+				;
+			}
+			else	// Reset selections
+			{
+				resetSelections(_selectedContentID, _selectedLayoutID);
+			}
 		}
 
-
-
+		/**
+		 * Reset selections
+		 */
+		private function resetSelections(selectedContentID:Number, selectedLayoutID:Number):void
+		{
+			_contentTree.unmarkSelectedID(selectedContentID);
+			_layoutTree.unmarkSelectedID(selectedLayoutID);
+			
+			_selectedContentID = 0;
+			_selectedLayoutID = 0;
+		}
+		
+		/**
+		 * Find the closest ancestor of the given node whose mapping is not null (get 'a')
+		 */
+		private function getClosestValidAncestor(n:NodeSprite):NodeSprite
+		{
+			var resultNode:NodeSprite;
+			if (_mapping.getMappedIndex(Number(n.name), 1) != -1)	// if mapping is not null
+				resultNode = n;
+			else
+			{
+				if (n.parentNode == null)
+					resultNode = null;
+				else
+					getClosestValidAncestor(n.parentNode);
+			}
+			return resultNode;
+		}
+		
 		/**
 		 * Display content page for the quasi-hierarchical matching process
 		 */			
@@ -209,84 +255,6 @@ package cs448b.fp.utils
 			return ret;			
 		}
 						
-		/**
-		 * Display content page for the hierarchical matching process
-		 */			
-		private function showMatchingContent():void
-		{		
-			var root:NodeSprite = _contentTree.tree.root as NodeSprite;
-			var nodeCount:Number = 1;	
-	       	trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
-	       	
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-	        	if (nodeCount == _contentTree._currentStep)	// found the current node to look at
-	        	{      		
-					if (nn.childDegree == 0) // don't do anything, onto the next node
-						_contentTree._currentStep++;
-					else	// show on the screen
-					{	
-						_contentTree.blurOtherNodes(nn);		
-						for(var i:uint=0; i<nn.childDegree; i++)
-						{
-							_contentTree.markActivated(nn.getChildNode(i));
-							_contentTree.hideAllDescendants(nn.getChildNode(i));
-						}					
-					}	        		
-	        	}
-	        	nodeCount++;
-    	        	
-			});								
-		}
-
-		/**
-		 * Display layout page for the hierarchical matching process
-		 */				
-		private function showMatchingLayout():void
-		{
-			var cRoot:NodeSprite = _contentTree.tree.root as NodeSprite;
-			var lRoot:NodeSprite = _layoutTree.tree.root as NodeSprite;
-			var isMappingNull:Boolean = true;
-			//var nodeCount:Number = 1;
-			
-			// 1) Get the current node 'n' on the matching process 
-			var currentNodeID:Number = _contentTree.getCurrentProcessingNodeID();
-			var a:NodeSprite = null;
-			
-			// 2) Find the closest ancestor a of n such that M(a) is not null 
-			cRoot.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (Number(nn.name) == currentNodeID)	// n
-				{
-					a = getClosestValidAncestor(nn);	// a
-				} 
-			});
-			
-			// then activate descendants of M(a)
-			//var ma:NodeSprite = null;				
-	        lRoot.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-	        	if (a != null && Number(nn.name) == _mapping.getMappedIndex(Number(a.name), 1))	
-	        	{
-	        		// nn is M(a)	        		
-	        		if (nn.childDegree == 0)	// skip this node on the content
-	        			_contentTree._currentStep++;
-	        		else
-	        		{
-	        			isMappingNull = false;
-						_layoutTree.blurOtherNodes(nn);	        			
-						for(var i:uint=0; i<nn.childDegree; i++)
-						{
-		        			_layoutTree.activateAllDescendants(nn.getChildNode(i));
-						}
-	        		}
-	        	}
-	        	//nodeCount++;
-			});		
-			
-			// handle the case where there is nothing to show
-        	if (isMappingNull == true)	
-        	{
-        		_contentTree._currentStep++;
-        	}
-		}
 
 		/**
 		 * Display activated nodes for the hierarchical matching process
@@ -315,81 +283,7 @@ package cs448b.fp.utils
 			}
 			return ret;
 		}
-								
-		/**
-		 * Proceed and display the next step in the hierarchical matching process
-		 */					
-		public function showNextStepContent():void
-		{
-			_contentTree._currentStep++;
-			_contentTree.unblurOtherNodes();	// initialize visual attributes
-        
-	        if (_currentStage == 0)	// To the hierarchical stage
-	       	{
-	       		_currentStage = 1;
-		        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   
-		        showMatchingContent();				
-	       	}
-	       	else if (_currentStage == 1)
-	       	{
-	        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
-	        	{
-	        		_currentStage = 2;
-		       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
-	        		showQuasiMatchingContent();
-	        	}
-	        	else		       		
-	       			showMatchingContent();
-	       		
-	       	}
-	       	else if (_currentStage == 2)
-	       	{
-	       		showQuasiMatchingContent();
-	       	}
-
-		}
-
-		/**
-		 * Find the closest ancestor of the given node whose mapping is not null (get 'a')
-		 */
-		public function getClosestValidAncestor(n:NodeSprite):NodeSprite
-		{
-			var resultNode:NodeSprite;
-			if (_mapping.getMappedIndex(Number(n.name), 1) != -1)	// if mapping is not null
-				resultNode = n;
-			else
-			{
-				if (n.parentNode == null)
-					resultNode = null;
-				else
-					getClosestValidAncestor(n.parentNode);
-			}
-			return resultNode;
-		}
-				
-		/**
-		 * Dynamically display activated nodes, based on the current content node processing.
-		 */
-		public function showNextStepLayout():void
-		{
-			_layoutTree.unblurOtherNodes();	// initialize visual attributes
-			
-	        if (_currentStage == 0)	// To the hierarchical stage
-	       	{
-	       		// cannot be here		
-	       	}
-	       	else if (_currentStage == 1)
-	       	{
-	       		showMatchingLayout();
-	       	}
-	       	else if (_currentStage == 2)
-	       	{
-	       		showQuasiMatchingLayout();
-	       	}		
-
-		}
-		
-						
+															
 		/**
 		 * Proceed and display the next step in the hierarchical matching process
 		 */					
@@ -403,8 +297,6 @@ package cs448b.fp.utils
 	       	{
 	       		_currentStage = 1;
 		        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   
-//		        showMatchingLayout();
-//		        showMatchingContent();	
 		        if (showMatching() == false)	// if nothing shown, on to the next 
 		        	showNextStep();			
 	       	}
@@ -419,9 +311,7 @@ package cs448b.fp.utils
 	        		
 	        	}
 	        	else		       	
-	        	{
-//	       			showMatchingLayout();
-//	       			showMatchingContent();	        		
+	        	{	        		
 					if (showMatching() == false)	// if nothing shown, on to the next
 						showNextStep();		
 	       		}
@@ -434,6 +324,140 @@ package cs448b.fp.utils
 	       		
 	       	}
 
-		}		
+		}	
+		
+		
+//		/**
+//		 * Display content page for the hierarchical matching process
+//		 */			
+//		private function showMatchingContent():void
+//		{		
+//			var root:NodeSprite = _contentTree.tree.root as NodeSprite;
+//			var nodeCount:Number = 1;	
+//	       	trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
+//	       	
+//	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+//	        	if (nodeCount == _contentTree._currentStep)	// found the current node to look at
+//	        	{      		
+//					if (nn.childDegree == 0) // don't do anything, onto the next node
+//						_contentTree._currentStep++;
+//					else	// show on the screen
+//					{	
+//						_contentTree.blurOtherNodes(nn);		
+//						for(var i:uint=0; i<nn.childDegree; i++)
+//						{
+//							_contentTree.markActivated(nn.getChildNode(i));
+//							_contentTree.hideAllDescendants(nn.getChildNode(i));
+//						}					
+//					}	        		
+//	        	}
+//	        	nodeCount++;
+//    	        	
+//			});								
+//		}
+//
+//		/**
+//		 * Display layout page for the hierarchical matching process
+//		 */				
+//		private function showMatchingLayout():void
+//		{
+//			var cRoot:NodeSprite = _contentTree.tree.root as NodeSprite;
+//			var lRoot:NodeSprite = _layoutTree.tree.root as NodeSprite;
+//			var isMappingNull:Boolean = true;
+//			//var nodeCount:Number = 1;
+//			
+//			// 1) Get the current node 'n' on the matching process 
+//			var currentNodeID:Number = _contentTree.getCurrentProcessingNodeID();
+//			var a:NodeSprite = null;
+//			
+//			// 2) Find the closest ancestor a of n such that M(a) is not null 
+//			cRoot.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+//				if (Number(nn.name) == currentNodeID)	// n
+//				{
+//					a = getClosestValidAncestor(nn);	// a
+//				} 
+//			});
+//			
+//			// then activate descendants of M(a)
+//			//var ma:NodeSprite = null;				
+//	        lRoot.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+//	        	if (a != null && Number(nn.name) == _mapping.getMappedIndex(Number(a.name), 1))	
+//	        	{
+//	        		// nn is M(a)	        		
+//	        		if (nn.childDegree == 0)	// skip this node on the content
+//	        			_contentTree._currentStep++;
+//	        		else
+//	        		{
+//	        			isMappingNull = false;
+//						_layoutTree.blurOtherNodes(nn);	        			
+//						for(var i:uint=0; i<nn.childDegree; i++)
+//						{
+//		        			_layoutTree.activateAllDescendants(nn.getChildNode(i));
+//						}
+//	        		}
+//	        	}
+//	        	//nodeCount++;
+//			});		
+//			
+//			// handle the case where there is nothing to show
+//        	if (isMappingNull == true)	
+//        	{
+//        		_contentTree._currentStep++;
+//        	}
+//		}
+//		/**
+//		 * Proceed and display the next step in the hierarchical matching process
+//		 */					
+//		public function showNextStepContent():void
+//		{
+//			_contentTree._currentStep++;
+//			_contentTree.unblurOtherNodes();	// initialize visual attributes
+//        
+//	        if (_currentStage == 0)	// To the hierarchical stage
+//	       	{
+//	       		_currentStage = 1;
+//		        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   
+//		        showMatchingContent();				
+//	       	}
+//	       	else if (_currentStage == 1)
+//	       	{
+//	        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
+//	        	{
+//	        		_currentStage = 2;
+//		       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
+//	        		showQuasiMatchingContent();
+//	        	}
+//	        	else		       		
+//	       			showMatchingContent();
+//	       		
+//	       	}
+//	       	else if (_currentStage == 2)
+//	       	{
+//	       		showQuasiMatchingContent();
+//	       	}
+//
+//		}		
+//				
+//		/**
+//		 * Dynamically display activated nodes, based on the current content node processing.
+//		 */
+//		public function showNextStepLayout():void
+//		{
+//			_layoutTree.unblurOtherNodes();	// initialize visual attributes
+//			
+//	        if (_currentStage == 0)	// To the hierarchical stage
+//	       	{
+//	       		// cannot be here		
+//	       	}
+//	       	else if (_currentStage == 1)
+//	       	{
+//	       		showMatchingLayout();
+//	       	}
+//	       	else if (_currentStage == 2)
+//	       	{
+//	       		showQuasiMatchingLayout();
+//	       	}		
+//
+//		}			
 	}
 }
