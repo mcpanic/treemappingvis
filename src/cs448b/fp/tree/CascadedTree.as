@@ -2,19 +2,21 @@ package cs448b.fp.tree
 {
 	import cs448b.fp.utils.*;
 	
+	import fl.controls.Button;
+	
 	import flare.animate.Transitioner;
+	import flare.display.TextSprite;
 	import flare.util.Shapes;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
-	import flare.display.TextSprite;
-	import flash.text.TextFormat;	
+	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
-
+	import flash.text.TextFormat;
 						
 	public class CascadedTree extends AbstractTree
 	{		
@@ -23,6 +25,7 @@ package cs448b.fp.tree
 		private var _canvasHeight:Number = 700;
 		private var _title:TextSprite;
 		private var _textFormat:TextFormat;
+		private var _unmapButton:Button;
 				
 //		private var tf:TextField = new TextField();
 			
@@ -54,6 +57,23 @@ package cs448b.fp.tree
 			
 			_textFormat = new TextFormat("Verdana,Tahoma,Arial",14,0,false);
 			_textFormat.color = "0xFFFFFF";
+
+            						
+			tf.x = 10;
+			tf.y = -20;
+			//tf.scaleX = 2;
+			//tf.scaleY = 2;
+			//tf.height = 30;
+			addChild(tf);
+			
+			addLabel();
+			addUnmapButton();
+										
+			addChild(vis);
+		}
+		
+		private function addLabel():void
+		{
             _title = new TextSprite("", _textFormat);
             _title.horizontalAnchor = TextSprite.CENTER;
             if (_isContentTree == true)
@@ -63,18 +83,55 @@ package cs448b.fp.tree
             	
             _title.x = 270;
             _title.y = -20;
-            addChild( _title );
-            						
-			tf.x = 10;
-			tf.y = -20;
-			//tf.scaleX = 2;
-			//tf.scaleY = 2;
-			//tf.height = 30;
-			addChild(tf);
-										
-			addChild(vis);
+            addChild( _title );			
 		}
 		
+		/**
+		 * Add unmap button for each tree layout
+		 */		
+		private function addUnmapButton():void
+		{
+			var tf:TextFormat;
+			tf = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
+			tf.color = "0xFFFFFF";
+						
+			_unmapButton = new Button();
+			_unmapButton.label = "Assign no mapping";
+			_unmapButton.toggle = true;
+			_unmapButton.x = 200;
+			_unmapButton.y = 500;
+			_unmapButton.width = 150;			
+           	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
+           	_unmapButton.setStyle("textFormat", tf);
+           	addChild(_unmapButton);  			
+		}
+
+		
+		/**
+		 * Mark the selected node as unmapped
+		 */
+		private function onUnmapButton(event:MouseEvent):void
+		{
+			var selectedID:Number = 0;
+			// get the selected node
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (nn.props["selected"] == true)	// find the selected node
+				{	
+					selectedID = Number(nn.name);
+					markMapping(selectedID, 2);					
+					blurOtherNodes(nn);		
+					for(var i:uint=0; i<nn.childDegree; i++)
+					{
+						//markActivated(nn.getChildNode(i));
+						activateAllDescendants(nn.getChildNode(i));
+					}					
+				}			
+			});								
+			var message:String = "Assigned as no mapping: " + selectedID;	
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "unmap", selectedID, message) );    
+		}
+				
 		private function getScale():Number
 		{
 			var zoomScale:Number;			
@@ -199,7 +256,7 @@ package cs448b.fp.tree
 				{
 					nn.lineColor = 0xff0000FF;
 					nn.lineWidth = 15;
-					nn.fillColor = 0xffFFFFAAAA;		
+					//nn.fillColor = 0xffFFFFAAAA;		
 				}			
 			});			
 			
@@ -215,19 +272,11 @@ package cs448b.fp.tree
 				blurOtherNodes(n);
 				n.lineColor = 0xffFF0000; 
 				n.lineWidth = 15;
-				n.fillColor = 0xffFFFFAAAA;
+				//n.fillColor = 0xffFFFFAAAA;
 				n.props["image"].alpha = 1;
 				n.props["selected"] = true;
 				// dispatch mapping event
-				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));				
-//				if(!nodePulled)
-//				{
-//					//blurOtherNodes(n);
-//					//pullNodeForward(n);
-//					//nodePulled = true;
-//				
-//					tf.text = n.name;
-//				}				
+				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
 			}
 			
 
@@ -275,34 +324,44 @@ package cs448b.fp.tree
 			});
 	 	}
 
-		
+		// Mark the nodes that are activated, bothinternally and visually
+		public function markActivated(nn:NodeSprite):void
+		{
+			nn.props["activated"] = true;
+			nn.lineColor = 0xff0000FF; 
+			nn.lineWidth = 15;
+			//nn.fillColor = 0xffFFFFAAAA;
+			nn.props["image"].alpha = 1;
+		}
+				
 		// Mark the nodes that are mapped, both internally and visually
-		public function markMapping(id:Number):void
+		public function markMapping(id:Number, action:Number):void
 		{	
 			var root:NodeSprite = tree.root as NodeSprite;				        
 	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {			
 	        	if (id == Number(nn.name))
 	        	{	
-	        		nn.props["mapped"] = 1;	// 1: mapped, 2: unmapped, 0: null (default)
-					nn.fillColor = 0xffFFFFAAAA;
-					nn.props["image"].visible = false;	        		
+	        		if (action == 1)
+	        		{
+						nn.props["mapped"] = 1;	// 1: mapped, 2: unmapped, 0: null (default)
+						nn.fillColor = 0xffFFAAAAFF;
+						nn.props["image"].visible = false;	        		
+	        		}	 
+	        		else if (action == 2)
+	        		{
+	        			nn.props["mapped"] = 2;	// 1: mapped, 2: unmapped, 0: null (default)
+						nn.fillColor = 0xffFFFFAAAA;
+						nn.props["image"].visible = false;	        		
+	        		}
+	        		else
+	        		{
+	        			nn.props["mapped"] = 0;	// 1: mapped, 2: unmapped, 0: null (default)
+						nn.fillColor = nodes.fillColor;
+						nn.props["image"].visible = true;	        		
+	        		}       			        		       		
 	        	}
 	        });
 	    }
-
-		// Unmark the nodes that are mapped, both internally and visually
-		public function unmarkMapping(id:Number):void
-		{		
-			var root:NodeSprite = tree.root as NodeSprite;						
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {			
-	        	if (id == Number(nn.name))
-	        	{
-	        		nn.props["mapped"] = 2;	// 1: mapped, 2: unmapped, 0: null (default)
-	        		nn.fillColor = nodes.fillColor;
-	        		nn.props["image"].visible = true;	
-	        	}
-	        });
-	    }	
 	    
 		public function getDepth():uint
 		{
@@ -386,8 +445,9 @@ package cs448b.fp.tree
 			n.visible = true;
 			n.lineColor = 0xff0000FF; 
 			n.lineWidth = 15;
-			n.fillColor = 0xffFFFFAAAA;
+			//n.fillColor = 0xffFFFFAAAA;
 			n.props["activated"] = true;
+			n.props["image"].visible = true;
 			n.props["image"].alpha = 1;			
 			for(var i:uint=0; i<n.childDegree; i++)
 			{
@@ -398,9 +458,9 @@ package cs448b.fp.tree
 		public var _currentStep:Number = 0;
 
 		/**
-		 * Get the current node shown in the hierarchical matching
+		 * Get the current node ID shown in the hierarchical matching
 		 */					
-		public function getCurrentProcessingNode():Number
+		public function getCurrentProcessingNodeID():Number
 		{
 			if (!_isContentTree)	// nothing if layout tree
 				return -1;
@@ -412,8 +472,27 @@ package cs448b.fp.tree
 	        		ret = Number(nn.name);
 	        	nodeCount++;
 	        });
-	        trace(ret);
+	        trace("getCurrentProcessingNodeID: " + ret);
 	        return ret;			
 		}
+		
+		/**
+		 * Get the current node shown in the hierarchical matching
+		 */					
+		public function getCurrentProcessingNode():NodeSprite
+		{
+			if (!_isContentTree)	// nothing if layout tree
+				return null;
+			var root:NodeSprite = tree.root as NodeSprite;
+			var nodeCount:Number = 1;
+			var node:NodeSprite = null;	
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+	        	if (nodeCount == _currentStep)
+	        		node = nn;
+	        	nodeCount++;
+	        });
+
+	        return node;			
+		}		
 	}
 }
