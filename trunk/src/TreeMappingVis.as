@@ -112,6 +112,9 @@ package {
 			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 25, 25, true);
 			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 600, 25, false);
 
+			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
+			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
+			
 			addChild(cascadedTree1);
 			addChild(cascadedTree2);
 			
@@ -148,7 +151,9 @@ package {
 			mappingManager.setContentTree(cascadedTree1);
 			mappingManager.setLayoutTree(cascadedTree2);
 			mappingManager.init();	// add root-root mapping
-			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);				
+			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
+			mappingManager.showNextStep();	// for the first time	
+
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void
@@ -192,9 +197,9 @@ package {
 			{
 //				cascadedTree1.showNextStepContent();
 //				cascadedTree2.showNextStepLayout();		
-				
-				mappingManager.showNextStepContent();
-				mappingManager.showNextStepLayout();			
+				mappingManager.showNextStep();
+//				mappingManager.showNextStepContent();
+//				mappingManager.showNextStepLayout();			
 			}
 		}
 		
@@ -213,6 +218,10 @@ package {
 			{
 				controls.displayMappings(event.message);
 			}
+			else if (event.name == "unmap")
+			{
+				controls.displayFeedback(event.message);
+			}			
 		}
 	}
 }

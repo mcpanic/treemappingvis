@@ -42,7 +42,8 @@ package cs448b.fp.tree
 		private var _r:Rectangle = new Rectangle();
 		
 		private var _size:Property = Property.$("size");
-		private var _cascadeOffset:Number = 0;
+		
+		private var _cascadeOffset:Number = 10;
 		
 		private var _x:Number;
 		private var _y:Number;
