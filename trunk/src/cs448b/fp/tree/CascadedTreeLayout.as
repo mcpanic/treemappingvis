@@ -1,5 +1,6 @@
 package cs448b.fp.tree
 {
+	import cs448b.fp.utils.*;	
 	import flare.util.Property;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.*;
@@ -43,7 +44,7 @@ package cs448b.fp.tree
 		
 		private var _size:Property = Property.$("size");
 		
-		private var _cascadeOffset:Number = 10;
+		private var _cascadeOffset:Number = Theme.CASCADE_OFFSET;
 		
 		private var _x:Number;
 		private var _y:Number;
@@ -126,25 +127,24 @@ package cs448b.fp.tree
 	    private function computeAreas(root:NodeSprite):void
 	    {
 	    	var leafCount:int = 0;
- 
-	        // reset all sizes to zero
+
 	        root.visitTreeDepthFirst(function(n:NodeSprite):void {
 //	        	n.props[AREA] = 0;
 	        	// mcpanic
 	        	n.props[AREA] = n.props["width"] * n.props["height"];
 	        	
 	            // apply dropshadow filter for all nodes to give 3D-like look
-	            var filter:BitmapFilter = getBitmapFilter();
-	            var myFilters:Array = new Array();
-	            myFilters.push(filter);
-				n.filters = myFilters;	        	
+	            if (Theme.USE_DROPSHADOW)
+	            {
+	            	var filter:BitmapFilter = getBitmapFilter();
+	            	var myFilters:Array = new Array();
+	            	myFilters.push(filter);
+					n.filters = myFilters;
+	            }
 	        });
 
-	        // reset all sizes to zero
+	        // apply offsets
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
-	        	//trace(n.name);
-//	        	n.x = Number(n.props["x"]) + n.depth * 10;
-//	        	n.y = Number(n.props["y"]) + n.depth * 10;
 				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
 				//n.props["image"].visible = false;
 				n.props["image"].x = Number(n.props["x"]) + n.depth * _cascadeOffset;

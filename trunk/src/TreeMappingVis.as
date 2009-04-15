@@ -2,9 +2,7 @@ package {
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.tree.CascadedTree;
 	import cs448b.fp.tree.TreeEventSynchronizer;
-	import cs448b.fp.utils.CascadedTreeControls;
-	import cs448b.fp.utils.ControlsEvent;
-	import cs448b.fp.utils.MappingManager;
+	import cs448b.fp.utils.*;
 	
 	import flare.vis.data.NodeSprite;
 	
@@ -109,8 +107,8 @@ package {
 		 */
 		private function displayTree():void
 		{
-			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), 25, 25, true);
-			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), 600, 25, false);
+			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, true);
+			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, false);
 
 			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
 			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
@@ -120,7 +118,7 @@ package {
 			
 			var maxDepth:uint = 0;
 			maxDepth = (cascadedTree1.getDepth() > cascadedTree2.getDepth())? cascadedTree1.getDepth(): cascadedTree2.getDepth();
-//			trace(cascadedTree1.getDepth() + " " + cascadedTree2.getDepth() + " " + maxDepth);
+
 			controls.setSliderDepth(maxDepth);
 			controls.setSliderValue(maxDepth);
 			
@@ -133,7 +131,6 @@ package {
 		 */
 		private function printTree(n:NodeSprite, d:int) : void
 		{
-//			trace(n.dataLabel+"\t"+n.name+"\t"+n.depth+"\t"+n.childDegree+"\t"+n.w+"\t"+n.h);
 			trace(n.name+"\t"+n.depth+"\t"+n.childDegree+"\t"+n.w+"\t"+n.h);
 			for (var i:uint = 0; i < n.childDegree; ++i) {
 				printTree(n.getChildNode(i), d+1);
@@ -155,25 +152,6 @@ package {
 			mappingManager.showNextStep();	// for the first time	
 
 		}
-		
-		private function handleKeyDown(ke:KeyboardEvent):void
-		{
-			if(ke.keyCode == Keyboard.LEFT)
-			{
-				cascadedTree1.resetPosition(1).play();
-			}
-			else if(ke.keyCode == Keyboard.RIGHT)
-			{
-				cascadedTree2.resetPosition(1).play();
-			}			
-			if(ke.keyCode > 48 && ke.keyCode < 56) // numbers
-			{
-				// set depth
-				cascadedTree1.setVisibleDepth(ke.keyCode - 49);
-				cascadedTree2.setVisibleDepth(ke.keyCode - 49);
-			}		
-		}
-
 
 		private function onControlsEvent( event:ControlsEvent ):void
 		{
@@ -194,12 +172,8 @@ package {
 				cascadedTree2.setVisibleDepth(event.value);				
 			}
 			else if (event.name == "continue")
-			{
-//				cascadedTree1.showNextStepContent();
-//				cascadedTree2.showNextStepLayout();		
-				mappingManager.showNextStep();
-//				mappingManager.showNextStepContent();
-//				mappingManager.showNextStepLayout();			
+			{	
+				mappingManager.showNextStep();			
 			}
 		}
 		
@@ -223,6 +197,24 @@ package {
 				controls.displayFeedback(event.message);
 			}			
 		}
+		
+		private function handleKeyDown(ke:KeyboardEvent):void
+		{
+			if(ke.keyCode == Keyboard.LEFT)
+			{
+				cascadedTree1.resetPosition(1).play();
+			}
+			else if(ke.keyCode == Keyboard.RIGHT)
+			{
+				cascadedTree2.resetPosition(1).play();
+			}			
+			if(ke.keyCode > 48 && ke.keyCode < 56) // numbers
+			{
+				// set depth
+				cascadedTree1.setVisibleDepth(ke.keyCode - 49);
+				cascadedTree2.setVisibleDepth(ke.keyCode - 49);
+			}		
+		}		
 	}
 }
 
