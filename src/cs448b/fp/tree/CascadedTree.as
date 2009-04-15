@@ -24,7 +24,7 @@ package cs448b.fp.tree
 		private var _canvasWidth:Number = 550;
 		private var _canvasHeight:Number = 700;
 		private var _title:TextSprite;
-		private var _textFormat:TextFormat;
+//		private var _textFormat:TextFormat;
 		private var _unmapButton:Button;
 				
 //		private var tf:TextField = new TextField();
@@ -55,8 +55,8 @@ package cs448b.fp.tree
 			vis.scaleX = getScale();
 			vis.scaleY = getScale();
 			
-			_textFormat = new TextFormat("Verdana,Tahoma,Arial",14,0,false);
-			_textFormat.color = "0xFFFFFF";
+//			_textFormat = new TextFormat("Verdana,Tahoma,Arial",14,0,false);
+//			_textFormat.color = "0xFFFFFF";
 
             						
 			tf.x = 10;
@@ -74,12 +74,12 @@ package cs448b.fp.tree
 		
 		private function addLabel():void
 		{
-            _title = new TextSprite("", _textFormat);
+            _title = new TextSprite("", Theme.FONT_LABEL); //_textFormat);
             _title.horizontalAnchor = TextSprite.CENTER;
             if (_isContentTree == true)
-            	_title.text = "Content";
+            	_title.text = Theme.LABEL_CONTENT;
             else
-            	_title.text = "Layout";
+            	_title.text = Theme.LABEL_LAYOUT;
             	
             _title.x = 270;
             _title.y = -20;
@@ -91,18 +91,18 @@ package cs448b.fp.tree
 		 */		
 		private function addUnmapButton():void
 		{
-			var tf:TextFormat;
-			tf = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
-			tf.color = "0xFFFFFF";
+//			var tf:TextFormat;
+//			tf = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
+//			tf.color = "0xFFFFFF";
 						
 			_unmapButton = new Button();
-			_unmapButton.label = "Assign no mapping";
+			_unmapButton.label = Theme.LABEL_NOMAPPING;
 			_unmapButton.toggle = true;
 			_unmapButton.x = 200;
 			_unmapButton.y = 500;
 			_unmapButton.width = 150;			
            	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
-           	_unmapButton.setStyle("textFormat", tf);
+           	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); //tf);
            	addChild(_unmapButton);  			
 		}
 
@@ -200,8 +200,11 @@ package cs448b.fp.tree
 			;
 			else if (n.props["activated"] == true)	// only when activated
 			{
-				n.lineColor = 0xffFF0000; 
-				n.lineWidth = 15;
+				//n.lineColor = 0xffFF0000; 
+				//n.lineWidth = 15;
+				n.lineColor = Theme.COLOR_SELECTED;
+				n.lineWidth = Theme.LINE_WIDTH;
+				
 				//n.fillColor = 0xffFFFFAAAA;
 			}
 		}
@@ -214,8 +217,10 @@ package cs448b.fp.tree
 			;
 			else if (n.props["activated"] == true)
 			{
-				n.lineColor = 0xff0000FF; 
-				n.lineWidth = 15;
+//				n.lineColor = 0xff0000FF; 
+//				n.lineWidth = 15;
+				n.lineColor = Theme.COLOR_ACTIVATED;
+				n.lineWidth = Theme.LINE_WIDTH;				
 //				n.fillColor = 0xffFFFFAAAA;				
 			}
 //			n.lineColor = nodes.lineColor;
@@ -324,8 +329,10 @@ package cs448b.fp.tree
 		public function markActivated(nn:NodeSprite):void
 		{
 			nn.props["activated"] = true;
-			nn.lineColor = 0xff0000FF; 
-			nn.lineWidth = 15;
+//			nn.lineColor = 0xff0000FF; 
+//			nn.lineWidth = 15;
+			nn.lineColor = Theme.COLOR_ACTIVATED;
+			nn.lineWidth = Theme.LINE_WIDTH;
 			//nn.fillColor = 0xffFFFFAAAA;
 			nn.props["image"].alpha = 1;
 		}
@@ -334,8 +341,10 @@ package cs448b.fp.tree
 		public function markSelected(nn:NodeSprite):void
 		{
 			nn.props["selected"] = true;
-			nn.lineColor = 0xffFF0000; 
-			nn.lineWidth = 15;
+//			nn.lineColor = 0xffFF0000; 
+//			nn.lineWidth = 15;
+			nn.lineColor = Theme.COLOR_SELECTED;
+			nn.lineWidth = Theme.LINE_WIDTH;
 			//nn.fillColor = 0xffFFFFAAAA;
 			nn.props["image"].alpha = 1;
 		}
@@ -378,8 +387,10 @@ package cs448b.fp.tree
 			nn.props["selected"] = false;
 			if (nn.props["activated"] == true)
 			{
-				nn.lineColor = 0xff0000FF; 
-				nn.lineWidth = 15;				
+//				nn.lineColor = 0xff0000FF; 
+//				nn.lineWidth = 15;			
+				nn.lineColor = Theme.COLOR_ACTIVATED;
+				nn.lineWidth = Theme.LINE_WIDTH;					
 			}
 			else
 			{
@@ -423,13 +434,15 @@ package cs448b.fp.tree
 	        		if (action == 1)
 	        		{
 						nn.props["mapped"] = 1;	// 1: mapped, 2: unmapped, 0: null (default)
-						nn.fillColor = 0xffFFAAAAFF;
+						//nn.fillColor = 0xffFFAAAAFF;
+						nn.fillColor = Theme.COLOR_FILL_MAPPED;
 						nn.props["image"].visible = false;	        		
 	        		}	 
 	        		else if (action == 2)
 	        		{
 	        			nn.props["mapped"] = 2;	// 1: mapped, 2: unmapped, 0: null (default)
-						nn.fillColor = 0xffFFFFAAAA;
+						//nn.fillColor = 0xffFFFFAAAA;
+						nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
 						nn.props["image"].visible = false;	        		
 	        		}
 	        		else
@@ -521,8 +534,10 @@ package cs448b.fp.tree
 		public function activateAllDescendants(n:NodeSprite):void
 		{
 			n.visible = true;
-			n.lineColor = 0xff0000FF; 
-			n.lineWidth = 15;
+//			n.lineColor = 0xff0000FF; 
+//			n.lineWidth = 15;
+			n.lineColor = Theme.COLOR_ACTIVATED;
+			n.lineWidth = Theme.LINE_WIDTH;
 			//n.fillColor = 0xffFFFFAAAA;
 			n.props["activated"] = true;
 			n.props["image"].visible = true;

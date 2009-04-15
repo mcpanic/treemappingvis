@@ -25,7 +25,7 @@ package cs448b.fp.utils
 		private var _notice:TextSprite;
 		private var _feedback:TextSprite;
 		private var _mappings:TextSprite;
-		private var _textFormat:TextFormat;
+//		private var _textFormat:TextFormat;
 							
 		public function CascadedTreeControls()
 		{
@@ -33,8 +33,8 @@ package cs448b.fp.utils
 //			_titleFormat = new TextFormat("Verdana,Tahoma,Arial",16,0,true);
 //			_sectionFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,true);
 //			_legendFormat = new TextFormat("Verdana,Tahoma,Arial",11,0,true);
-			_textFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
-			_textFormat.color = "0xFFFFFF";
+//			_textFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
+//			_textFormat.color = "0xFFFFFF";
 
 			//addDepthControl();
 			//addVisualToggle();
@@ -63,7 +63,7 @@ package cs448b.fp.utils
 				
 		private function addDepthControl():void
 		{
-            _depthTitle = new TextSprite("", _textFormat);
+            _depthTitle = new TextSprite("", Theme.FONT_LABEL);//_textFormat);
             _depthTitle.horizontalAnchor = TextSprite.CENTER;
             _depthTitle.text = "Current Depth";
             this.addChild( _depthTitle );
@@ -76,7 +76,7 @@ package cs448b.fp.utils
             _depthSlider.value = _depthSlider.maximum;
             this.addChild( _depthSlider );
 
-            _depthText = new TextSprite("", _textFormat);
+            _depthText = new TextSprite("", Theme.FONT_LABEL);//_textFormat);
             _depthText.horizontalAnchor = TextSprite.CENTER;
             _depthText.text = (_depthSlider.value + 1).toString();
             this.addChild( _depthText );
@@ -95,7 +95,7 @@ package cs448b.fp.utils
 			_visualToggle.label = "View Visual Nodes";
 			_visualToggle.selected = true;
            	_visualToggle.addEventListener(MouseEvent.CLICK, onVisualToggle);
-           	_visualToggle.setStyle("textFormat", _textFormat);
+           	_visualToggle.setStyle("textFormat", Theme.FONT_LABEL);//_textFormat);
            	addChild(_visualToggle);
 		}
 
@@ -110,7 +110,7 @@ package cs448b.fp.utils
 			_fitToScreen.label = "Fit to screen";
 			_fitToScreen.toggle = true;
            	_fitToScreen.addEventListener(MouseEvent.CLICK, onFitToScreen);
-           	_fitToScreen.setStyle("textFormat", _textFormat);
+           	_fitToScreen.setStyle("textFormat", Theme.FONT_LABEL);//_textFormat);
            	addChild(_fitToScreen);         	
 		}
 
@@ -122,10 +122,10 @@ package cs448b.fp.utils
 		private function addContinueButton():void
 		{	   
 			_continueButton = new Button();
-			_continueButton.label = "Start";
+			_continueButton.label = Theme.LABEL_CONT1;
 			_continueButton.toggle = true;
            	_continueButton.addEventListener(MouseEvent.CLICK, onContinueButton);
-           	_continueButton.setStyle("textFormat", _textFormat);
+           	_continueButton.setStyle("textFormat", Theme.FONT_BUTTON);//_textFormat);
            	addChild(_continueButton);  
 		}    
 
@@ -136,9 +136,9 @@ package cs448b.fp.utils
 
 		private function addFeedback():void
 		{
-            _feedback = new TextSprite("", _textFormat);
+            _feedback = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _feedback.horizontalAnchor = TextSprite.LEFT;
-            _feedback.text = "Page loaded.";
+            _feedback.text = Theme.MSG_LOADED;
             this.addChild( _feedback );        
         }
 
@@ -149,9 +149,9 @@ package cs448b.fp.utils
                         
 		private function addNotice():void
 		{
-            _notice = new TextSprite("", _textFormat);
+            _notice = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _notice.horizontalAnchor = TextSprite.LEFT;
-            _notice.text = "Stage: Initialization";
+            _notice.text = Theme.MSG_STAGE1; 
 //            _notice.text = "Stage: Hierarchical Matching";
             this.addChild( _notice );        
         }
@@ -160,36 +160,28 @@ package cs448b.fp.utils
         {
         	if (index == 1)
         	{
-        		_continueButton.label = "Continue";
-        		_notice.text = "Stage: Hierarchical Matching";
+        		_continueButton.label = Theme.LABEL_CONT2;
+        		_notice.text = Theme.MSG_STAGE2; 
         	}
         	else if (index == 2)
         	{
-        		_continueButton.label = "Finish";
-        		_notice.text = "Stage: Quasi-Hierarchical Matching";
+        		_continueButton.label = Theme.LABEL_CONT3;
+        		_notice.text = Theme.MSG_STAGE3; 
         	}
         }	
         
 		private function addMappings():void
 		{
-            _mappings = new TextSprite("", _textFormat);
+            _mappings = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _mappings.horizontalAnchor = TextSprite.LEFT;
-            _mappings.text = "Mappings: None";
+            _mappings.text = Theme.MSG_MAPPING_NONE;
             this.addChild( _mappings );        
         }   
         
         public function displayMappings(message:String):void
         {
-        	_mappings.text = "Mappings: " + message;
+        	_mappings.text = Theme.MSG_MAPPING + message;
         }	                 
-//                        		
-//        /**
-//         * Adds a load event listener 
-//         */
-//        public function addLoadEventListener(callback:Function):void
-//        {
-//        	cb = callback;
-//        }
 
 		public function layout():void
 		{
