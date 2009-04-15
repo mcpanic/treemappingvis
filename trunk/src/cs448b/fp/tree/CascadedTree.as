@@ -202,7 +202,7 @@ package cs448b.fp.tree
 			{
 				n.lineColor = 0xffFF0000; 
 				n.lineWidth = 15;
-				n.fillColor = 0xffFFFFAAAA;
+				//n.fillColor = 0xffFFFFAAAA;
 			}
 		}
 		
@@ -216,7 +216,7 @@ package cs448b.fp.tree
 			{
 				n.lineColor = 0xff0000FF; 
 				n.lineWidth = 15;
-				n.fillColor = 0xffFFFFAAAA;				
+//				n.fillColor = 0xffFFFFAAAA;				
 			}
 //			n.lineColor = nodes.lineColor;
 //			n.lineWidth = nodes.lineWidth;
@@ -247,22 +247,22 @@ package cs448b.fp.tree
 		{
 			//var isUnselect:Boolean = false;
 			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				if (n != nn && nn.props["selected"] == true)	// unselect previously selected node
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+				if (n != nn && nn.props["selected"] == true)	
 				{	
-					nn.props["selected"] = false;
+					// unselect previously selected node
+					unmarkSelected(nn);
 				}
 				if (nn.props["activated"] == true)
 				{
-					nn.lineColor = 0xff0000FF;
-					nn.lineWidth = 15;
-					//nn.fillColor = 0xffFFFFAAAA;		
+					markActivated(nn);
 				}			
 			});			
 			
 			if (n.props["selected"] == true)
 			{
-				n.props["selected"] = false;
+				// unselect current if selected twice
+				unmarkSelected(n);
 				// dispatch mapping event
 				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "remove", Number(n.name)));				
 			}
@@ -270,11 +270,7 @@ package cs448b.fp.tree
 			{
 				super.onMouseDown(n);
 				blurOtherNodes(n);
-				n.lineColor = 0xffFF0000; 
-				n.lineWidth = 15;
-				//n.fillColor = 0xffFFFFAAAA;
-				n.props["image"].alpha = 1;
-				n.props["selected"] = true;
+				markSelected(n);
 				// dispatch mapping event
 				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
 			}
@@ -324,7 +320,7 @@ package cs448b.fp.tree
 			});
 	 	}
 
-		// Mark the nodes that are activated, bothinternally and visually
+		// Mark the nodes as activated, both internally and visually
 		public function markActivated(nn:NodeSprite):void
 		{
 			nn.props["activated"] = true;
@@ -333,7 +329,90 @@ package cs448b.fp.tree
 			//nn.fillColor = 0xffFFFFAAAA;
 			nn.props["image"].alpha = 1;
 		}
-				
+
+		// Mark the node as selected, both internally and visually
+		public function markSelected(nn:NodeSprite):void
+		{
+			nn.props["selected"] = true;
+			nn.lineColor = 0xffFF0000; 
+			nn.lineWidth = 15;
+			//nn.fillColor = 0xffFFFFAAAA;
+			nn.props["image"].alpha = 1;
+		}
+
+		// Mark the nodes as activated given the ID, both internally and visually
+		public function markActivatedID(id:Number):void
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+				if (Number(nn.name) == id)
+				{
+					markActivated(nn);
+				}
+			});			
+		}
+
+		// Mark the nodes as selected given the ID, both internally and visually
+		public function markSelectedID(id:Number):void
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+				if (Number(nn.name) == id)
+				{
+					markSelected(nn);
+				}
+			});		
+		}
+		
+		// Unmark the nodes as activated, both internally and visually
+		public function unmarkActivated(nn:NodeSprite):void
+		{
+			nn.props["activated"] = false;
+			nn.lineColor = nodes.lineColor; 
+			nn.lineWidth = nodes.lineWidth;
+		}
+
+		// Unmark the nodes as selected, both internally and visually
+		public function unmarkSelected(nn:NodeSprite):void
+		{
+			nn.props["selected"] = false;
+			if (nn.props["activated"] == true)
+			{
+				nn.lineColor = 0xff0000FF; 
+				nn.lineWidth = 15;				
+			}
+			else
+			{
+				nn.lineColor = nodes.lineColor; 
+				nn.lineWidth = nodes.lineWidth;				
+			}		
+
+		}
+
+		// Unmark the nodes as activated given the ID, both internally and visually
+		public function unmarkActivatedID(id:Number):void
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+				if (Number(nn.name) == id)
+				{
+					unmarkActivated(nn);
+				}
+			});			
+		}
+
+		// Unmark the nodes as selected given the ID, both internally and visually
+		public function unmarkSelectedID(id:Number):void
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+				if (Number(nn.name) == id)
+				{
+					unmarkSelected(nn);
+				}
+			});		
+		}
+										
 		// Mark the nodes that are mapped, both internally and visually
 		public function markMapping(id:Number, action:Number):void
 		{	
@@ -356,8 +435,8 @@ package cs448b.fp.tree
 	        		else
 	        		{
 	        			nn.props["mapped"] = 0;	// 1: mapped, 2: unmapped, 0: null (default)
-						nn.fillColor = nodes.fillColor;
-						nn.props["image"].visible = true;	        		
+						nn.props["image"].visible = true;	        	
+
 	        		}       			        		       		
 	        	}
 	        });
@@ -398,7 +477,6 @@ package cs448b.fp.tree
 		public function setVisualToggle():void 
 		{	
 			var tree:Tree = vis.data as Tree;
-//			trace(_visualToggle);
 			_visualToggle = !_visualToggle;
 			if(tree == null ) return;
 			
