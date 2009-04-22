@@ -3,15 +3,20 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;		
 	public class Theme
 	{		
+		// Enable / Disable ancestor-descendent constraint
+		public static var ENABLE_REL:Boolean = false;
+		
 		// Tree visualization options: used in tree files
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
 		public static var COLOR_SELECTED:uint = 0xffff0000;
 		public static var LINE_WIDTH:uint = 15;
+		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
+		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
 		public static var COLOR_FILL_MAPPED:Number = 0xffFFAAAAFF;
 		public static var COLOR_FILL_UNMAPPED:Number = 0xffFFFFAAAA;
 		
 		// Tree layout options: used in tree layout files
-		public static var CASCADE_OFFSET:uint = 10;
+		public static var CASCADE_OFFSET:uint = 0;
 		public static var USE_DROPSHADOW:Boolean = false;
 		public static var LAYOUT_CTREE_X:uint = 25;
 		public static var LAYOUT_CTREE_Y:uint = 25;
