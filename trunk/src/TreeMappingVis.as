@@ -195,7 +195,11 @@ package {
 			else if (event.name == "unmap")
 			{
 				controls.displayFeedback(event.message);
-			}			
+			}	
+			else if (event.name == "complete")
+			{
+				controls.displayFeedback(event.message);
+			}		
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void

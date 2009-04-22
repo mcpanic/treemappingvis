@@ -29,7 +29,9 @@ package cs448b.fp.utils
 		public function init():void
 		{
 			// add root-root mapping
-			_mapping.addMapping(Number(_contentTree.tree.root.name), Number(_layoutTree.tree.root.name));
+			_selectedContentID = Number(_contentTree.tree.root.name);
+			addMapping(Number(_layoutTree.tree.root.name));
+							
 			var message:String = _mapping.printMapping();
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  		
 			//showNextStep();	// for the first time		
@@ -68,6 +70,58 @@ package cs448b.fp.utils
 */					
 		}
 	
+		private function addMapping(layoutID:Number):void
+		{
+			// first, remove the old mapping if any
+			// case 1: content needs to remove its old mapping
+			if (_mapping.getMappedIndex(layoutID, 0) != -1)
+			{					
+				_contentTree.markMapping(_mapping.getMappedIndex(layoutID, 0), 0);
+				_layoutTree.markMapping(layoutID, 0);		
+							
+				//trace("case 1: " + _mapping.getMappedIndex(e.value, 0));
+				_mapping.removeMapping(false, layoutID);	
+			}
+			// case 2: layout needs to remove its old mapping
+			if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
+			{				
+				_contentTree.markMapping(_selectedContentID, 0);
+				_layoutTree.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), 0);	
+				
+				//trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
+				_mapping.removeMapping(true, _selectedContentID);					
+			}				
+			_mapping.addMapping(_selectedContentID, layoutID);	
+			_contentTree.markMapping(_selectedContentID, 1);
+			_layoutTree.markMapping(layoutID, 1);
+			
+			_contentTree.unmarkActivatedID(_selectedContentID);
+			_layoutTree.unmarkActivatedID(layoutID);
+
+			// Automatically activated children of the mapped node
+			if (Theme.ENABLE_REL == false)
+			{			
+				var node:NodeSprite = _contentTree.getNodeByID(_selectedContentID);
+				if (node != null)
+				{
+					for(var i:uint=0; i<node.childDegree; i++)
+					{
+						//_contentTree.markActivated(node.getChildNode(i));
+						_contentTree.activateAllDescendants(node.getChildNode(i));
+					}	
+				}
+			}		
+		}
+		
+		private function removeMapping(layoutID:Number):void
+		{
+			_mapping.removeMapping(false, layoutID);	
+			_contentTree.markMapping(_selectedContentID, 0);
+			_layoutTree.markMapping(layoutID, 0);		
+			
+			_contentTree.markActivatedID(_selectedContentID);
+			_layoutTree.markActivatedID(layoutID);	
+		}		
 		
 		private function onLayoutTreeEvent(e:MappingEvent):void
 		{
@@ -75,39 +129,17 @@ package cs448b.fp.utils
 			
 			if (_selectedContentID != 0 && e.name == "add")
 			{
-				// first, remove the old mapping if any
-				// case 1: content needs to remove its old mapping
-				if (_mapping.getMappedIndex(e.value, 0) != -1)
-				{					
-					_contentTree.markMapping(_mapping.getMappedIndex(e.value, 0), 0);
-					_layoutTree.markMapping(e.value, 0);		
-								
-					//trace("case 1: " + _mapping.getMappedIndex(e.value, 0));
-					_mapping.removeMapping(false, e.value);	
-				}
-				// case 2: layout needs to remove its old mapping
-				if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
-				{				
-					_contentTree.markMapping(_selectedContentID, 0);
-					_layoutTree.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), 0);	
-					
-					//trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
-					_mapping.removeMapping(true, _selectedContentID);					
-				}				
-				_mapping.addMapping(_selectedContentID, e.value);	
-				_contentTree.markMapping(_selectedContentID, 1);
-				_layoutTree.markMapping(e.value, 1);
-				
+				addMapping(e.value);
 				// give feedback to users	
 				var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   
+				
+				// check if the whole tree is done
+				_contentTree.checkCompleted();
 			}
 			else if (_selectedContentID != 0 && e.name == "remove")
 			{
-				_mapping.removeMapping(false, e.value);	
-				_contentTree.markMapping(_selectedContentID, 0);
-				_layoutTree.markMapping(e.value, 0);		
-						
+				removeMapping(e.value);
 				// give feedback to users	
 				message = "Mapping removed: " + _selectedContentID + "--" + e.value;
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   				
@@ -291,39 +323,54 @@ package cs448b.fp.utils
 		{
 			_contentTree._currentStep++;
 			_contentTree.unblurOtherNodes();	// initialize visual attributes
-        	_layoutTree.unblurOtherNodes();	// initialize visual attributes
+        	_layoutTree.unblurOtherNodes();		// initialize visual attributes
         	
-	        if (_currentStage == 0)	// To the hierarchical stage
-	       	{
-	       		_currentStage = 1;
-		        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   
-		        if (showMatching() == false)	// if nothing shown, on to the next 
-		        	showNextStep();			
-	       	}
-	       	else if (_currentStage == 1)
-	       	{
-	        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
+        	if (Theme.ENABLE_REL == true)
+        	{
+		        if (_currentStage == 0)	// To the hierarchical stage
+		       	{
+		       		_currentStage = 1;
+			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   
+			        if (showMatching() == false)	// if nothing shown, on to the next 
+			        	showNextStep();			
+		       	}
+		       	else if (_currentStage == 1)
+		       	{
+		        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
+		        	{
+		        		_currentStage = 2;
+			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
+		        		showQuasiMatchingLayout();
+		        		showQuasiMatchingContent();
+		        		
+		        	}
+		        	else		       	
+		        	{	        		
+						if (showMatching() == false)	// if nothing shown, on to the next
+							showNextStep();		
+		       		}
+		       		
+		       	}
+		       	else if (_currentStage == 2)
+		       	{
+		       		showQuasiMatchingLayout();
+		       		showQuasiMatchingContent();
+		       		
+		       	}
+        	}
+        	else		// Single phase, no ancestor-descendent relationship enforced
+        	{
+        		if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
 	        	{
-	        		_currentStage = 2;
-		       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
-	        		showQuasiMatchingLayout();
-	        		showQuasiMatchingContent();
-	        		
-	        	}
+	        		_contentTree.checkCompleted();
+	        		//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
+	        	}     
 	        	else		       	
 	        	{	        		
 					if (showMatching() == false)	// if nothing shown, on to the next
 						showNextStep();		
-	       		}
-	       		
-	       	}
-	       	else if (_currentStage == 2)
-	       	{
-	       		showQuasiMatchingLayout();
-	       		showQuasiMatchingContent();
-	       		
-	       	}
-
+	       		}	        	   		
+        	}
 		}	
 		
 		

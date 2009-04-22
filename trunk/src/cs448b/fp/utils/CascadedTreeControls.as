@@ -39,10 +39,14 @@ package cs448b.fp.utils
 			//addDepthControl();
 			//addVisualToggle();
 			//addFitToScreen();
-			addNotice();
+
 			addFeedback();
 			addMappings();
-			addContinueButton();
+			if (Theme.ENABLE_REL == true)
+			{
+				addContinueButton();
+				addNotice();
+			}
 			layout();
 		}
 
