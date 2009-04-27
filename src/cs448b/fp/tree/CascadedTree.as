@@ -93,7 +93,8 @@ package cs448b.fp.tree
 //			var tf:TextFormat;
 //			tf = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
 //			tf.color = "0xFFFFFF";
-						
+			if (isContentTree == false)
+				return;			
 			_unmapButton = new Button();
 			_unmapButton.label = Theme.LABEL_NOMAPPING;
 			_unmapButton.toggle = true;
@@ -221,12 +222,22 @@ package cs448b.fp.tree
 			}
 		}
 		
+		private var oldNode:NodeSprite = null;
+					
 		protected override function onMouseOver(n:NodeSprite):void
 		{
-			if(n == null) 
+			if(n == null || n == tree.root)// || oldNode == n) 
 				return;
 			if (n.props["selected"] == true)
 			;
+			else if (n.props["mapped"] == true)
+			{
+				n.lineColor = Theme.COLOR_SELECTED;
+				n.lineWidth = Theme.LINE_WIDTH;			
+				pullNodeForward(n);	
+					for (var i:uint=0; i<n.childDegree; i++)
+						pullNodeForward(n.getChildNode(i));					
+			}
 			else if (n.props["activated"] == true)	// only when activated
 			{
 				//n.lineColor = 0xffFF0000; 
@@ -234,8 +245,17 @@ package cs448b.fp.tree
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;					
 				//n.fillColor = 0xffFFFFAAAA;
-	
+//				if (nodePulled == false)
+//				{
+//					trace("hello");
+					pullNodeForward(n);	
+					for (i=0; i<n.childDegree; i++)
+						pullNodeForward(n.getChildNode(i));
+//					nodePulled = true;
+//				}
 			}
+
+			//oldNode = n;
 		}
 		
 		protected override function onMouseOut(n:NodeSprite):void
@@ -244,15 +264,27 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true)
 			;
+			else if (n.props["mapped"] == true)
+			{
+				hideLine(n);					
+			}	
 			else if (n.props["activated"] == true)
 			{
 //				n.lineColor = 0xff0000FF; 
 //				n.lineWidth = 15;
 				n.lineColor = Theme.COLOR_ACTIVATED;
 				showLineWidth(n);
+//				if (nodePulled == true)
+//				{
+//					pushNodeBack(n);	
+//					for (var i:uint=0; i<n.childDegree; i++)
+//						pushNodeBack(n.getChildNode(i));
+//					nodePulled = false;
+//				}
 				//n.lineWidth = Theme.LINE_WIDTH;		
 //				n.fillColor = 0xffFFFFAAAA;				
 			}
+		
 //			n.lineColor = nodes.lineColor;
 //			n.lineWidth = nodes.lineWidth;
 //			n.fillColor = nodes.fillColor;//0xff8888FF;
@@ -319,10 +351,11 @@ package cs448b.fp.tree
 		{
 			var p:DisplayObjectContainer = n.parent;
 			_idx = p.getChildIndex(n);
+			
 			p.setChildIndex(n, p.numChildren-1);
 		}
 		
-		private function pushNodeback(n:DisplayObject):void
+		private function pushNodeBack(n:DisplayObject):void
 		{
 			n.parent.setChildIndex(n, _idx);
 		}	
@@ -479,7 +512,8 @@ package cs448b.fp.tree
 						//nn.fillColor = 0xffFFAAAAFF;
 						nn.fillColor = Theme.COLOR_FILL_MAPPED;
 						hideLine(nn);
-						nn.props["image"].visible = false;	
+						nn.alpha = 0.5;
+						//nn.props["image"].visible = false;	
 	        		}	 
 	        		else if (action == 2)
 	        		{
@@ -487,11 +521,13 @@ package cs448b.fp.tree
 						//nn.fillColor = 0xffFFFFAAAA;
 						nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
 						hideLine(nn);
-						nn.props["image"].visible = false;	        		
+						nn.alpha = 0.5
+						//nn.props["image"].visible = false;	        		
 	        		}
 	        		else
 	        		{
 	        			nn.props["mapped"] = 0;	// 1: mapped, 2: unmapped, 0: null (default)
+						nn.alpha = 1;
 						nn.props["image"].visible = true;	        	
 
 	        		}       			        		       		

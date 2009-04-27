@@ -33,7 +33,8 @@ package cs448b.fp.utils
 			addMapping(Number(_layoutTree.tree.root.name));
 							
 			var message:String = _mapping.printMapping();
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  		
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  	
+			resetSelections(_selectedContentID, _selectedLayoutID);	
 			//showNextStep();	// for the first time		
 		}
 		
@@ -69,7 +70,18 @@ package cs448b.fp.utils
 			}
 */					
 		}
-	
+
+		/**
+		 * Wrapper for the index retrieval function
+		 */
+		public function getMappedIndex(idx:Number, treeId:Number):Number
+		{
+			if(_mapping == null) 
+				return 0;
+			
+			return _mapping.getMappedIndex(idx, treeId);
+		}
+			
 		private function addMapping(layoutID:Number):void
 		{
 			// first, remove the old mapping if any
@@ -144,18 +156,19 @@ package cs448b.fp.utils
 				message = "Mapping removed: " + _selectedContentID + "--" + e.value;
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   				
 			}
-			
-			_selectedLayoutID = e.value;
-			
-			message = _mapping.printMapping();
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  
+
 			
 			if (_selectedContentID == 0)	// layout is selected alone.
 			{
-				;
+				resetSelections(_selectedContentID, _selectedLayoutID);
 			}
 			else	// Reset selections
 			{
+			
+				_selectedLayoutID = e.value;
+				
+				message = _mapping.printMapping();
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
 				resetSelections(_selectedContentID, _selectedLayoutID);
 			}
 		}

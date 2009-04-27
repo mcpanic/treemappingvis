@@ -100,6 +100,7 @@ package {
 			dataLoader.loadData();
 			
 			tes.setDataLoader(dataLoader);
+
 		}
 
 		/**
@@ -151,6 +152,7 @@ package {
 			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
 			mappingManager.showNextStep();	// for the first time	
 
+			tes.setMappingManager(mappingManager);
 		}
 
 		private function onControlsEvent( event:ControlsEvent ):void

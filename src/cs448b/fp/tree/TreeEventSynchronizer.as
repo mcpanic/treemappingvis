@@ -1,10 +1,10 @@
 package cs448b.fp.tree
 {
 	import cs448b.fp.data.DataLoader;
+	import cs448b.fp.utils.MappingManager;
 	
 	import flare.vis.data.NodeSprite;
 	
-	import flash.display.Loader;
 	import flash.events.Event;
 	
 	/**
@@ -15,6 +15,7 @@ package cs448b.fp.tree
 		private var trees:Array = new Array(2);
 		
 		private var dataLoader:DataLoader = null;
+		private var mappingManager:MappingManager = null;
 		
 		public function TreeEventSynchronizer()
 		{
@@ -24,7 +25,12 @@ package cs448b.fp.tree
 		{
 			dataLoader = dl;
 		}
-
+		
+		public function setMappingManager(mm:MappingManager):void
+		{
+			mappingManager = mm;
+		}
+		
 		/**
 		 * Adds the tree.
 		 */
@@ -76,7 +82,10 @@ package cs448b.fp.tree
 					if(t != sender) 
 					{
 						// Get mapped value
-						var mappedIdx:Number = dataLoader.getMappedIndex(Number(node.name), t.getId());
+						// Case 1: When mapping definition is already defined in the XML file
+						//var mappedIdx:Number = dataLoader.getMappedIndex(Number(node.name), t.getId());
+						// Case 2: When mapping definition is created by user interface
+						var mappedIdx:Number = mappingManager.getMappedIndex(Number(node.name), t.getId());
 						var mv:String = String(mappedIdx);
 
 						t.handleSyncEvent(mv, evt, node);
