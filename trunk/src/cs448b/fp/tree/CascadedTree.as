@@ -20,13 +20,10 @@ package cs448b.fp.tree
 	public class CascadedTree extends AbstractTree
 	{		
 		private var _isContentTree:Boolean;					
-		private var _canvasWidth:Number = 550;
-		private var _canvasHeight:Number = 700;
+		private var _canvasWidth:Number = Theme.LAYOUT_CANVAS_WIDTH;
+		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
 		private var _title:TextSprite;
-//		private var _textFormat:TextFormat;
 		private var _unmapButton:Button;
-				
-//		private var tf:TextField = new TextField();
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean)
 		{
@@ -34,7 +31,6 @@ package cs448b.fp.tree
 			super(i, tree, x, y);
 			this.x = x;
 			this.y = y;
-
 		}
 		
 		public function get isContentTree():Boolean
@@ -47,41 +43,31 @@ package cs448b.fp.tree
 			super.init();
 
 			bounds = new Rectangle(_x, _y, 1024, 768);
-			vis.bounds = bounds;
-			
+			vis.bounds = bounds;		
 			vis.update();
 			
 			vis.scaleX = getScale();
-			vis.scaleY = getScale();
-			
-//			_textFormat = new TextFormat("Verdana,Tahoma,Arial",14,0,false);
-//			_textFormat.color = "0xFFFFFF";
+			vis.scaleY = getScale();          						
+			tf.x = Theme.LAYOUT_NODENAME_X;
+			tf.y = Theme.LAYOUT_NODENAME_Y;
 
-            						
-			tf.x = 10;
-			tf.y = -20;
-			//tf.scaleX = 2;
-			//tf.scaleY = 2;
-			//tf.height = 30;
-			addChild(tf);
-			
+			addChild(tf);			
 			addLabel();
-			addUnmapButton();
-										
+			addUnmapButton();									
 			addChild(vis);
 		}
 		
 		private function addLabel():void
 		{
-            _title = new TextSprite("", Theme.FONT_LABEL); //_textFormat);
+            _title = new TextSprite("", Theme.FONT_LABEL); 
             _title.horizontalAnchor = TextSprite.CENTER;
             if (_isContentTree == true)
             	_title.text = Theme.LABEL_CONTENT;
             else
             	_title.text = Theme.LABEL_LAYOUT;
             	
-            _title.x = 270;
-            _title.y = -20;
+            _title.x = Theme.LAYOUT_TREENAME_X;
+            _title.y = Theme.LAYOUT_TREENAME_Y;
             addChild( _title );			
 		}
 		
@@ -90,19 +76,16 @@ package cs448b.fp.tree
 		 */		
 		private function addUnmapButton():void
 		{
-//			var tf:TextFormat;
-//			tf = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
-//			tf.color = "0xFFFFFF";
 			if (isContentTree == false)
 				return;			
 			_unmapButton = new Button();
 			_unmapButton.label = Theme.LABEL_NOMAPPING;
 			_unmapButton.toggle = true;
-			_unmapButton.x = 200;
-			_unmapButton.y = 500;
+			_unmapButton.x = Theme.LAYOUT_UNMAP_X;
+			_unmapButton.y = Theme.LAYOUT_UNMAP_Y;
 			_unmapButton.width = 150;			
            	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
-           	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); //tf);
+           	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	addChild(_unmapButton);  			
 		}
 
@@ -119,12 +102,12 @@ package cs448b.fp.tree
 				if (nn.props["selected"] == true)	// find the selected node
 				{	
 					selectedID = Number(nn.name);
-					markMapping(selectedID, 2);					
-					blurOtherNodes(nn);		
+					markMapping(selectedID, Theme.STATUS_UNMAPPED);					
+					//blurOtherNodes(nn);		
 					for(var i:uint=0; i<nn.childDegree; i++)
 					{
-						//markActivated(nn.getChildNode(i));
-						activateAllDescendants(nn.getChildNode(i));
+						markActivated(nn.getChildNode(i));
+						//activateAllDescendants(nn.getChildNode(i));
 					}		
 					unmarkActivated(nn);			
 				}			
@@ -148,7 +131,7 @@ package cs448b.fp.tree
 				return false;
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				if (nn.props["mapped"] == null || nn.props["mapped"] == 0)	// see if unmapped
+				if (nn.props["mapped"] == null || nn.props["mapped"] == Theme.STATUS_DEFAULT)	// see if unmapped
 				{	
 					ret = false;
 				}			
@@ -161,14 +144,17 @@ package cs448b.fp.tree
 			}
 			return ret;
 		}
-			
+
+		/**
+		 * Adjust the tree size based on the scale of canvas size and actual page size
+		 */		 	
 		private function getScale():Number
 		{
 			var zoomScale:Number;			
 			// compute the scale of the original web page vs. canvas
 			var wScale:Number = _canvasWidth / tree.root.width;
 			var hScale:Number = _canvasHeight / tree.root.height;
-			trace (wScale +  " " + hScale);
+//			trace (wScale +  " " + hScale);
 			// choose the smaller scale and apply
 			zoomScale = (wScale > hScale) ? hScale : wScale;
 			return zoomScale;
@@ -230,13 +216,14 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true)
 			;
-			else if (n.props["mapped"] == true)
+			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
-				n.lineColor = Theme.COLOR_SELECTED;
+				n.lineColor = Theme.COLOR_ACTIVATED;
 				n.lineWidth = Theme.LINE_WIDTH;			
-				pullNodeForward(n);	
-					for (var i:uint=0; i<n.childDegree; i++)
-						pullNodeForward(n.getChildNode(i));					
+				pullAllChildrenForward(n);
+//				pullNodeForward(n);	
+//					for (var i:uint=0; i<n.childDegree; i++)
+//						pullNodeForward(n.getChildNode(i));					
 			}
 			else if (n.props["activated"] == true)	// only when activated
 			{
@@ -245,17 +232,28 @@ package cs448b.fp.tree
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;					
 				//n.fillColor = 0xffFFFFAAAA;
-//				if (nodePulled == false)
-//				{
-//					trace("hello");
-					pullNodeForward(n);	
-					for (i=0; i<n.childDegree; i++)
-						pullNodeForward(n.getChildNode(i));
-//					nodePulled = true;
-//				}
+				pullAllChildrenForward(n);
+////				if (nodePulled == false)
+////				{
+////					trace("hello");
+//					pullNodeForward(n);	
+//					for (i=0; i<n.childDegree; i++)
+//						pullNodeForward(n.getChildNode(i));
+////					nodePulled = true;
+////				}
 			}
 
 			//oldNode = n;
+		}
+		
+		/* 
+		 * Recursively pull forward the nodes
+		 */		 
+		private function pullAllChildrenForward(n:NodeSprite):void
+		{
+			pullNodeForward(n);	
+			for (var i:uint=0; i<n.childDegree; i++)
+				pullAllChildrenForward(n.getChildNode(i));			
 		}
 		
 		protected override function onMouseOut(n:NodeSprite):void
@@ -264,7 +262,7 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true)
 			;
-			else if (n.props["mapped"] == true)
+			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				hideLine(n);					
 			}	
@@ -403,7 +401,7 @@ package cs448b.fp.tree
 			//nn.fillColor = 0xffFFFFAAAA;
 			nn.props["image"].alpha = 1;
 			nn.props["image"].visible = true;
-			if (nn.props["mapped"] == 1)
+			if (nn.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				hideLine(nn);
 			}
@@ -506,27 +504,27 @@ package cs448b.fp.tree
 	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {			
 	        	if (id == Number(nn.name))
 	        	{	
-	        		if (action == 1)
+	        		if (action == Theme.STATUS_MAPPED)
 	        		{
-						nn.props["mapped"] = 1;	// 1: mapped, 2: unmapped, 0: null (default)
+						nn.props["mapped"] = Theme.STATUS_MAPPED;	
 						//nn.fillColor = 0xffFFAAAAFF;
 						nn.fillColor = Theme.COLOR_FILL_MAPPED;
 						hideLine(nn);
-						nn.alpha = 0.5;
-						//nn.props["image"].visible = false;	
+						nn.alpha = Theme.ALPHA_MAPPED;
+						nn.props["image"].visible = Theme.SHOW_MAPPPED;	
 	        		}	 
-	        		else if (action == 2)
+	        		else if (action == Theme.STATUS_UNMAPPED)
 	        		{
-	        			nn.props["mapped"] = 2;	// 1: mapped, 2: unmapped, 0: null (default)
+	        			nn.props["mapped"] = Theme.STATUS_UNMAPPED;	
 						//nn.fillColor = 0xffFFFFAAAA;
 						nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
 						hideLine(nn);
-						nn.alpha = 0.5
-						//nn.props["image"].visible = false;	        		
+						nn.alpha = Theme.ALPHA_MAPPED;
+						nn.props["image"].visible = Theme.SHOW_MAPPPED;		        		
 	        		}
 	        		else
 	        		{
-	        			nn.props["mapped"] = 0;	// 1: mapped, 2: unmapped, 0: null (default)
+	        			nn.props["mapped"] = Theme.STATUS_DEFAULT;	
 						nn.alpha = 1;
 						nn.props["image"].visible = true;	        	
 
