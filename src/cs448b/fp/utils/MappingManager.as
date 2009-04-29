@@ -23,7 +23,7 @@ package cs448b.fp.utils
 			_mapping = new Mapping();	
 			_selectedContentID = 0;
 			_selectedLayoutID = 0;
-			_currentStage = 0;
+			_currentStage = Theme.STAGE_INITIAL;
 		}
 
 		public function init():void
@@ -51,24 +51,13 @@ package cs448b.fp.utils
 		}
 		
 		private function onContentTreeEvent(e:MappingEvent):void
-		{
-//			trace("ContentTree - Mouse Down! " + e.name + " " + e.value);	
+		{	
 			// give feedback to users	
 			var message:String = "Select a mapped segment on the Layout page";
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
 			_selectedContentID = e.value;	
-/*			
-			if (_selectedLayoutID != 0 && e.name == "add")
-			{
-				// relinking only happens in layout selection
-				//_mapping.removeMapping(true, _selectedContentID);
-				//_mapping.addMapping(e.value, _selectedLayoutID);		
-			}
-			else if (_selectedLayoutID != 0 && e.name == "remove")
-			{
-				//_mapping.removeMapping(true, e.value);	
-			}
-*/					
+			
+			// mapping events are only triggered in layout tree			
 		}
 
 		/**
@@ -89,7 +78,7 @@ package cs448b.fp.utils
 			if (_mapping.getMappedIndex(layoutID, 0) != -1)
 			{					
 				_contentTree.markMapping(_mapping.getMappedIndex(layoutID, 0), 0);
-				_layoutTree.markMapping(layoutID, 0);		
+				_layoutTree.markMapping(layoutID, Theme.STATUS_DEFAULT);		
 							
 				//trace("case 1: " + _mapping.getMappedIndex(e.value, 0));
 				_mapping.removeMapping(false, layoutID);	
@@ -97,15 +86,15 @@ package cs448b.fp.utils
 			// case 2: layout needs to remove its old mapping
 			if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
 			{				
-				_contentTree.markMapping(_selectedContentID, 0);
-				_layoutTree.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), 0);	
+				_contentTree.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
+				_layoutTree.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), Theme.STATUS_DEFAULT);	
 				
 				//trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
 				_mapping.removeMapping(true, _selectedContentID);					
 			}				
 			_mapping.addMapping(_selectedContentID, layoutID);	
-			_contentTree.markMapping(_selectedContentID, 1);
-			_layoutTree.markMapping(layoutID, 1);
+			_contentTree.markMapping(_selectedContentID, Theme.STATUS_MAPPED);
+			_layoutTree.markMapping(layoutID, Theme.STATUS_MAPPED);
 			
 			_contentTree.unmarkActivatedID(_selectedContentID);
 			_layoutTree.unmarkActivatedID(layoutID);
@@ -118,8 +107,8 @@ package cs448b.fp.utils
 				{
 					for(var i:uint=0; i<node.childDegree; i++)
 					{
-						//_contentTree.markActivated(node.getChildNode(i));
-						_contentTree.activateAllDescendants(node.getChildNode(i));
+						_contentTree.markActivated(node.getChildNode(i));
+						//_contentTree.activateAllDescendants(node.getChildNode(i));
 					}	
 				}
 			}		
@@ -128,8 +117,8 @@ package cs448b.fp.utils
 		private function removeMapping(layoutID:Number):void
 		{
 			_mapping.removeMapping(false, layoutID);	
-			_contentTree.markMapping(_selectedContentID, 0);
-			_layoutTree.markMapping(layoutID, 0);		
+			_contentTree.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
+			_layoutTree.markMapping(layoutID, Theme.STATUS_DEFAULT);		
 			
 			_contentTree.markActivatedID(_selectedContentID);
 			_layoutTree.markActivatedID(layoutID);	
@@ -210,7 +199,7 @@ package cs448b.fp.utils
 		{
 			var root:NodeSprite = _contentTree.tree.root as NodeSprite;		
 			root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (nn.props["mapped"] == null || nn.props["mapped"] == 0) // null 
+				if (nn.props["mapped"] == null || nn.props["mapped"] == Theme.STATUS_DEFAULT) // null 
 				{
 					_contentTree.markActivated(nn);			
 				}
@@ -225,7 +214,7 @@ package cs448b.fp.utils
 		{
 			var root:NodeSprite = _layoutTree.tree.root as NodeSprite;		
 			root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (nn.props["mapped"] == null || nn.props["mapped"] == 0) // null 
+				if (nn.props["mapped"] == null || nn.props["mapped"] == Theme.STATUS_DEFAULT) // null 
 				{
 					_layoutTree.markActivated(nn);			
 				}
@@ -340,19 +329,19 @@ package cs448b.fp.utils
         	
         	if (Theme.ENABLE_REL == true)
         	{
-		        if (_currentStage == 0)	// To the hierarchical stage
+		        if (_currentStage == Theme.STAGE_INITIAL)	// To the hierarchical stage
 		       	{
-		       		_currentStage = 1;
-			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   
+		       		_currentStage = Theme.STAGE_HIERARCHICAL;
+			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );   
 			        if (showMatching() == false)	// if nothing shown, on to the next 
 			        	showNextStep();			
 		       	}
-		       	else if (_currentStage == 1)
+		       	else if (_currentStage == Theme.STAGE_HIERARCHICAL)
 		       	{
 		        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
 		        	{
-		        		_currentStage = 2;
-			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
+		        		_currentStage = Theme.STAGE_QUASI;
+			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_QUASI) );   	        		
 		        		showQuasiMatchingLayout();
 		        		showQuasiMatchingContent();
 		        		
@@ -364,7 +353,7 @@ package cs448b.fp.utils
 		       		}
 		       		
 		       	}
-		       	else if (_currentStage == 2)
+		       	else if (_currentStage == Theme.STAGE_QUASI)
 		       	{
 		       		showQuasiMatchingLayout();
 		       		showQuasiMatchingContent();

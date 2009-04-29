@@ -179,7 +179,7 @@ package cs448b.fp.utils
             _mappings = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _mappings.horizontalAnchor = TextSprite.LEFT;
             _mappings.text = Theme.MSG_MAPPING_NONE;
-            this.addChild( _mappings );        
+            //this.addChild( _mappings );        
         }   
         
         public function displayMappings(message:String):void
@@ -228,18 +228,18 @@ package cs448b.fp.utils
 			}		
 			if (_notice)
 			{
-				_notice.x = 250;
-				_notice.y = y+50;
+				_notice.x = Theme.LAYOUT_NOTICE_X; //250;
+				_notice.y = Theme.LAYOUT_NOTICE_Y; //y+50;
 			}	
 			if (_feedback)
 			{
-				_feedback.x = 250;
-				_feedback.y = y+80;
+				_feedback.x = Theme.LAYOUT_FEEDBACK_X; //250;
+				_feedback.y = Theme.LAYOUT_FEEDBACK_Y; //y+80;
 			}
 			if (_mappings)
 			{
-				_mappings.x = 250;
-				_mappings.y = y+110;
+				_mappings.x = Theme.LAYOUT_MAPPINGS_X; //250;
+				_mappings.y = Theme.LAYOUT_MAPPINGS_Y; //y+110;
 			}
 		}
 		
