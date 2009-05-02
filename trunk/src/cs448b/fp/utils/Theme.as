@@ -5,6 +5,15 @@ package cs448b.fp.utils
 	{	
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
+		// Enable / Disable serial node presentation (one content node at a time)
+		public static var ENABLE_SERIAL:Boolean = true;	
+		// Enable / Disable continue button - determined by ENABLE_REL
+		public static var ENABLE_CONTINUE_BUTTON:Boolean = ENABLE_REL;
+		
+		// Tree traversal order
+		public static var ORDER_PREORDER:Number = 1;
+		public static var ORDER_BFS:Number = 2;
+		public static var ORDER_DFS:Number = 3;
 		
 		// Tree visualization options: used in tree files		
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
@@ -14,14 +23,16 @@ package cs448b.fp.utils
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
 		public static var COLOR_FILL_MAPPED:Number = 0xffFFAAAAFF;
 		public static var COLOR_FILL_UNMAPPED:Number = 0xffFFAAAAFF; //0xffFFFFAAAA;
-		public static var ALPHA_MAPPED:Number = 0.3;
+		public static var ALPHA_MAPPED:Number = 0.3;		// alpha value for mapped nodes
 		public static var SHOW_MAPPPED:Boolean = true;		// hide content of the mapped nodes
+		public static var CONNECTED_ALPHA:Number = 0.6;		// alpha value for the connected layout nodes on mouseover
+		public static var CONNECTED_LINE_WIDTH:Number = 1.5;	// dividend for the connected layout nodes on mouseover
 		
 		// Mapping status constants
+		public static var STATUS_DEFAULT:Number = 0;
 		public static var STATUS_MAPPED:Number = 1;
 		public static var STATUS_UNMAPPED:Number = 2;
-		public static var STATUS_DEFAULT:Number = 0;
-		
+				
 		// Mapping stage constants
 		public static var STAGE_INITIAL:Number = 0;
 		public static var STAGE_HIERARCHICAL:Number = 1;
@@ -36,23 +47,25 @@ package cs448b.fp.utils
 		public static var LAYOUT_CTREE_Y:uint = 75;			// content tree y-coordinate
 		public static var LAYOUT_LTREE_X:uint = 600;		// layout tree x-coordinate
 		public static var LAYOUT_LTREE_Y:uint = 75;			// layout tree y-coordinate
-		public static var LAYOUT_UNMAP_X:Number = 200;		// unmap button x-coordinate
+		public static var LAYOUT_UNMAP_X:Number = 770;//200;	// unmap button x-coordinate
 		public static var LAYOUT_UNMAP_Y:Number = -60;		// unmap button y-coordinate
+		public static var LAYOUT_UNMAP_WIDTH:Number = 150;	// unmap button width
 		public static var LAYOUT_NODENAME_X:Number = 20;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_NODENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin		
 		public static var LAYOUT_TREENAME_X:Number = 270;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_TREENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin
 		public static var LAYOUT_NOTICE_X:Number = 0;		// notice x-coordinate
 		public static var LAYOUT_NOTICE_Y:Number = 730;		// notice y-coordinate		
-		public static var LAYOUT_FEEDBACK_X:Number = 450;		// notice x-coordinate
+		public static var LAYOUT_FEEDBACK_X:Number = 25;//450;	// notice x-coordinate
 		public static var LAYOUT_FEEDBACK_Y:Number = 17;		// notice y-coordinate
-		public static var LAYOUT_MAPPINGS_X:Number = 0;		// notice x-coordinate
+		public static var LAYOUT_MAPPINGS_X:Number = 0;			// notice x-coordinate
 		public static var LAYOUT_MAPPINGS_Y:Number = 750;		// notice y-coordinate
 				
 		// Messages: used in tree control files
 		public static var MSG_STAGE1:String = "Stage: Initialization";
 		public static var MSG_STAGE2:String = "Stage: Hierarchical Matching";
 		public static var MSG_STAGE3:String = "Stage: Quasi-Hierarchical Matching";
+		public static var MSG_STAGE4:String = "Stage: Task Complete";
 		public static var MSG_MAPPING_NONE:String = "Mappings: None";
 		public static var MSG_MAPPING:String = "Mappings: ";
 		public static var MSG_LOADED:String = "Page loaded.";

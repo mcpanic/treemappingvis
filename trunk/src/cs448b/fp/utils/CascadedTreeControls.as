@@ -42,11 +42,10 @@ package cs448b.fp.utils
 
 			addFeedback();
 			addMappings();
-			if (Theme.ENABLE_REL == true)
-			{
+			addNotice();
+			if (Theme.ENABLE_CONTINUE_BUTTON == true)
 				addContinueButton();
-				addNotice();
-			}
+
 			layout();
 		}
 
@@ -67,7 +66,7 @@ package cs448b.fp.utils
 				
 		private function addDepthControl():void
 		{
-            _depthTitle = new TextSprite("", Theme.FONT_LABEL);//_textFormat);
+            _depthTitle = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _depthTitle.horizontalAnchor = TextSprite.CENTER;
             _depthTitle.text = "Current Depth";
             this.addChild( _depthTitle );
@@ -162,15 +161,20 @@ package cs448b.fp.utils
         
         public function displayStage(index:Number):void
         {
-        	if (index == 1)
+        	if (index == Theme.STAGE_HIERARCHICAL)
         	{
-        		_continueButton.label = Theme.LABEL_CONT2;
+        		if (_continueButton)
+        			_continueButton.label = Theme.LABEL_CONT2;
         		_notice.text = Theme.MSG_STAGE2; 
         	}
-        	else if (index == 2)
+        	else if (index == Theme.STAGE_QUASI)
         	{
-        		_continueButton.label = Theme.LABEL_CONT3;
-        		_notice.text = Theme.MSG_STAGE3; 
+        		if (_continueButton)
+        			_continueButton.label = Theme.LABEL_CONT3;
+        		if (Theme.ENABLE_REL == true)
+        			_notice.text = Theme.MSG_STAGE3;
+        		else	
+        		 	_notice.text = Theme.MSG_STAGE4;
         	}
         }	
         
@@ -179,7 +183,7 @@ package cs448b.fp.utils
             _mappings = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _mappings.horizontalAnchor = TextSprite.LEFT;
             _mappings.text = Theme.MSG_MAPPING_NONE;
-            //this.addChild( _mappings );        
+            this.addChild( _mappings );        
         }   
         
         public function displayMappings(message:String):void
