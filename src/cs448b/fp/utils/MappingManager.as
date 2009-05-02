@@ -28,6 +28,9 @@ package cs448b.fp.utils
 
 		public function init():void
 		{
+			// Set the traversal order
+			_contentTree.setTraversalOrder();
+			
 			// add root-root mapping
 			_selectedContentID = Number(_contentTree.tree.root.name);
 			addMapping(Number(_layoutTree.tree.root.name));
@@ -35,7 +38,8 @@ package cs448b.fp.utils
 			var message:String = _mapping.printMapping();
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  	
 			resetSelections(_selectedContentID, _selectedLayoutID);	
-			//showNextStep();	// for the first time		
+			showNextStep();	// for the first time
+			//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  		
 		}
 		
 		public function setContentTree(t:CascadedTree):void
@@ -53,11 +57,20 @@ package cs448b.fp.utils
 		private function onContentTreeEvent(e:MappingEvent):void
 		{	
 			// give feedback to users	
-			var message:String = "Select a mapped segment on the Layout page";
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
-			_selectedContentID = e.value;	
+			if (Theme.ENABLE_SERIAL == false)
+				showSelectionFeedback(e.value);
 			
 			// mapping events are only triggered in layout tree			
+		}
+		
+		/**
+		 * Show appropriate feedback when a node on the content tree has been selected
+		 */
+		private function showSelectionFeedback(idx:Number):void
+		{
+			var message:String = "Select a mapped segment on the Layout page";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
+			_selectedContentID = idx;	
 		}
 
 		/**
@@ -100,7 +113,7 @@ package cs448b.fp.utils
 			_layoutTree.unmarkActivatedID(layoutID);
 
 			// Automatically activated children of the mapped node
-			if (Theme.ENABLE_REL == false)
+			if (Theme.ENABLE_REL == false && Theme.ENABLE_SERIAL == false)
 			{			
 				var node:NodeSprite = _contentTree.getNodeByID(_selectedContentID);
 				if (node != null)
@@ -111,7 +124,7 @@ package cs448b.fp.utils
 						//_contentTree.activateAllDescendants(node.getChildNode(i));
 					}	
 				}
-			}		
+			}	  
 		}
 		
 		private function removeMapping(layoutID:Number):void
@@ -132,17 +145,20 @@ package cs448b.fp.utils
 			{
 				addMapping(e.value);
 				// give feedback to users	
-				var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
+				//var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
+				var message:String = "Mapping added";
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   
 				
 				// check if the whole tree is done
 				_contentTree.checkCompleted();
+
 			}
 			else if (_selectedContentID != 0 && e.name == "remove")
 			{
 				removeMapping(e.value);
 				// give feedback to users	
-				message = "Mapping removed: " + _selectedContentID + "--" + e.value;
+				//message = "Mapping removed: " + _selectedContentID + "--" + e.value;
+				message = "Mapping removed";
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   				
 			}
 
@@ -160,6 +176,10 @@ package cs448b.fp.utils
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
 				resetSelections(_selectedContentID, _selectedLayoutID);
 			}
+				
+				// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
+				if (Theme.ENABLE_SERIAL == true)	
+					dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
 		}
 
 		/**
@@ -227,10 +247,33 @@ package cs448b.fp.utils
 		private function showActivatedContent(n:NodeSprite):void
 		{	
 			_contentTree.blurOtherNodes(n);		
-			for(var i:uint=0; i<n.childDegree; i++)
+			
+			if (Theme.ENABLE_SERIAL == false)
 			{
-				_contentTree.markActivated(n.getChildNode(i));
-				_contentTree.hideAllDescendants(n.getChildNode(i));
+				for(var i:uint=0; i<n.childDegree; i++)
+				{
+					_contentTree.markActivated(n.getChildNode(i));
+					_contentTree.hideAllDescendants(n.getChildNode(i));
+				}
+			}
+			else
+			{
+				// Automatically mark the current node as selected & other nodes as unselected
+				var root:NodeSprite = _contentTree.tree.root as NodeSprite;		
+				root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+					if (nn == _contentTree.getCurrentProcessingNode())  
+					{	
+						nn.props["selected"] = true;
+						_contentTree.markActivated(nn);
+						showSelectionFeedback(Number(nn.name));
+					}
+					else
+					{	
+						nn.props["selected"] = false;
+						_contentTree.unmarkActivated(nn);
+					}
+				});
+				
 			}				
 		}
 		
@@ -252,8 +295,17 @@ package cs448b.fp.utils
 		private function checkContent(n:NodeSprite):Boolean
 		{		
 			var ret:Boolean = true;
-			if (n.childDegree == 0)
-				ret = false;
+			
+			if (Theme.ENABLE_SERIAL == false)
+			{
+				if (n.childDegree == 0 || n == null)
+					ret = false;
+			}
+			else 
+			{
+				if (n == null)
+					ret = false;
+			}
 			
 			return ret;							
 		}
@@ -268,7 +320,12 @@ package cs448b.fp.utils
 			var ret:NodeSprite = null;
 			var lRoot:NodeSprite = _layoutTree.tree.root as NodeSprite;
 			
+			// Just return everything
+			if (Theme.ENABLE_SERIAL == true)
+				return lRoot;
+				
 			var a:NodeSprite = null;	
+			
 			// Find the closest ancestor a of n such that M(a) is not null 
 			a = getClosestValidAncestor(n);	// a	
 			
@@ -317,7 +374,14 @@ package cs448b.fp.utils
 			}
 			return ret;
 		}
-															
+
+		/**
+		 * Proceed and display the next step in the hierarchical matching process
+		 */					
+		public function showPreview():void
+		{
+			
+		}															
 		/**
 		 * Proceed and display the next step in the hierarchical matching process
 		 */					
@@ -362,6 +426,42 @@ package cs448b.fp.utils
         	}
         	else		// Single phase, no ancestor-descendent relationship enforced
         	{
+		        if (_currentStage == Theme.STAGE_INITIAL)	// To the hierarchical stage
+		       	{
+		       		// Show preview of nodes to find correspondences for
+		       		showPreview();
+		       		
+		       		_currentStage = Theme.STAGE_HIERARCHICAL;
+			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );   
+			        if (showMatching() == false)	// if nothing shown, on to the next 
+			        	showNextStep();			
+		       	}
+		       	else if (_currentStage == Theme.STAGE_HIERARCHICAL)
+		       	{
+		        	if (_contentTree.tree.nodes.length < _contentTree._currentStep)	// whole tree traversed
+		        	{
+		        		_currentStage = Theme.STAGE_QUASI;
+			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_QUASI) );   	        		
+		        		_contentTree.checkCompleted();
+		        		//showQuasiMatchingLayout();
+		        		//showQuasiMatchingContent();
+		        		
+		        	}
+		        	else		       	
+		        	{	        		
+						if (showMatching() == false)	// if nothing shown, on to the next
+							showNextStep();		
+		       		}
+		       		
+		       	}
+		       	else if (_currentStage == Theme.STAGE_QUASI)
+		       	{
+		       		showQuasiMatchingLayout();
+		       		showQuasiMatchingContent();
+		       		
+		       	}        		
+        		
+        		/*
         		if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
 	        	{
 	        		_contentTree.checkCompleted();
@@ -372,6 +472,7 @@ package cs448b.fp.utils
 					if (showMatching() == false)	// if nothing shown, on to the next
 						showNextStep();		
 	       		}	        	   		
+	       		*/
         	}
 		}	
 		

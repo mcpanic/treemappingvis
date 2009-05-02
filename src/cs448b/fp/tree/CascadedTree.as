@@ -24,6 +24,8 @@ package cs448b.fp.tree
 		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
 		private var _title:TextSprite;
 		private var _unmapButton:Button;
+		// Order of tree traversal
+		private var _traversalOrder:Number = Theme.ORDER_DFS;
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean)
 		{
@@ -83,7 +85,7 @@ package cs448b.fp.tree
 			_unmapButton.toggle = true;
 			_unmapButton.x = Theme.LAYOUT_UNMAP_X;
 			_unmapButton.y = Theme.LAYOUT_UNMAP_Y;
-			_unmapButton.width = 150;			
+			_unmapButton.width = Theme.LAYOUT_UNMAP_WIDTH;			
            	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
            	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	addChild(_unmapButton);  			
@@ -96,27 +98,35 @@ package cs448b.fp.tree
 		private function onUnmapButton(event:MouseEvent):void
 		{
 			var selectedID:Number = 0;
-			// get the selected node
 			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+			// get the selected node
+		    root.visitTreeDepthFirst(function(nn:NodeSprite):void {
 				if (nn.props["selected"] == true)	// find the selected node
 				{	
 					selectedID = Number(nn.name);
 					markMapping(selectedID, Theme.STATUS_UNMAPPED);					
 					//blurOtherNodes(nn);		
-					for(var i:uint=0; i<nn.childDegree; i++)
+					if (Theme.ENABLE_SERIAL == false)
 					{
-						markActivated(nn.getChildNode(i));
-						//activateAllDescendants(nn.getChildNode(i));
-					}		
-					unmarkActivated(nn);			
+						for(var i:uint=0; i<nn.childDegree; i++)
+						{
+							markActivated(nn.getChildNode(i));
+							//activateAllDescendants(nn.getChildNode(i));
+						}		
+					}			
+					unmarkActivated(nn);
 				}			
-			});								
+			});
+		
 			var message:String = "Assigned as no mapping: " + selectedID;	
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "unmap", selectedID, message) );    
 			
 			// Check if the whole content tree is completed.
 			checkCompleted();
+			
+			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
+			if (Theme.ENABLE_SERIAL == true)	
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
 		}
 		
 		/**
@@ -216,7 +226,8 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true)
 			;
-			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
+			// Brushing and linking for mapped nodes
+			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				n.lineColor = Theme.COLOR_ACTIVATED;
 				n.lineWidth = Theme.LINE_WIDTH;			
@@ -225,6 +236,13 @@ package cs448b.fp.tree
 //					for (var i:uint=0; i<n.childDegree; i++)
 //						pullNodeForward(n.getChildNode(i));					
 			}
+			else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
+			{
+				n.lineColor = Theme.COLOR_SELECTED;
+				n.lineWidth = Theme.LINE_WIDTH;			
+				pullAllChildrenForward(n);				
+			}
+			// Border change on connected nodes for activated nodes
 			else if (n.props["activated"] == true)	// only when activated
 			{
 				//n.lineColor = 0xffFF0000; 
@@ -232,6 +250,7 @@ package cs448b.fp.tree
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;					
 				//n.fillColor = 0xffFFFFAAAA;
+				showConnectedNodes(n);
 				pullAllChildrenForward(n);
 ////				if (nodePulled == false)
 ////				{
@@ -245,7 +264,37 @@ package cs448b.fp.tree
 
 			//oldNode = n;
 		}
-		
+
+		/* 
+		 * Show connected nodes
+		 */		 
+		private function showConnectedNodes(n:NodeSprite):void
+		{
+			n.parentNode.lineColor = Theme.COLOR_SELECTED;
+			n.parentNode.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
+			n.parentNode.lineAlpha = Theme.CONNECTED_ALPHA;
+			
+			for (var i:uint=0; i<n.childDegree; i++)
+			{
+				n.getChildNode(i).lineColor = Theme.COLOR_SELECTED;
+				n.getChildNode(i).lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
+				n.getChildNode(i).lineAlpha = Theme.CONNECTED_ALPHA;
+			}			
+		}
+
+		/* 
+		 * Remove effects of showConnectedNodes
+		 */		 
+		private function hideConnectedNodes(n:NodeSprite):void
+		{
+			hideLine(n.parentNode);
+						
+			for (var i:uint=0; i<n.childDegree; i++)
+			{
+				hideLine(n.getChildNode(i));
+			}			
+		}
+						
 		/* 
 		 * Recursively pull forward the nodes
 		 */		 
@@ -262,7 +311,7 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true)
 			;
-			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
+			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
 				hideLine(n);					
 			}	
@@ -272,6 +321,7 @@ package cs448b.fp.tree
 //				n.lineWidth = 15;
 				n.lineColor = Theme.COLOR_ACTIVATED;
 				showLineWidth(n);
+				hideConnectedNodes(n);
 //				if (nodePulled == true)
 //				{
 //					pushNodeBack(n);	
@@ -310,36 +360,42 @@ package cs448b.fp.tree
    		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
-			//var isUnselect:Boolean = false;
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (n != nn && nn.props["selected"] == true)	
-				{	
-					// unselect previously selected node
-					unmarkSelected(nn);
+			if (Theme.ENABLE_SERIAL == true && isContentTree == true)
+			{
+				// do nothing
+			}
+			else
+			{
+				//var isUnselect:Boolean = false;
+				var root:NodeSprite = tree.root as NodeSprite;
+		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+					if (n != nn && nn.props["selected"] == true)	
+					{	
+						// unselect previously selected node
+						unmarkSelected(nn);
+					}
+	//				if (nn.props["activated"] == true)
+	//				{
+	//					markActivated(nn);
+	//				}			
+				});			
+				
+				if (n.props["selected"] == true)
+				{
+					// unselect current if selected twice
+					unmarkSelected(n);
+					// dispatch mapping event
+					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "remove", Number(n.name)));				
 				}
-//				if (nn.props["activated"] == true)
-//				{
-//					markActivated(nn);
-//				}			
-			});			
-			
-			if (n.props["selected"] == true)
-			{
-				// unselect current if selected twice
-				unmarkSelected(n);
-				// dispatch mapping event
-				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "remove", Number(n.name)));				
-			}
-			else if (n.props["activated"] == true)
-			{
-				super.onMouseDown(n);
-				//blurOtherNodes(n);
-				markSelected(n);
-				// dispatch mapping event
-				dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
-			}
-			
+				else if (n.props["activated"] == true)
+				{
+					super.onMouseDown(n);
+					//blurOtherNodes(n);
+					markSelected(n);
+					// dispatch mapping event
+					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
+				}
+			}			
 
 		}
 		
@@ -647,16 +703,23 @@ package cs448b.fp.tree
 		{
 			if (!_isContentTree)	// nothing if layout tree
 				return -1;
-			var root:NodeSprite = tree.root as NodeSprite;
-			var nodeCount:Number = 1;
-			var ret:Number = -1;	
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-	        	if (nodeCount == _currentStep)
-	        		ret = Number(nn.name);
-	        	nodeCount++;
-	        });
-	        trace("getCurrentProcessingNodeID: " + ret);
-	        return ret;			
+			var ret:NodeSprite = null;
+			ret = getCurrentProcessingNode();
+			if (ret == null)
+				return -1;
+			return Number(ret.name);
+//			var root:NodeSprite = tree.root as NodeSprite;
+////			var nodeCount:Number = 1;
+//			var ret:Number = -1;	
+//	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+//				if (nn.props["order"] == _currentStep)
+//					ret = Number(nn.name);
+////	        	if (nodeCount == _currentStep)
+////	        		ret = Number(nn.name);
+////	        	nodeCount++;
+//	        });
+//	        trace("getCurrentProcessingNodeID: " + ret);
+//	        return ret;			
 		}
 		
 		/**
@@ -667,17 +730,101 @@ package cs448b.fp.tree
 			if (!_isContentTree)	// nothing if layout tree
 				return null;
 			var root:NodeSprite = tree.root as NodeSprite;
-			var nodeCount:Number = 1;
+//			var nodeCount:Number = 1;
 			var node:NodeSprite = null;	
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-	        	if (nodeCount == _currentStep)
-	        		node = nn;
-	        	nodeCount++;
+
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (nn.props["order"] == _currentStep)
+					node = nn;
+//	        	if (nodeCount == _currentStep)
+//	        		node = nn;
+//	        	nodeCount++;
 	        });
 
 	        return node;			
 		}		
 
+		private var _nodeCount:Number;
+		/**
+		 * Assign the traversal order of the tree
+		 */
+		public function setTraversalOrder():void
+		{
+			if (!_isContentTree)	// nothing if layout tree
+				return;
+			_nodeCount = 1;
+			// initialize the tree
+			var root:NodeSprite = tree.root as NodeSprite;
+			if (_traversalOrder == Theme.ORDER_BFS)
+			{	
+		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+		        	nn.props["traversed"] = false;
+		        	nn.props["order"] = _nodeCount; 
+		        	_nodeCount++;
+		        });
+		 	}
+		 	else if (_traversalOrder == Theme.ORDER_DFS)
+		 	{
+		        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+		        	nn.props["traversed"] = false;
+		        	nn.props["order"] = _nodeCount; 
+		        	_nodeCount++;
+		        });		 		
+		 	}    
+		 	else if (_traversalOrder == Theme.ORDER_PREORDER)
+		 	{
+		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+		        	nn.props["traversed"] = false;
+		        });		 
+		        preorder(tree.root);		
+		 	}
+	        				
+		}
+		
+		private function preorder(nn:NodeSprite):void
+		{
+			var randomNode:NodeSprite = null;
+			nn.props["order"] = _nodeCount;
+			nn.props["traversed"] = true;
+			 
+			// if any child is not traversed, randomly pick one and recursively call preorder
+			while (1)
+			{
+				// if all children are traversed, then return
+				if (isAllChildrenTraversed(nn) == true)
+					break;
+				randomNode = nn.getChildNode(getRandomNumberWithinRange(nn.childDegree));
+				if (randomNode.props["traversed"] == false)	// if not traversed, break. Otherwise, get another one.
+				{
+					_nodeCount++;
+					preorder(randomNode);
+				}	
+				
+			}
+			
+		}
+		
+		private function isAllChildrenTraversed(nn:NodeSprite):Boolean
+		{
+			var ret:Boolean = true;
+			if (nn.childDegree == 0)	// if no child, it means everything is traversed
+				return true;
+			for (var i:uint=0; i<nn.childDegree; i++)
+			{
+				if (nn.getChildNode(i).props["traversed"] == false)
+					ret = false;
+			}
+			return ret;
+		}
+		/**
+		 * Get a random node from 0 to n
+		 */
+		private function getRandomNumberWithinRange(n:Number):Number
+		{
+			var ret:Number = Math.floor(Math.random() * (n)); 
+			return ret;
+		}
+		
 		/**
 		 * Get the node with the given ID
 		 */					

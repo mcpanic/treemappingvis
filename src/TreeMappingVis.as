@@ -33,7 +33,7 @@ package {
 		 */		
 		public function TreeMappingVis()
 		{
-			mappingID = 3;	// 1: moo, 2: hybrid, 3: cat
+			mappingID = 1;	// 1: moo, 2: hybrid, 3: cat
 			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 			
@@ -132,7 +132,7 @@ package {
 		 */
 		private function printTree(n:NodeSprite, d:int) : void
 		{
-			trace(n.name+"\t"+n.depth+"\t"+n.childDegree+"\t"+n.w+"\t"+n.h);
+			trace(n.name+"\t"+n.props["order"] +"\t"+n.depth+"\t"+n.childDegree+"\t"+n.w+"\t"+n.h);
 			for (var i:uint = 0; i < n.childDegree; ++i) {
 				printTree(n.getChildNode(i), d+1);
 			}
@@ -147,12 +147,16 @@ package {
 			
 			mappingManager = new MappingManager();	
 			mappingManager.setContentTree(cascadedTree1);
-			mappingManager.setLayoutTree(cascadedTree2);
-			mappingManager.init();	// add root-root mapping
+			mappingManager.setLayoutTree(cascadedTree2);	
+			tes.setMappingManager(mappingManager);
+			
 			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
+			mappingManager.init();	// add root-root mapping
+			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
+			printTree(cascadedTree1.tree.root, 0);
 			mappingManager.showNextStep();	// for the first time	
 
-			tes.setMappingManager(mappingManager);
+			
 		}
 
 		private function onControlsEvent( event:ControlsEvent ):void
@@ -202,6 +206,10 @@ package {
 			{
 				controls.displayFeedback(event.message);
 			}		
+			else if (event.name == "continue")
+			{	
+				mappingManager.showNextStep();			
+			}
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void
