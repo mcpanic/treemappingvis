@@ -3,6 +3,7 @@ package cs448b.fp.utils
 	import cs448b.fp.data.Mapping;
 	import cs448b.fp.tree.CascadedTree;
 	
+	import flare.animate.TransitionEvent;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.display.Sprite;
@@ -30,6 +31,7 @@ package cs448b.fp.utils
 		{
 			// Set the traversal order
 			_contentTree.setTraversalOrder();
+			_contentTree.playPreview();
 			
 			// add root-root mapping
 			_selectedContentID = Number(_contentTree.tree.root.name);
@@ -38,7 +40,7 @@ package cs448b.fp.utils
 			var message:String = _mapping.printMapping();
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  	
 			resetSelections(_selectedContentID, _selectedLayoutID);	
-			showNextStep();	// for the first time
+			//showNextStep();	// for the first time
 			//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  		
 		}
 		
@@ -140,48 +142,69 @@ package cs448b.fp.utils
 		private function onLayoutTreeEvent(e:MappingEvent):void
 		{
 //			trace("LayoutTree - Mouse Down! " + e.name + " " + e.value);	
-			
+			var message:String;
 			if (_selectedContentID != 0 && e.name == "add")
 			{
 				addMapping(e.value);
+				_contentTree.blinkNode(_contentTree.getNodeByID(_selectedContentID), onEndBlinkingMapped);	
 				// give feedback to users	
 				//var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
-				var message:String = "Mapping added";
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   
-				
-				// check if the whole tree is done
-				_contentTree.checkCompleted();
+//				var message:String = "Mapping added";
+//				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   
+//				
+//				// check if the whole tree is done
+//				_contentTree.checkCompleted();
 
 			}
+			// remove is not needed anymore since we do not have any undo function for the interface
 			else if (_selectedContentID != 0 && e.name == "remove")
 			{
 				removeMapping(e.value);
 				// give feedback to users	
 				//message = "Mapping removed: " + _selectedContentID + "--" + e.value;
 				message = "Mapping removed";
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   				
-			}
-
-			
-			if (_selectedContentID == 0)	// layout is selected alone.
-			{
-				resetSelections(_selectedContentID, _selectedLayoutID);
-			}
-			else	// Reset selections
-			{
-			
-				_selectedLayoutID = e.value;
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   	
 				
 				message = _mapping.printMapping();
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
-				resetSelections(_selectedContentID, _selectedLayoutID);
-			}
+				resetSelections(_selectedContentID, _selectedLayoutID);		
 				
-				// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
-				if (Theme.ENABLE_SERIAL == true)	
-					dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
+			}
+
+			
+//			if (_selectedContentID == 0)	// layout is selected alone.
+//			{
+//				resetSelections(_selectedContentID, _selectedLayoutID);
+//			}
+//			else	// Reset selections
+//			{
+//			
+//				_selectedLayoutID = e.value;
+				
+
+//			}
 		}
 
+
+		/**
+		 * When node blinking animation finishes playing for mapped nodes
+		 */		
+		private function onEndBlinkingMapped(e:TransitionEvent):void
+		{
+			var message:String = "Mapping added";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
+			// Check if the whole content tree is completed.
+			_contentTree.checkCompleted();
+
+			message = _mapping.printMapping();
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
+			resetSelections(_selectedContentID, _selectedLayoutID);
+							
+			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
+			if (Theme.ENABLE_SERIAL == true)	
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	        		
+		}
+		
 		/**
 		 * Reset selections
 		 */
@@ -266,6 +289,7 @@ package cs448b.fp.utils
 						nn.props["selected"] = true;
 						_contentTree.markActivated(nn);
 						showSelectionFeedback(Number(nn.name));
+						_contentTree.pullNodeForward(nn);
 					}
 					else
 					{	
@@ -428,17 +452,15 @@ package cs448b.fp.utils
         	{
 		        if (_currentStage == Theme.STAGE_INITIAL)	// To the hierarchical stage
 		       	{
-		       		// Show preview of nodes to find correspondences for
-		       		showPreview();
-		       		
 		       		_currentStage = Theme.STAGE_HIERARCHICAL;
-			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );   
+		       		// stage event is now called by preview function in CascadedTree.as
+//			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );   
 			        if (showMatching() == false)	// if nothing shown, on to the next 
 			        	showNextStep();			
 		       	}
 		       	else if (_currentStage == Theme.STAGE_HIERARCHICAL)
 		       	{
-		        	if (_contentTree.tree.nodes.length < _contentTree._currentStep)	// whole tree traversed
+		        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
 		        	{
 		        		_currentStage = Theme.STAGE_QUASI;
 			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_QUASI) );   	        		

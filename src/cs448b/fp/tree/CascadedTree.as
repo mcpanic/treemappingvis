@@ -4,7 +4,11 @@ package cs448b.fp.tree
 	
 	import fl.controls.Button;
 	
+	import flare.animate.Parallel;
+	import flare.animate.Sequence;
+	import flare.animate.TransitionEvent;
 	import flare.animate.Transitioner;
+	import flare.animate.Tween;
 	import flare.display.TextSprite;
 	import flare.util.Shapes;
 	import flare.vis.data.Data;
@@ -34,12 +38,18 @@ package cs448b.fp.tree
 			this.x = x;
 			this.y = y;
 		}
-		
+
+		/**
+		 * is this content or layout tree?
+		 */			
 		public function get isContentTree():Boolean
 		{
 			return _isContentTree;
 		}
-		
+
+		/**
+		 * Vis and tree-specific controls initialization - general controls are in CascadedTreeControls.as
+		 */			
 		public override function init():void
 		{	
 			super.init();
@@ -58,7 +68,10 @@ package cs448b.fp.tree
 			addUnmapButton();									
 			addChild(vis);
 		}
-		
+
+		/**
+		 * Add tree name labels
+		 */				
 		private function addLabel():void
 		{
             _title = new TextSprite("", Theme.FONT_LABEL); 
@@ -91,7 +104,112 @@ package cs448b.fp.tree
            	addChild(_unmapButton);  			
 		}
 
+		private var previewSeq:Sequence = new Sequence();
 		
+		/**
+		 * Save a preview sequence with visual effects. Need to be played once all nodes are added. 
+		 */
+		private function addPreviewNode(node:NodeSprite):void
+		{
+			if (node == null)
+				return;	
+			var t1:Tween = new Tween(node, 0.5, {lineColor:Theme.COLOR_SELECTED});
+			var t2:Tween = new Tween(node, 0.5, {lineColor:0x00000000});
+			var t3:Tween = new Tween(node, 0.5, {lineWidth:Theme.LINE_WIDTH});
+			var t4:Tween = new Tween(node, 0.5, {lineWidth:0});			
+			var t5:Tween = new Tween(node, 0.5, {fillColor:Theme.COLOR_FILL_MAPPED});
+			var t6:Tween = new Tween(node, 0.5, {fillColor:0x00000000});
+			//var t7:Tween = new Tween(node, 0.5, {fillColor:Theme.COLOR_FILL_MAPPED});
+			//var t6:Tween = new Tween(node, 0.5, {fillColor:0x00000000});
+//		    var seq:Sequence = new Sequence(
+		    previewSeq.add(new Parallel(t1, t3, t5)); 
+		    previewSeq.add(new Parallel(t2, t4, t6));      
+//		    );
+		}
+		
+		/**
+		 * Preview: play an animation with the current traversal order, 
+		 * to give users an overview of the segments they will find correspondences for
+		 */
+		public function playPreview():void
+		{
+			if (!_isContentTree)	// nothing if layout tree
+				return;
+			
+			var message:String = "Watch this preview of segments for the mapping task";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );    
+							
+			var root:NodeSprite = tree.root as NodeSprite;
+			var nodeCount:Number = 1;
+			var node:NodeSprite = null;	
+
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (nn.props["order"] == nodeCount)
+				{
+					message = "Watch this preview of segments for the mapping task. Now displaying " + nodeCount + " of " + tree.nodes.length;
+					dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );
+					addPreviewNode(nn);
+				}		
+	        	nodeCount++;
+	        });
+		    previewSeq.play();  
+		    previewSeq.addEventListener(TransitionEvent.END, onEndPreview);	
+		}
+
+		/**
+		 * When preview animation finishes playing
+		 */		
+		private function onEndPreview(e:TransitionEvent):void
+		{
+			//trace("here");
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
+			if (Theme.ENABLE_SERIAL == true) 
+	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
+	        		
+		}
+		
+		/**
+		 * Play a node blinking visual effects.  
+		 */
+		public function blinkNode(node:NodeSprite, handler:Function):void
+		{
+			if (node == null)
+				return;	
+			var t1:Tween = new Tween(node, 0.5, {lineColor:Theme.COLOR_SELECTED});
+			var t2:Tween = new Tween(node, 0.5, {lineColor:0x00000000});
+			var t3:Tween = new Tween(node, 0.5, {alpha:0});
+			var t4:Tween = new Tween(node, 0.5, {alpha:1});			
+			var t5:Tween = new Tween(node, 0.5, {fillColor:Theme.COLOR_FILL_MAPPED});
+			var t6:Tween = new Tween(node, 0.5, {fillColor:0x00000000});
+			
+		    var seq:Sequence = new Sequence(
+			    new Parallel(t1, t5), new Parallel(t2, t6)      
+		    );
+		    seq.play();
+		    seq.addEventListener(TransitionEvent.END, handler);	
+		}
+
+
+		/**
+		 * When node blinking animation finishes playing for unmapped nodes
+		 */		
+		private function onEndBlinkingUnmapped(e:TransitionEvent):void
+		{
+			//trace("here");
+ 
+			//var message:String = "Assigned as no mapping: " + selectedID;	
+			var message:String = "Assigned as no mapping";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "unmap", 0, message) );    
+			
+			// Check if the whole content tree is completed.
+			checkCompleted();
+			
+			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
+			if (Theme.ENABLE_SERIAL == true)	
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	        		
+		}
+
+										
 		/**
 		 * Mark the selected node as unmapped
 		 */
@@ -117,17 +235,10 @@ package cs448b.fp.tree
 					unmarkActivated(nn);
 				}			
 			});
-		
-			var message:String = "Assigned as no mapping: " + selectedID;	
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "unmap", selectedID, message) );    
-			
-			// Check if the whole content tree is completed.
-			checkCompleted();
-			
-			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
-			if (Theme.ENABLE_SERIAL == true)	
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
+
+			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped);			
 		}
+
 		
 		/**
 		 * Check if the whole content tree mapping is completed.
@@ -164,12 +275,15 @@ package cs448b.fp.tree
 			// compute the scale of the original web page vs. canvas
 			var wScale:Number = _canvasWidth / tree.root.width;
 			var hScale:Number = _canvasHeight / tree.root.height;
-//			trace (wScale +  " " + hScale);
+
 			// choose the smaller scale and apply
 			zoomScale = (wScale > hScale) ? hScale : wScale;
 			return zoomScale;
 		}
-		
+
+		/**
+		 * Initialize nodes, edges, and layout
+		 */					
 		protected override function initComponents():void
 		{
 			// init values		
@@ -188,12 +302,18 @@ package cs448b.fp.tree
 			
 		}
 		
+		/**
+		 * Initialize node property
+		 */					
 		protected override function initNode(n:NodeSprite, i:Number):void
 		{
 			n.fillAlpha = 1/25;
 			n.lineAlpha = 1/25;	
 		}
-		
+
+		/**
+		 * Mouse event handler main
+		 */					
 		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event):void
 		{
 			if(evt.type == MouseEvent.MOUSE_OVER)
@@ -219,7 +339,10 @@ package cs448b.fp.tree
 		}
 		
 		private var oldNode:NodeSprite = null;
-					
+		
+		/**
+		 * Mouse cursor over handler
+		 */						
 		protected override function onMouseOver(n:NodeSprite):void
 		{
 			if(n == null || n == tree.root)// || oldNode == n) 
@@ -264,47 +387,10 @@ package cs448b.fp.tree
 
 			//oldNode = n;
 		}
-
-		/* 
-		 * Show connected nodes
-		 */		 
-		private function showConnectedNodes(n:NodeSprite):void
-		{
-			n.parentNode.lineColor = Theme.COLOR_SELECTED;
-			n.parentNode.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
-			n.parentNode.lineAlpha = Theme.CONNECTED_ALPHA;
-			
-			for (var i:uint=0; i<n.childDegree; i++)
-			{
-				n.getChildNode(i).lineColor = Theme.COLOR_SELECTED;
-				n.getChildNode(i).lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
-				n.getChildNode(i).lineAlpha = Theme.CONNECTED_ALPHA;
-			}			
-		}
-
-		/* 
-		 * Remove effects of showConnectedNodes
-		 */		 
-		private function hideConnectedNodes(n:NodeSprite):void
-		{
-			hideLine(n.parentNode);
 						
-			for (var i:uint=0; i<n.childDegree; i++)
-			{
-				hideLine(n.getChildNode(i));
-			}			
-		}
-						
-		/* 
-		 * Recursively pull forward the nodes
-		 */		 
-		private function pullAllChildrenForward(n:NodeSprite):void
-		{
-			pullNodeForward(n);	
-			for (var i:uint=0; i<n.childDegree; i++)
-				pullAllChildrenForward(n.getChildNode(i));			
-		}
-		
+		/**
+		 * Mouse cursor out handler
+		 */			
 		protected override function onMouseOut(n:NodeSprite):void
 		{
 			if(n == null) 
@@ -345,9 +431,52 @@ package cs448b.fp.tree
 //				nodePulled = false;
 //			}
 		}
-		
+
+		/** 
+		 * Show connected nodes
+		 */		 
+		private function showConnectedNodes(n:NodeSprite):void
+		{
+			n.parentNode.lineColor = Theme.COLOR_SELECTED;
+			n.parentNode.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
+			n.parentNode.lineAlpha = Theme.CONNECTED_ALPHA;
+			
+			for (var i:uint=0; i<n.childDegree; i++)
+			{
+				n.getChildNode(i).lineColor = Theme.COLOR_SELECTED;
+				n.getChildNode(i).lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
+				n.getChildNode(i).lineAlpha = Theme.CONNECTED_ALPHA;
+			}			
+		}
+
+		/** 
+		 * Remove effects of showConnectedNodes
+		 */		 
+		private function hideConnectedNodes(n:NodeSprite):void
+		{
+			hideLine(n.parentNode);
+						
+			for (var i:uint=0; i<n.childDegree; i++)
+			{
+				hideLine(n.getChildNode(i));
+			}			
+		}
+				
 		private var nodePulled:Boolean = false;
+
+		/**
+		 * Recursively pull forward the nodes
+		 */		 
+		private function pullAllChildrenForward(n:NodeSprite):void
+		{
+			pullNodeForward(n);	
+			for (var i:uint=0; i<n.childDegree; i++)
+				pullAllChildrenForward(n.getChildNode(i));			
+		}
 		
+		/**
+		 * Mouse button up handler
+		 */			
 		protected override function onMouseUp(n:NodeSprite):void 
 		{
 //			if(nodePulled)
@@ -357,7 +486,10 @@ package cs448b.fp.tree
 //				nodePulled = false;
 //			}
 		}
-   		
+
+		/**
+		 * Mouse button down handler
+		 */	   		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
 			if (Theme.ENABLE_SERIAL == true && isContentTree == true)
@@ -400,61 +532,68 @@ package cs448b.fp.tree
 		}
 		
 		private var _idx:Number;
-		
-		private function pullNodeForward(n:DisplayObject):void
+
+		/**
+		 * Pull up the node display (higher on the cascaded stack)
+		 */		
+		public function pullNodeForward(n:DisplayObject):void
 		{
 			var p:DisplayObjectContainer = n.parent;
 			_idx = p.getChildIndex(n);
 			
 			p.setChildIndex(n, p.numChildren-1);
 		}
-		
-		private function pushNodeBack(n:DisplayObject):void
+
+		/**
+		 * Push back the node display (lower on the cascaded stack)
+		 */		
+		public function pushNodeBack(n:DisplayObject):void
 		{
 			n.parent.setChildIndex(n, _idx);
 		}	
 
+		/**
+		 * Blur the node display
+		 */
 		public function blurOtherNodes(n:NodeSprite):void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
 				if (n != nn && nn.props["activated"] == false)
-				//if (n != nn)
 				{
 					//nn.fillAlpha = 0.5;
 					nn.props["image"].alpha = 0.5;
 				}
 			});
 	 	}
-
+	 	
+		/**
+		 * Cancel any blur / hide effects
+		 */
 		public function unblurOtherNodes():void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-					//nn.fillAlpha = 1;
 					nn.props["image"].visible = true;
 					nn.props["image"].alpha = 1;
 					nn.visible = true;
 					 
 					showLineWidth(nn);
-					//nn.lineWidth = Theme.LINE_WIDTH;
 					nn.lineColor = nodes.lineColor;
 					nn.fillColor = nodes.fillColor;
 					nn.props["activated"] = false;
 			});
 	 	}
 
-		// Mark the nodes as activated, both internally and visually
+		/**
+		 * Mark the nodes as activated, both internally and visually
+		 */			
 		public function markActivated(nn:NodeSprite):void
 		{
 			nn.visible = true;
 			nn.props["activated"] = true;
-//			nn.lineColor = 0xff0000FF; 
-//			nn.lineWidth = 15;
 			nn.lineColor = Theme.COLOR_ACTIVATED;
 			showLineWidth(nn);
-			//nn.lineWidth = Theme.LINE_WIDTH;
-			//nn.fillColor = 0xffFFFFAAAA;
 			nn.props["image"].alpha = 1;
 			nn.props["image"].visible = true;
 			if (nn.props["mapped"] == Theme.STATUS_MAPPED)
@@ -463,20 +602,20 @@ package cs448b.fp.tree
 			}
 		}
 
-		// Mark the node as selected, both internally and visually
+		/**
+		 * Mark the node as selected, both internally and visually
+		 */			
 		public function markSelected(nn:NodeSprite):void
 		{
 			nn.props["selected"] = true;
-//			nn.lineColor = 0xffFF0000; 
-//			nn.lineWidth = 15;
 			nn.lineColor = Theme.COLOR_SELECTED;
 			showLineWidth(nn);
-			//nn.lineWidth = Theme.LINE_WIDTH;
-			//nn.fillColor = 0xffFFFFAAAA;
 			nn.props["image"].alpha = 1;
 		}
 
-		// Mark the nodes as activated given the ID, both internally and visually
+		/**
+		 * Mark the nodes as activated given the ID, both internally and visually
+		 */			
 		public function markActivatedID(id:Number):void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
@@ -488,7 +627,9 @@ package cs448b.fp.tree
 			});			
 		}
 
-		// Mark the nodes as selected given the ID, both internally and visually
+		/**
+		 * Mark the nodes as selected given the ID, both internally and visually
+		 */			
 		public function markSelectedID(id:Number):void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
@@ -500,7 +641,9 @@ package cs448b.fp.tree
 			});		
 		}
 		
-		// Mark the node as deactivated, both internally and visually
+		/**
+		 * Mark the node as deactivated, both internally and visually
+		 */			
 		public function unmarkActivated(nn:NodeSprite):void
 		{
 			nn.props["activated"] = false;
@@ -509,27 +652,27 @@ package cs448b.fp.tree
 			//nn.lineWidth = nodes.lineWidth;
 		}
 
-		// Mark the node as unselected, both internally and visually
+		/**
+		 * Mark the node as unselected, both internally and visually
+		 */			
 		public function unmarkSelected(nn:NodeSprite):void
 		{
 			nn.props["selected"] = false;
 			if (nn.props["activated"] == true)
-			{
-//				nn.lineColor = 0xff0000FF; 
-//				nn.lineWidth = 15;			
+			{			
 				nn.lineColor = Theme.COLOR_ACTIVATED;
-				showLineWidth(nn);
-				//nn.lineWidth = Theme.LINE_WIDTH;					
+				showLineWidth(nn);		
 			}
 			else
 			{
 				nn.lineColor = nodes.lineColor; 
 				nn.lineWidth = nodes.lineWidth;				
 			}		
-
 		}
 
-		// Mark the node as deactivated given the ID, both internally and visually
+		/**
+		 * Mark the node as deactivated given the ID, both internally and visually
+		 */			
 		public function unmarkActivatedID(id:Number):void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
@@ -541,7 +684,9 @@ package cs448b.fp.tree
 			});			
 		}
 
-		// Mark the node as unselected given the ID, both internally and visually
+		/**
+		 * Mark the node as unselected given the ID, both internally and visually
+		 */	
 		public function unmarkSelectedID(id:Number):void
 		{
 			var root:NodeSprite = tree.root as NodeSprite;
@@ -553,7 +698,10 @@ package cs448b.fp.tree
 			});		
 		}
 										
-		// Mark the nodes that are mapped, both internally and visually
+		
+		/**
+		 * Mark the nodes that are mapped, both internally and visually
+		 */		
 		public function markMapping(id:Number, action:Number):void
 		{	
 			var root:NodeSprite = tree.root as NodeSprite;				        
@@ -563,7 +711,6 @@ package cs448b.fp.tree
 	        		if (action == Theme.STATUS_MAPPED)
 	        		{
 						nn.props["mapped"] = Theme.STATUS_MAPPED;	
-						//nn.fillColor = 0xffFFAAAAFF;
 						nn.fillColor = Theme.COLOR_FILL_MAPPED;
 						hideLine(nn);
 						nn.alpha = Theme.ALPHA_MAPPED;
@@ -572,7 +719,6 @@ package cs448b.fp.tree
 	        		else if (action == Theme.STATUS_UNMAPPED)
 	        		{
 	        			nn.props["mapped"] = Theme.STATUS_UNMAPPED;	
-						//nn.fillColor = 0xffFFFFAAAA;
 						nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
 						hideLine(nn);
 						nn.alpha = Theme.ALPHA_MAPPED;
@@ -589,15 +735,18 @@ package cs448b.fp.tree
 	        });
 	    }
 
-		
-		// Hide line border
+		/**
+		 * Hide line display, called when cancelling any line change effect
+		 */			
 		private function hideLine(nn:NodeSprite):void
 		{
 			nn.lineWidth = 0;			
 			nn.lineColor = 0x00000000;
 		}
 		
-		// Show line width based on the current theme setting
+		/**
+		 * Show line width based on the current theme setting
+		 */	
 		private function showLineWidth(nn:NodeSprite):void
 		{
 			if (isContentTree == true && Theme.FIREBUG_CTREE == false)
@@ -607,8 +756,11 @@ package cs448b.fp.tree
 			else 
 				hideLine(nn);
 		}
-			    
-		public function getDepth():uint
+
+		/**
+		 * Get the maximum tree depth
+		 */				    
+		public function getMaxTreeDepth():uint
 		{
 			var maxDepth:uint = 0;
 			var root:NodeSprite = tree.root as NodeSprite;
@@ -618,7 +770,10 @@ package cs448b.fp.tree
 			});			
 			return maxDepth;
 		}
-		
+
+		/**
+		 * Apply the visible depth effect
+		 */				
 		public override function setVisibleDepth(d:Number):void 
 		{
 			var tree:Tree = vis.data as Tree;
@@ -640,6 +795,9 @@ package cs448b.fp.tree
 			vis.update(1, "nodes").play();
 		}
 
+		/**
+		 * Apply the visual toggle effect
+		 */		
 		public function setVisualToggle():void 
 		{	
 			var tree:Tree = vis.data as Tree;
@@ -649,8 +807,7 @@ package cs448b.fp.tree
 			tree.visit(function(n:NodeSprite):void
 			{
 				n.props["image"].visible = _visualToggle;
-				//n.props["image"].alpha = 0.5;
-					
+				//n.props["image"].alpha = 0.5;					
 			}, Data.NODES);
 		
 			vis.update(1, "nodes").play();
@@ -707,19 +864,7 @@ package cs448b.fp.tree
 			ret = getCurrentProcessingNode();
 			if (ret == null)
 				return -1;
-			return Number(ret.name);
-//			var root:NodeSprite = tree.root as NodeSprite;
-////			var nodeCount:Number = 1;
-//			var ret:Number = -1;	
-//	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-//				if (nn.props["order"] == _currentStep)
-//					ret = Number(nn.name);
-////	        	if (nodeCount == _currentStep)
-////	        		ret = Number(nn.name);
-////	        	nodeCount++;
-//	        });
-//	        trace("getCurrentProcessingNodeID: " + ret);
-//	        return ret;			
+			return Number(ret.name);	
 		}
 		
 		/**
@@ -745,6 +890,7 @@ package cs448b.fp.tree
 		}		
 
 		private var _nodeCount:Number;
+		
 		/**
 		 * Assign the traversal order of the tree
 		 */
@@ -780,7 +926,10 @@ package cs448b.fp.tree
 		 	}
 	        				
 		}
-		
+
+		/**
+		 * Preorder traversal algorithm with random child selection
+		 */		
 		private function preorder(nn:NodeSprite):void
 		{
 			var randomNode:NodeSprite = null;
@@ -804,6 +953,9 @@ package cs448b.fp.tree
 			
 		}
 		
+		/**
+		 * See if all children nodes have been traversed
+		 */				
 		private function isAllChildrenTraversed(nn:NodeSprite):Boolean
 		{
 			var ret:Boolean = true;
@@ -816,8 +968,9 @@ package cs448b.fp.tree
 			}
 			return ret;
 		}
+		
 		/**
-		 * Get a random node from 0 to n
+		 * Get a random number between 0 and n
 		 */
 		private function getRandomNumberWithinRange(n:Number):Number
 		{
