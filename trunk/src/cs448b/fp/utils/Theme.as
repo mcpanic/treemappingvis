@@ -9,6 +9,8 @@ package cs448b.fp.utils
 		public static var ENABLE_SERIAL:Boolean = true;	
 		// Enable / Disable continue button - determined by ENABLE_REL
 		public static var ENABLE_CONTINUE_BUTTON:Boolean = ENABLE_REL;
+		// Enable /Disable blinking effect for mapping actions
+		public static var ENABLE_BLINKING:Boolean = true;
 		
 		// Tree traversal order
 		public static var ORDER_PREORDER:Number = 1;

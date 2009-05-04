@@ -33,7 +33,7 @@ package {
 		 */		
 		public function TreeMappingVis()
 		{
-			mappingID = 1;	// 1: moo, 2: hybrid, 3: cat
+			mappingID = 3;	// 1: moo, 2: hybrid, 3: cat
 			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 			
@@ -118,7 +118,7 @@ package {
 			addChild(cascadedTree2);
 			
 			var maxDepth:uint = 0;
-			maxDepth = (cascadedTree1.getDepth() > cascadedTree2.getDepth())? cascadedTree1.getDepth(): cascadedTree2.getDepth();
+			maxDepth = (cascadedTree1.getMaxTreeDepth() > cascadedTree2.getMaxTreeDepth())? cascadedTree1.getMaxTreeDepth(): cascadedTree2.getMaxTreeDepth();
 
 			controls.setSliderDepth(maxDepth);
 			controls.setSliderValue(maxDepth);
@@ -154,7 +154,7 @@ package {
 			mappingManager.init();	// add root-root mapping
 			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
 			printTree(cascadedTree1.tree.root, 0);
-			mappingManager.showNextStep();	// for the first time	
+			//mappingManager.showNextStep();	// for the first time	
 
 			
 		}
