@@ -19,9 +19,7 @@ package cs448b.fp.tree
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.filters.BitmapFilter;
-	import flash.filters.BitmapFilterQuality;
-	import flash.filters.DropShadowFilter;
+	import flash.filters.GlowFilter;
 	import flash.geom.Rectangle;
 						
 	public class CascadedTree extends AbstractTree
@@ -31,6 +29,7 @@ package cs448b.fp.tree
 		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
 		private var _title:TextSprite;
 		private var _unmapButton:Button;
+		private var _node:NodeActions;
 		// Order of tree traversal
 		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
 			
@@ -40,6 +39,7 @@ package cs448b.fp.tree
 			super(i, tree, x, y);
 			this.x = x;
 			this.y = y;
+			_node = new NodeActions(this);
 		}
 
 		/**
@@ -126,6 +126,11 @@ package cs448b.fp.tree
 			//trace("added");
 			if (node == null || node == tree.root)	// do not play the root node
 				return;	
+			
+			node.filters = [new GlowFilter(0xff0000, 0.8, 0, 0)];
+			var g1:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":15,"filters[0].blurY":15});
+			var g2:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":0,"filters[0].blurY":0});
+				
 			var t1:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:Theme.COLOR_SELECTED});
 			var t2:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:0x00000000});
 			var t3:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:Theme.LINE_WIDTH});
@@ -134,8 +139,8 @@ package cs448b.fp.tree
 			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
 								
 //		    var seq:Sequence = new Sequence(
-		    previewSeq.add(new Parallel(t1, t3)); 
-		    previewSeq.add(new Parallel(t2, t4));      
+		    previewSeq.add(new Parallel(t1, t3, g1)); 
+		    previewSeq.add(new Parallel(t2, t4, g2));      
 //		    );
 		}
 		
@@ -176,7 +181,12 @@ package cs448b.fp.tree
 		 */		
 		private function onEndPreview(e:TransitionEvent):void
 		{
-			trace("here");
+			// remove all filters
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				_node.removeGlow(nn);
+	        });
+	  					
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
@@ -376,7 +386,8 @@ package cs448b.fp.tree
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				n.lineColor = Theme.COLOR_ACTIVATED;
-				n.lineWidth = Theme.LINE_WIDTH;			
+				n.lineWidth = Theme.LINE_WIDTH;		
+				n.fillColor = Theme.COLOR_FILL_MAPPED;	
 				pullAllChildrenForward(n);
 //				pullNodeForward(n);	
 //					for (var i:uint=0; i<n.childDegree; i++)
@@ -386,6 +397,7 @@ package cs448b.fp.tree
 			{
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;			
+				n.fillColor = Theme.COLOR_FILL_UNMAPPED;
 				pullAllChildrenForward(n);				
 			}
 			// Border change on connected nodes for activated nodes
@@ -394,8 +406,10 @@ package cs448b.fp.tree
 				//n.lineColor = 0xffFF0000; 
 				//n.lineWidth = 15;
 				n.lineColor = Theme.COLOR_SELECTED;
-				n.lineWidth = Theme.LINE_WIDTH;					
-				//n.fillColor = 0xffFFFFAAAA;
+				n.lineWidth = Theme.LINE_WIDTH;	
+				_node.addDropShadow(n);
+				_node.addGlow(n);			
+				
 				showConnectedNodes(n);
 				pullAllChildrenForward(n);
 ////				if (nodePulled == false)
@@ -431,6 +445,7 @@ package cs448b.fp.tree
 				n.lineColor = Theme.COLOR_ACTIVATED;
 				showLineWidth(n);
 				hideConnectedNodes(n);
+				_node.removeDropShadow(n);
 //				if (nodePulled == true)
 //				{
 //					pushNodeBack(n);	
@@ -460,15 +475,19 @@ package cs448b.fp.tree
 		 */		 
 		private function showConnectedNodes(n:NodeSprite):void
 		{
-			n.parentNode.lineColor = Theme.COLOR_SELECTED;
-			n.parentNode.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
-			n.parentNode.lineAlpha = Theme.CONNECTED_ALPHA;
-			
+			if (n.parentNode != tree.root)
+			{
+				n.parentNode.lineColor = Theme.COLOR_CONNECTED;
+				n.parentNode.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
+				n.parentNode.lineAlpha = Theme.CONNECTED_ALPHA;
+				_node.addGlow(n.parentNode, Theme.CONNECTED_ALPHA, 5, 5);
+			}
 			for (var i:uint=0; i<n.childDegree; i++)
 			{
-				n.getChildNode(i).lineColor = Theme.COLOR_SELECTED;
+				n.getChildNode(i).lineColor = Theme.COLOR_CONNECTED;
 				n.getChildNode(i).lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
 				n.getChildNode(i).lineAlpha = Theme.CONNECTED_ALPHA;
+				_node.addGlow(n.getChildNode(i), Theme.CONNECTED_ALPHA, 5, 5);
 			}			
 		}
 
@@ -478,10 +497,11 @@ package cs448b.fp.tree
 		private function hideConnectedNodes(n:NodeSprite):void
 		{
 			hideLine(n.parentNode);
-						
+			_node.removeGlow(n.parentNode);			
 			for (var i:uint=0; i<n.childDegree; i++)
 			{
 				hideLine(n.getChildNode(i));
+				_node.removeGlow(n.getChildNode(i));
 			}			
 		}
 				

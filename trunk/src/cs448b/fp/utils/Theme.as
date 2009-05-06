@@ -3,6 +3,7 @@ package cs448b.fp.utils
 	import flash.filters.BitmapFilter;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.DropShadowFilter;
+	import flash.filters.GlowFilter;
 	import flash.text.TextFormat;
 	public class Theme
 	{	
@@ -26,7 +27,8 @@ package cs448b.fp.utils
 		
 		// Tree visualization options: used in tree files		
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
-		public static var COLOR_SELECTED:uint = 0xffff0000; 		
+		public static var COLOR_SELECTED:uint = 0xffff0000; 	
+		public static var COLOR_CONNECTED:uint = 0xff0000ff;//0xffbbbbbb;	
 		public static var LINE_WIDTH:uint = 15;
 		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
@@ -34,8 +36,8 @@ package cs448b.fp.utils
 		public static var COLOR_FILL_UNMAPPED:Number = 0xffFFFFAAAA;
 		public static var ALPHA_MAPPED:Number = 0.3;		// alpha value for mapped nodes
 		public static var SHOW_MAPPPED:Boolean = true;		// hide content of the mapped nodes
-		public static var CONNECTED_ALPHA:Number = 0.6;		// alpha value for the connected layout nodes on mouseover
-		public static var CONNECTED_LINE_WIDTH:Number = 1.5;	// dividend for the connected layout nodes on mouseover
+		public static var CONNECTED_ALPHA:Number = 0.5;		// alpha value for the connected layout nodes on mouseover
+		public static var CONNECTED_LINE_WIDTH:Number = 1;	// dividend for the connected layout nodes on mouseover
 		
 		// Mapping status constants
 		public static var STATUS_DEFAULT:Number = 0;
@@ -109,7 +111,8 @@ package cs448b.fp.utils
 	    /**
     	 * Drop shadow filter for the nodes
 	     */
- 		public static function getBitmapFilter():BitmapFilter {
+ 		public static function getDropShadowFilter():BitmapFilter 
+ 		{
             var color:Number = 0x000000;
             var angle:Number = 45;
             var alpha:Number = 0.8;
@@ -131,5 +134,23 @@ package cs448b.fp.utils
                                         inner,
                                         knockout);
         }
+        
+	    /**
+    	 * Drop shadow filter for the nodes
+	     */
+ 		public static function getGlowFilter(a:Number, bx:Number, by:Number):BitmapFilter 
+ 		{
+            var color:Number = 0xff0000;
+            var alpha:Number = a;
+            var blurX:Number = bx;
+            var blurY:Number = by;
+            var strength:Number = 3;
+            var quality:Number = BitmapFilterQuality.HIGH;
+            var inner:Boolean = false;
+            var knockout:Boolean = false;
+            
+            return new GlowFilter(color, alpha, blurX, blurY, strength, quality, inner, knockout); 
+            
+        }        
 	}
 }

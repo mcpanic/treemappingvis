@@ -323,6 +323,7 @@ package cs448b.fp.utils
 						_contentTree.pullNodeForward(nn);
 						 
 						_cNode.addDropShadow(nn);
+						_cNode.addGlow(nn);
 					}
 					else
 					{	
@@ -340,7 +341,9 @@ package cs448b.fp.utils
 		 */			
 		private function showActivatedLayout(n:NodeSprite):void
 		{	
-			_layoutTree.blurOtherNodes(n);	        			
+			_layoutTree.blurOtherNodes(n);	
+//			_lNode.addDropShadow(n);
+//			_lNode.addGlow(n);        			
 			for(var i:uint=0; i<n.childDegree; i++)
 			{
     			_layoutTree.activateAllDescendants(n.getChildNode(i));
