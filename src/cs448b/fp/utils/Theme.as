@@ -7,6 +7,8 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
+		public static var ENABLE_DEBUG:Boolean = false;
+		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
 		// Enable / Disable serial node presentation (one content node at a time)
