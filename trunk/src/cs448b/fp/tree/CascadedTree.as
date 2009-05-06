@@ -29,7 +29,7 @@ package cs448b.fp.tree
 		private var _title:TextSprite;
 		private var _unmapButton:Button;
 		// Order of tree traversal
-		private var _traversalOrder:Number = Theme.ORDER_DFS;
+		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean)
 		{
@@ -101,9 +101,19 @@ package cs448b.fp.tree
 			_unmapButton.width = Theme.LAYOUT_UNMAP_WIDTH;			
            	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
            	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); 
+           	_unmapButton.enabled = false;
            	addChild(_unmapButton);  			
 		}
 
+		/**
+		 * Enable unmap button
+		 */		
+		private function enableUnmapButton():void
+		{
+			_unmapButton.enabled = true;
+		}
+		
+		
 		private var previewSeq:Sequence = new Sequence();
 		
 		/**
@@ -111,16 +121,17 @@ package cs448b.fp.tree
 		 */
 		private function addPreviewNode(node:NodeSprite):void
 		{
+			//trace("added");
 			if (node == null)
 				return;	
-			var t1:Tween = new Tween(node, 0.5, {lineColor:Theme.COLOR_SELECTED});
-			var t2:Tween = new Tween(node, 0.5, {lineColor:0x00000000});
-			var t3:Tween = new Tween(node, 0.5, {lineWidth:Theme.LINE_WIDTH});
-			var t4:Tween = new Tween(node, 0.5, {lineWidth:0});			
-			var t5:Tween = new Tween(node, 0.5, {fillColor:Theme.COLOR_FILL_MAPPED});
-			var t6:Tween = new Tween(node, 0.5, {fillColor:0x00000000});
-			//var t7:Tween = new Tween(node, 0.5, {fillColor:Theme.COLOR_FILL_MAPPED});
-			//var t6:Tween = new Tween(node, 0.5, {fillColor:0x00000000});
+			var t1:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:Theme.COLOR_SELECTED});
+			var t2:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:0x00000000});
+			var t3:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:Theme.LINE_WIDTH});
+			var t4:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:0});			
+			var t5:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
+			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
+			//var t7:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
+			//var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
 //		    var seq:Sequence = new Sequence(
 		    previewSeq.add(new Parallel(t1, t3, t5)); 
 		    previewSeq.add(new Parallel(t2, t4, t6));      
@@ -136,22 +147,25 @@ package cs448b.fp.tree
 			if (!_isContentTree)	// nothing if layout tree
 				return;
 			
-			var message:String = "Watch this preview of segments for the mapping task";
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );    
-							
 			var root:NodeSprite = tree.root as NodeSprite;
 			var nodeCount:Number = 1;
 			var node:NodeSprite = null;	
+			var message:String = "Now showing a preview of mapping order for the task. Please wait...";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );
 
-	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				if (nn.props["order"] == nodeCount)
-				{
-					message = "Watch this preview of segments for the mapping task. Now displaying " + nodeCount + " of " + tree.nodes.length;
-					dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );
-					addPreviewNode(nn);
-				}		
-	        	nodeCount++;
-	        });
+			while (nodeCount <= tree.nodes.length)
+			{
+		        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+					if (nn.props["order"] == nodeCount && nn != root)
+					{
+						addPreviewNode(nn);
+						//trace(nn.props["order"]);
+						nodeCount++;
+					}	
+		        });
+	  		}
+	        trace("COUNT:" + nodeCount);
+	        previewSeq.delay = 1;
 		    previewSeq.play();  
 		    previewSeq.addEventListener(TransitionEvent.END, onEndPreview);	
 		}
@@ -161,26 +175,34 @@ package cs448b.fp.tree
 		 */		
 		private function onEndPreview(e:TransitionEvent):void
 		{
-			//trace("here");
+			trace("here");
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
-	        		
+	     	enableUnmapButton();   		
 		}
 		
 		/**
 		 * Play a node blinking visual effects.  
 		 */
-		public function blinkNode(node:NodeSprite, handler:Function):void
+		public function blinkNode(node:NodeSprite, handler:Function, type:Number):void
 		{
 			if (node == null)
 				return;	
-			var t1:Tween = new Tween(node, 0.5, {lineColor:Theme.COLOR_SELECTED});
-			var t2:Tween = new Tween(node, 0.5, {lineColor:0x00000000});
-			var t3:Tween = new Tween(node, 0.5, {alpha:0});
-			var t4:Tween = new Tween(node, 0.5, {alpha:1});			
-			var t5:Tween = new Tween(node, 0.5, {fillColor:Theme.COLOR_FILL_MAPPED});
-			var t6:Tween = new Tween(node, 0.5, {fillColor:0x00000000});
+			var t1:Tween;
+			if (type == 1)	// mapped
+				t1 = new Tween(node, Theme.DURATION_BLINKING, {lineColor:Theme.COLOR_ACTIVATED});
+			else			// unmapped
+				t1 = new Tween(node, Theme.DURATION_BLINKING, {lineColor:Theme.COLOR_SELECTED});
+			var t2:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineColor:0x00000000});
+			var t3:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:0});
+			var t4:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:1});			
+			var t5:Tween;
+			if (type == 1)	// mapped
+				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_MAPPED});
+			else 			// unmapped
+				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_UNMAPPED});
+			var t6:Tween = new Tween(node, Theme.DURATION_BLINKING, {fillColor:0x00000000});
 			
 		    var seq:Sequence = new Sequence(
 			    new Parallel(t1, t5), new Parallel(t2, t6)      
@@ -236,7 +258,7 @@ package cs448b.fp.tree
 				}			
 			});
 
-			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped);			
+			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped, 2);			
 		}
 
 		

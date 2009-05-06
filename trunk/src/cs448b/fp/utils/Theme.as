@@ -17,6 +17,10 @@ package cs448b.fp.utils
 		public static var ORDER_BFS:Number = 2;
 		public static var ORDER_DFS:Number = 3;
 		
+		// Animation duration
+		public static var DURATION_PREVIEW:Number = 0.3;
+		public static var DURATION_BLINKING:Number = 0.5;
+		
 		// Tree visualization options: used in tree files		
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
 		public static var COLOR_SELECTED:uint = 0xffff0000; 		
@@ -24,7 +28,7 @@ package cs448b.fp.utils
 		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
 		public static var COLOR_FILL_MAPPED:Number = 0xffFFAAAAFF;
-		public static var COLOR_FILL_UNMAPPED:Number = 0xffFFAAAAFF; //0xffFFFFAAAA;
+		public static var COLOR_FILL_UNMAPPED:Number = 0xffFFFFAAAA;
 		public static var ALPHA_MAPPED:Number = 0.3;		// alpha value for mapped nodes
 		public static var SHOW_MAPPPED:Boolean = true;		// hide content of the mapped nodes
 		public static var CONNECTED_ALPHA:Number = 0.6;		// alpha value for the connected layout nodes on mouseover
@@ -97,6 +101,5 @@ package cs448b.fp.utils
 		public function Theme()
 		{	
 		}
-
 	}
 }
