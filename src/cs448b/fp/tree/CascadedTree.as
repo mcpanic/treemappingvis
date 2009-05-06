@@ -19,6 +19,9 @@ package cs448b.fp.tree
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterQuality;
+	import flash.filters.DropShadowFilter;
 	import flash.geom.Rectangle;
 						
 	public class CascadedTree extends AbstractTree
@@ -112,8 +115,7 @@ package cs448b.fp.tree
 		{
 			_unmapButton.enabled = true;
 		}
-		
-		
+        		
 		private var previewSeq:Sequence = new Sequence();
 		
 		/**
@@ -122,7 +124,7 @@ package cs448b.fp.tree
 		private function addPreviewNode(node:NodeSprite):void
 		{
 			//trace("added");
-			if (node == null)
+			if (node == null || node == tree.root)	// do not play the root node
 				return;	
 			var t1:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:Theme.COLOR_SELECTED});
 			var t2:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:0x00000000});
@@ -130,11 +132,10 @@ package cs448b.fp.tree
 			var t4:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:0});			
 			var t5:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
 			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
-			//var t7:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
-			//var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
+								
 //		    var seq:Sequence = new Sequence(
-		    previewSeq.add(new Parallel(t1, t3, t5)); 
-		    previewSeq.add(new Parallel(t2, t4, t6));      
+		    previewSeq.add(new Parallel(t1, t3)); 
+		    previewSeq.add(new Parallel(t2, t4));      
 //		    );
 		}
 		
@@ -156,7 +157,7 @@ package cs448b.fp.tree
 			while (nodeCount <= tree.nodes.length)
 			{
 		        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-					if (nn.props["order"] == nodeCount && nn != root)
+					if (nn.props["order"] == nodeCount)
 					{
 						addPreviewNode(nn);
 						//trace(nn.props["order"]);
@@ -369,7 +370,7 @@ package cs448b.fp.tree
 		{
 			if(n == null || n == tree.root)// || oldNode == n) 
 				return;
-			if (n.props["selected"] == true)
+			if (n.props["selected"] == true && isContentTree == true)
 			;
 			// Brushing and linking for mapped nodes
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
@@ -417,7 +418,7 @@ package cs448b.fp.tree
 		{
 			if(n == null) 
 				return;
-			if (n.props["selected"] == true)
+			if (n.props["selected"] == true && isContentTree == true)
 			;
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
@@ -515,13 +516,26 @@ package cs448b.fp.tree
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
 			if (Theme.ENABLE_SERIAL == true && isContentTree == true)
+				return;
+				
+			var root:NodeSprite = tree.root as NodeSprite;
+			if (Theme.ENABLE_SERIAL == true)
 			{
-				// do nothing
+				// since there's no undo or remove, simply see if the node is mapped.
+				// if mapped, do nothing. if new, map.
+				if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
+					return;
+				else
+				{
+					super.onMouseDown(n);
+					//blurOtherNodes(n);
+					markSelected(n);
+					// dispatch mapping event
+					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));					
+				}
 			}
 			else
-			{
-				//var isUnselect:Boolean = false;
-				var root:NodeSprite = tree.root as NodeSprite;
+			{					
 		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 					if (n != nn && nn.props["selected"] == true)	
 					{	
@@ -548,7 +562,7 @@ package cs448b.fp.tree
 					markSelected(n);
 					// dispatch mapping event
 					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
-				}
+				}	
 			}			
 
 		}
