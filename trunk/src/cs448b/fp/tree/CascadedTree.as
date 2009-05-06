@@ -32,6 +32,8 @@ package cs448b.fp.tree
 		private var _node:NodeActions;
 		// Order of tree traversal
 		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
+		
+		public var _currentStep:Number = 0;
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean)
 		{
@@ -39,7 +41,7 @@ package cs448b.fp.tree
 			super(i, tree, x, y);
 			this.x = x;
 			this.y = y;
-			_node = new NodeActions(this);
+			_node = new NodeActions(this, bContentTree);
 		}
 
 		/**
@@ -66,7 +68,8 @@ package cs448b.fp.tree
 			tf.x = Theme.LAYOUT_NODENAME_X;
 			tf.y = Theme.LAYOUT_NODENAME_Y;
 
-			addChild(tf);			
+			if (Theme.ENABLE_DEBUG == true)
+				addChild(tf);			
 			addLabel();
 			addUnmapButton();									
 			addChild(vis);
@@ -115,134 +118,7 @@ package cs448b.fp.tree
 		{
 			_unmapButton.enabled = true;
 		}
-        		
-		private var previewSeq:Sequence = new Sequence();
-		
-		/**
-		 * Save a preview sequence with visual effects. Need to be played once all nodes are added. 
-		 */
-		private function addPreviewNode(node:NodeSprite):void
-		{
-			//trace("added");
-			if (node == null || node == tree.root)	// do not play the root node
-				return;	
-			
-			node.filters = [new GlowFilter(0xff0000, 0.8, 0, 0)];
-			var g1:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":15,"filters[0].blurY":15});
-			var g2:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":0,"filters[0].blurY":0});
-				
-			var t1:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:Theme.COLOR_SELECTED});
-			var t2:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:0x00000000});
-			var t3:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:Theme.LINE_WIDTH});
-			var t4:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:0});			
-			var t5:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
-			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
-								
-//		    var seq:Sequence = new Sequence(
-		    previewSeq.add(new Parallel(t1, t3, g1)); 
-		    previewSeq.add(new Parallel(t2, t4, g2));      
-//		    );
-		}
-		
-		/**
-		 * Preview: play an animation with the current traversal order, 
-		 * to give users an overview of the segments they will find correspondences for
-		 */
-		public function playPreview():void
-		{
-			if (!_isContentTree)	// nothing if layout tree
-				return;
-			
-			var root:NodeSprite = tree.root as NodeSprite;
-			var nodeCount:Number = 1;
-			var node:NodeSprite = null;	
-			var message:String = "Now showing a preview of mapping order for the task. Please wait...";
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );
 
-			while (nodeCount <= tree.nodes.length)
-			{
-		        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-					if (nn.props["order"] == nodeCount)
-					{
-						addPreviewNode(nn);
-						//trace(nn.props["order"]);
-						nodeCount++;
-					}	
-		        });
-	  		}
-	        trace("COUNT:" + nodeCount);
-	        previewSeq.delay = 1;
-		    previewSeq.play();  
-		    previewSeq.addEventListener(TransitionEvent.END, onEndPreview);	
-		}
-
-		/**
-		 * When preview animation finishes playing
-		 */		
-		private function onEndPreview(e:TransitionEvent):void
-		{
-			// remove all filters
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				_node.removeGlow(nn);
-	        });
-	  					
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
-			if (Theme.ENABLE_SERIAL == true) 
-	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
-	     	enableUnmapButton();   		
-		}
-		
-		/**
-		 * Play a node blinking visual effects.  
-		 */
-		public function blinkNode(node:NodeSprite, handler:Function, type:Number):void
-		{
-			if (node == null)
-				return;	
-			var t1:Tween;
-			if (type == 1)	// mapped
-				t1 = new Tween(node, Theme.DURATION_BLINKING, {lineColor:Theme.COLOR_ACTIVATED});
-			else			// unmapped
-				t1 = new Tween(node, Theme.DURATION_BLINKING, {lineColor:Theme.COLOR_SELECTED});
-			var t2:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineColor:0x00000000});
-			var t3:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:0});
-			var t4:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:1});			
-			var t5:Tween;
-			if (type == 1)	// mapped
-				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_MAPPED});
-			else 			// unmapped
-				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_UNMAPPED});
-			var t6:Tween = new Tween(node, Theme.DURATION_BLINKING, {fillColor:0x00000000});
-			
-		    var seq:Sequence = new Sequence(
-			    new Parallel(t1, t5), new Parallel(t2, t6)      
-		    );
-		    seq.play();
-		    seq.addEventListener(TransitionEvent.END, handler);	
-		}
-
-
-		/**
-		 * When node blinking animation finishes playing for unmapped nodes
-		 */		
-		private function onEndBlinkingUnmapped(e:TransitionEvent):void
-		{
-			//trace("here");
- 
-			//var message:String = "Assigned as no mapping: " + selectedID;	
-			var message:String = "Assigned as no mapping";
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "unmap", 0, message) );    
-			
-			// Check if the whole content tree is completed.
-			checkCompleted();
-			
-			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
-			if (Theme.ENABLE_SERIAL == true)	
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	        		
-		}
-
-										
 		/**
 		 * Mark the selected node as unmapped
 		 */
@@ -255,49 +131,24 @@ package cs448b.fp.tree
 				if (nn.props["selected"] == true)	// find the selected node
 				{	
 					selectedID = Number(nn.name);
-					markMapping(selectedID, Theme.STATUS_UNMAPPED);					
+					_node.markMapping(selectedID, Theme.STATUS_UNMAPPED);					
 					//blurOtherNodes(nn);		
 					if (Theme.ENABLE_SERIAL == false)
 					{
 						for(var i:uint=0; i<nn.childDegree; i++)
 						{
-							markActivated(nn.getChildNode(i));
+							_node.markActivated(nn.getChildNode(i));
 							//activateAllDescendants(nn.getChildNode(i));
 						}		
 					}			
-					unmarkActivated(nn);
+					_node.unmarkActivated(nn);
 				}			
 			});
 
 			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped, 2);			
 		}
 
-		
-		/**
-		 * Check if the whole content tree mapping is completed.
-		 * Sends a 'complete' event if mapping is completed.
-		 */
-		public function checkCompleted():Boolean
-		{
-			var ret:Boolean = true;
-			// Only valid for content tree
-			if (isContentTree == false)
-				return false;
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				if (nn.props["mapped"] == null || nn.props["mapped"] == Theme.STATUS_DEFAULT)	// see if unmapped
-				{	
-					ret = false;
-				}			
-			});
-			
-			if (ret == true)
-			{
-				var message:String = "Mapping completed!";
-				dispatchEvent(new ControlsEvent( ControlsEvent.STATUS_UPDATE, "complete", 0, message) );				
-			}
-			return ret;
-		}
+
 
 		/**
 		 * Adjust the tree size based on the scale of canvas size and actual page size
@@ -410,11 +261,10 @@ package cs448b.fp.tree
 				_node.addDropShadow(n);
 				_node.addGlow(n);			
 				
-				showConnectedNodes(n);
+				_node.showConnectedNodes(n);
 				pullAllChildrenForward(n);
 ////				if (nodePulled == false)
 ////				{
-////					trace("hello");
 //					pullNodeForward(n);	
 //					for (i=0; i<n.childDegree; i++)
 //						pullNodeForward(n.getChildNode(i));
@@ -436,15 +286,15 @@ package cs448b.fp.tree
 			;
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
-				hideLine(n);					
+				_node.hideLine(n);					
 			}	
 			else if (n.props["activated"] == true)
 			{
 //				n.lineColor = 0xff0000FF; 
 //				n.lineWidth = 15;
 				n.lineColor = Theme.COLOR_ACTIVATED;
-				showLineWidth(n);
-				hideConnectedNodes(n);
+				_node.showLineWidth(n);
+				_node.hideConnectedNodes(n);
 				_node.removeDropShadow(n);
 //				if (nodePulled == true)
 //				{
@@ -468,53 +318,6 @@ package cs448b.fp.tree
 //				pushNodeback(n);
 //				nodePulled = false;
 //			}
-		}
-
-		/** 
-		 * Show connected nodes
-		 */		 
-		private function showConnectedNodes(n:NodeSprite):void
-		{
-			if (n.parentNode != tree.root)
-			{
-				n.parentNode.lineColor = Theme.COLOR_CONNECTED;
-				n.parentNode.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
-				n.parentNode.lineAlpha = Theme.CONNECTED_ALPHA;
-				_node.addGlow(n.parentNode, Theme.CONNECTED_ALPHA, 5, 5);
-			}
-			for (var i:uint=0; i<n.childDegree; i++)
-			{
-				n.getChildNode(i).lineColor = Theme.COLOR_CONNECTED;
-				n.getChildNode(i).lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
-				n.getChildNode(i).lineAlpha = Theme.CONNECTED_ALPHA;
-				_node.addGlow(n.getChildNode(i), Theme.CONNECTED_ALPHA, 5, 5);
-			}			
-		}
-
-		/** 
-		 * Remove effects of showConnectedNodes
-		 */		 
-		private function hideConnectedNodes(n:NodeSprite):void
-		{
-			hideLine(n.parentNode);
-			_node.removeGlow(n.parentNode);			
-			for (var i:uint=0; i<n.childDegree; i++)
-			{
-				hideLine(n.getChildNode(i));
-				_node.removeGlow(n.getChildNode(i));
-			}			
-		}
-				
-		private var nodePulled:Boolean = false;
-
-		/**
-		 * Recursively pull forward the nodes
-		 */		 
-		private function pullAllChildrenForward(n:NodeSprite):void
-		{
-			pullNodeForward(n);	
-			for (var i:uint=0; i<n.childDegree; i++)
-				pullAllChildrenForward(n.getChildNode(i));			
 		}
 		
 		/**
@@ -549,7 +352,7 @@ package cs448b.fp.tree
 				{
 					super.onMouseDown(n);
 					//blurOtherNodes(n);
-					markSelected(n);
+					_node.markSelected(n);
 					// dispatch mapping event
 					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));					
 				}
@@ -560,7 +363,7 @@ package cs448b.fp.tree
 					if (n != nn && nn.props["selected"] == true)	
 					{	
 						// unselect previously selected node
-						unmarkSelected(nn);
+						_node.unmarkSelected(nn);
 					}
 	//				if (nn.props["activated"] == true)
 	//				{
@@ -571,7 +374,7 @@ package cs448b.fp.tree
 				if (n.props["selected"] == true)
 				{
 					// unselect current if selected twice
-					unmarkSelected(n);
+					_node.unmarkSelected(n);
 					// dispatch mapping event
 					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "remove", Number(n.name)));				
 				}
@@ -579,7 +382,7 @@ package cs448b.fp.tree
 				{
 					super.onMouseDown(n);
 					//blurOtherNodes(n);
-					markSelected(n);
+					_node.markSelected(n);
 					// dispatch mapping event
 					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
 				}	
@@ -588,7 +391,19 @@ package cs448b.fp.tree
 		}
 		
 		private var _idx:Number;
+				
+//		private var nodePulled:Boolean = false;
 
+		/**
+		 * Recursively pull forward the nodes
+		 */		 
+		private function pullAllChildrenForward(n:NodeSprite):void
+		{
+			pullNodeForward(n);	
+			for (var i:uint=0; i<n.childDegree; i++)
+				pullAllChildrenForward(n.getChildNode(i));			
+		}
+		
 		/**
 		 * Pull up the node display (higher on the cascaded stack)
 		 */		
@@ -608,211 +423,34 @@ package cs448b.fp.tree
 			n.parent.setChildIndex(n, _idx);
 		}	
 
+
+		
 		/**
-		 * Blur the node display
+		 * Check if the whole content tree mapping is completed.
+		 * Sends a 'complete' event if mapping is completed.
 		 */
-		public function blurOtherNodes(n:NodeSprite):void
+		public function checkCompleted():Boolean
 		{
+			var ret:Boolean = true;
+			// Only valid for content tree
+			if (isContentTree == false)
+				return false;
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				if (n != nn && nn.props["activated"] == false)
-				{
-					//nn.fillAlpha = 0.5;
-					nn.props["image"].alpha = 0.5;
-				}
+				if (nn.props["mapped"] == null || nn.props["mapped"] == Theme.STATUS_DEFAULT)	// see if unmapped
+				{	
+					ret = false;
+				}			
 			});
-	 	}
-	 	
-		/**
-		 * Cancel any blur / hide effects
-		 */
-		public function unblurOtherNodes():void
-		{
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-					nn.props["image"].visible = true;
-					nn.props["image"].alpha = 1;
-					nn.visible = true;
-					 
-					showLineWidth(nn);
-					nn.lineColor = nodes.lineColor;
-					nn.fillColor = nodes.fillColor;
-					nn.props["activated"] = false;
-			});
-	 	}
-
-		/**
-		 * Mark the nodes as activated, both internally and visually
-		 */			
-		public function markActivated(nn:NodeSprite):void
-		{
-			nn.visible = true;
-			nn.props["activated"] = true;
-			nn.lineColor = Theme.COLOR_ACTIVATED;
-			showLineWidth(nn);
-			nn.props["image"].alpha = 1;
-			nn.props["image"].visible = true;
-			if (nn.props["mapped"] == Theme.STATUS_MAPPED)
+			
+			if (ret == true)
 			{
-				hideLine(nn);
+				var message:String = "Mapping completed!";
+				dispatchEvent(new ControlsEvent( ControlsEvent.STATUS_UPDATE, "complete", 0, message) );				
 			}
-		}
-
-		/**
-		 * Mark the node as selected, both internally and visually
-		 */			
-		public function markSelected(nn:NodeSprite):void
-		{
-			nn.props["selected"] = true;
-			nn.lineColor = Theme.COLOR_SELECTED;
-			showLineWidth(nn);
-			nn.props["image"].alpha = 1;
-		}
-
-		/**
-		 * Mark the nodes as activated given the ID, both internally and visually
-		 */			
-		public function markActivatedID(id:Number):void
-		{
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (Number(nn.name) == id)
-				{
-					markActivated(nn);
-				}
-			});			
-		}
-
-		/**
-		 * Mark the nodes as selected given the ID, both internally and visually
-		 */			
-		public function markSelectedID(id:Number):void
-		{
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (Number(nn.name) == id)
-				{
-					markSelected(nn);
-				}
-			});		
+			return ret;
 		}
 		
-		/**
-		 * Mark the node as deactivated, both internally and visually
-		 */			
-		public function unmarkActivated(nn:NodeSprite):void
-		{
-			nn.props["activated"] = false;
-			nn.lineColor = nodes.lineColor; 
-			showLineWidth(nn);
-			//nn.lineWidth = nodes.lineWidth;
-		}
-
-		/**
-		 * Mark the node as unselected, both internally and visually
-		 */			
-		public function unmarkSelected(nn:NodeSprite):void
-		{
-			nn.props["selected"] = false;
-			if (nn.props["activated"] == true)
-			{			
-				nn.lineColor = Theme.COLOR_ACTIVATED;
-				showLineWidth(nn);		
-			}
-			else
-			{
-				nn.lineColor = nodes.lineColor; 
-				nn.lineWidth = nodes.lineWidth;				
-			}		
-		}
-
-		/**
-		 * Mark the node as deactivated given the ID, both internally and visually
-		 */			
-		public function unmarkActivatedID(id:Number):void
-		{
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (Number(nn.name) == id)
-				{
-					unmarkActivated(nn);
-				}
-			});			
-		}
-
-		/**
-		 * Mark the node as unselected given the ID, both internally and visually
-		 */	
-		public function unmarkSelectedID(id:Number):void
-		{
-			var root:NodeSprite = tree.root as NodeSprite;
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-				if (Number(nn.name) == id)
-				{
-					unmarkSelected(nn);
-				}
-			});		
-		}
-										
-		
-		/**
-		 * Mark the nodes that are mapped, both internally and visually
-		 */		
-		public function markMapping(id:Number, action:Number):void
-		{	
-			var root:NodeSprite = tree.root as NodeSprite;				        
-	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {			
-	        	if (id == Number(nn.name))
-	        	{	
-	        		if (action == Theme.STATUS_MAPPED)
-	        		{
-						nn.props["mapped"] = Theme.STATUS_MAPPED;	
-						nn.fillColor = Theme.COLOR_FILL_MAPPED;
-						hideLine(nn);
-						nn.alpha = Theme.ALPHA_MAPPED;
-						nn.props["image"].visible = Theme.SHOW_MAPPPED;	
-	        		}	 
-	        		else if (action == Theme.STATUS_UNMAPPED)
-	        		{
-	        			nn.props["mapped"] = Theme.STATUS_UNMAPPED;	
-						nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
-						hideLine(nn);
-						nn.alpha = Theme.ALPHA_MAPPED;
-						nn.props["image"].visible = Theme.SHOW_MAPPPED;		        		
-	        		}
-	        		else
-	        		{
-	        			nn.props["mapped"] = Theme.STATUS_DEFAULT;	
-						nn.alpha = 1;
-						nn.props["image"].visible = true;	        	
-
-	        		}       			        		       		
-	        	}
-	        });
-	    }
-
-		/**
-		 * Hide line display, called when cancelling any line change effect
-		 */			
-		private function hideLine(nn:NodeSprite):void
-		{
-			nn.lineWidth = 0;			
-			nn.lineColor = 0x00000000;
-		}
-		
-		/**
-		 * Show line width based on the current theme setting
-		 */	
-		private function showLineWidth(nn:NodeSprite):void
-		{
-			if (isContentTree == true && Theme.FIREBUG_CTREE == false)
-				nn.lineWidth = Theme.LINE_WIDTH;
-			else if (isContentTree == false && Theme.FIREBUG_LTREE == false)
-				nn.lineWidth = Theme.LINE_WIDTH;
-			else 
-				hideLine(nn);
-		}
-
 		/**
 		 * Get the maximum tree depth
 		 */				    
@@ -827,47 +465,6 @@ package cs448b.fp.tree
 			return maxDepth;
 		}
 
-		/**
-		 * Apply the visible depth effect
-		 */				
-		public override function setVisibleDepth(d:Number):void 
-		{
-			var tree:Tree = vis.data as Tree;
-			if(tree == null ) return;
-			
-			tree.visit(function(n:NodeSprite):void
-			{
-				if(n.depth > d)
-				{
-					n.visible = false;
-				}
-				else 
-				{
-					n.visible = true;
-				}
-				
-			}, Data.NODES);
-			
-			vis.update(1, "nodes").play();
-		}
-
-		/**
-		 * Apply the visual toggle effect
-		 */		
-		public function setVisualToggle():void 
-		{	
-			var tree:Tree = vis.data as Tree;
-			_visualToggle = !_visualToggle;
-			if(tree == null ) return;
-			
-			tree.visit(function(n:NodeSprite):void
-			{
-				n.props["image"].visible = _visualToggle;
-				//n.props["image"].alpha = 0.5;					
-			}, Data.NODES);
-		
-			vis.update(1, "nodes").play();
-		}
 		
 		/**
 		 * Delegates update vis.
@@ -880,34 +477,8 @@ package cs448b.fp.tree
 			vis.scaleY = getScale();			
 			return vis.update(t, operators);
 		}		
-		
-		/**
-		 * Hide all descendents of the given node from the screen
-		 */		
-		public function hideAllDescendants(n:NodeSprite):void
-		{
-			for(var i:uint=0; i<n.childDegree; i++)
-			{
-				n.getChildNode(i).visible = false;
-				n.getChildNode(i).props["image"].visible = false;
-				hideAllDescendants(n.getChildNode(i));
-			}			
-		}
-		
-		/**
-		 * Activate all descendents of the given node from the screen
-		 */
-		public function activateAllDescendants(n:NodeSprite):void
-		{
-			markActivated(n);
-			for(var i:uint=0; i<n.childDegree; i++)
-			{
-				activateAllDescendants(n.getChildNode(i));
-			}						
-		}
-
 				
-		public var _currentStep:Number = 0;
+
 
 		/**
 		 * Get the current node ID shown in the hierarchical matching
@@ -945,6 +516,158 @@ package cs448b.fp.tree
 	        return node;			
 		}		
 
+        		
+		private var previewSeq:Sequence = new Sequence();
+		
+		/**
+		 * Save a preview sequence with visual effects. Need to be played once all nodes are added. 
+		 */
+		private function addPreviewNode(node:NodeSprite):void
+		{
+			//trace("added");
+			if (node == null || node == tree.root)	// do not play the root node
+				return;	
+			
+			node.filters = [new GlowFilter(0xff0000, 0.8, 0, 0)];
+			var g1:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":15,"filters[0].blurY":15});
+			var g2:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":0,"filters[0].blurY":0});
+				
+			var t1:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:Theme.COLOR_SELECTED});
+			var t2:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:0x00000000});
+			var t3:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:Theme.LINE_WIDTH});
+			var t4:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:0});			
+			var t5:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
+			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
+		    
+//		    previewSeq.add(test(node, new Transitioner(0.1)));
+		    previewSeq.add(new Parallel(t1, t3, g1)); 
+		    previewSeq.add(new Parallel(t2, t4, g2));      
+		}
+		
+		private function test(n:NodeSprite, t:Transitioner):Transitioner
+		{
+//			pullNodeForward(n);
+//			for (var i:int=0; i<s.numChildren; ++i) {
+//				var b:DisplayObject = s.getChildAt(i);
+//				t.$(b).x = (w+a) * (xb + points[2*i]);
+//				t.$(b).y = (h+a) * (yb + points[2*i+1]);
+//			}
+
+			var p:DisplayObjectContainer = n.parent;
+			_idx = p.getChildIndex(n);
+			t.$(p).setChildIndex(n, p.numChildren-1);		
+			return t;
+		}
+		
+		/**
+		 * Preview: play an animation with the current traversal order, 
+		 * to give users an overview of the segments they will find correspondences for
+		 */
+		public function playPreview():void
+		{
+			if (!_isContentTree)	// nothing if layout tree
+				return;
+			
+			
+			var root:NodeSprite = tree.root as NodeSprite;
+			var nodeCount:Number = 1;
+			var node:NodeSprite = null;	
+			var message:String = "Now showing a preview of mapping order for the task.";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );
+			
+			while (nodeCount <= tree.nodes.length)
+			{
+		        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+					if (nn.props["order"] == nodeCount)
+					{
+						addPreviewNode(nn);
+						nodeCount++;
+					}	
+		        });
+	  		}
+	        //trace("COUNT:" + nodeCount);
+	        previewSeq.delay = 1;
+		    previewSeq.play();  
+		    //previewSeq.addEventListener(TransitionEvent.STEP, onStepPreview);	
+		    previewSeq.addEventListener(TransitionEvent.END, onEndPreview);	
+		}
+
+		private var _previewStep:Number = 0;
+		/**
+		 * For each preview animation step
+		 */		
+		private function onStepPreview(e:TransitionEvent):void
+		{
+			_previewStep++;
+			trace(_previewStep);
+			var message:String = "Now showing a preview of mapping order for the task. " + _previewStep ;
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );	
+		}
+		/**
+		 * When preview animation finishes playing
+		 */		
+		private function onEndPreview(e:TransitionEvent):void
+		{
+			// remove all filters
+			var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				_node.removeGlow(nn);
+	        });
+				
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
+			if (Theme.ENABLE_SERIAL == true) 
+	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
+	     	enableUnmapButton();   		
+		}
+		
+		/**
+		 * Play a node blinking visual effects.  
+		 */
+		public function blinkNode(node:NodeSprite, handler:Function, type:Number):void
+		{
+			if (node == null)
+				return;	
+			var t1:Tween;
+			if (type == 1)	// mapped
+				t1 = new Tween(node, Theme.DURATION_BLINKING, {lineColor:Theme.COLOR_ACTIVATED});
+			else			// unmapped
+				t1 = new Tween(node, Theme.DURATION_BLINKING, {lineColor:Theme.COLOR_SELECTED});
+			var t2:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineColor:0x00000000});
+			var t3:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:0});
+			var t4:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:1});			
+			var t5:Tween;
+			if (type == 1)	// mapped
+				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_MAPPED});
+			else 			// unmapped
+				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_UNMAPPED});
+			var t6:Tween = new Tween(node, Theme.DURATION_BLINKING, {fillColor:0x00000000});
+			
+		    var seq:Sequence = new Sequence(
+			    new Parallel(t1, t5), 
+			    new Parallel(t2, t6)      
+		    );
+		    seq.play();
+		    seq.addEventListener(TransitionEvent.END, handler);	
+		}
+
+
+		/**
+		 * When node blinking animation finishes playing for unmapped nodes
+		 */		
+		private function onEndBlinkingUnmapped(e:TransitionEvent):void
+		{
+			var message:String = "Assigned as no mapping";
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "unmap", 0, message) );    
+			
+			// Check if the whole content tree is completed.
+			checkCompleted();
+			
+			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
+			if (Theme.ENABLE_SERIAL == true)	
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	        		
+		}
+
+										
 		private var _nodeCount:Number;
 		
 		/**
@@ -1055,6 +778,49 @@ package cs448b.fp.tree
 		public function getIDByNode(nn:NodeSprite):Number
 		{
 			return Number(nn.name);
-	    }					
+	    }	
+	    
+
+		/**
+		 * Apply the visible depth effect
+		 */				
+		public override function setVisibleDepth(d:Number):void 
+		{
+			var tree:Tree = vis.data as Tree;
+			if(tree == null ) return;
+			
+			tree.visit(function(n:NodeSprite):void
+			{
+				if(n.depth > d)
+				{
+					n.visible = false;
+				}
+				else 
+				{
+					n.visible = true;
+				}
+				
+			}, Data.NODES);
+			
+			vis.update(1, "nodes").play();
+		}
+
+		/**
+		 * Apply the visual toggle effect
+		 */		
+		public function setVisualToggle():void 
+		{	
+			var tree:Tree = vis.data as Tree;
+			_visualToggle = !_visualToggle;
+			if(tree == null ) return;
+			
+			tree.visit(function(n:NodeSprite):void
+			{
+				n.props["image"].visible = _visualToggle;
+				//n.props["image"].alpha = 0.5;					
+			}, Data.NODES);
+		
+			vis.update(1, "nodes").play();
+		}	    				
 	}
 }

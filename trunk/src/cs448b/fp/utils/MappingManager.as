@@ -44,14 +44,14 @@ package cs448b.fp.utils
 		{
 			_contentTree = t;
 			_contentTree.addEventListener(MappingEvent.MOUSE_DOWN, onContentTreeEvent);
-			_cNode = new NodeActions(_contentTree);
+			_cNode = new NodeActions(_contentTree, true);
 		}
 		
 		public function setLayoutTree(t:CascadedTree):void
 		{
 			_layoutTree = t;
 			_layoutTree.addEventListener(MappingEvent.MOUSE_DOWN, onLayoutTreeEvent);
-			_lNode = new NodeActions(_layoutTree);
+			_lNode = new NodeActions(_layoutTree, false);
 		}
 		
 		private function onContentTreeEvent(e:MappingEvent):void
@@ -118,8 +118,8 @@ package cs448b.fp.utils
 			// case 1: content needs to remove its old mapping
 			if (_mapping.getMappedIndex(layoutID, 0) != -1)
 			{					
-				_contentTree.markMapping(_mapping.getMappedIndex(layoutID, 0), 0);
-				_layoutTree.markMapping(layoutID, Theme.STATUS_DEFAULT);		
+				_cNode.markMapping(_mapping.getMappedIndex(layoutID, 0), 0);
+				_lNode.markMapping(layoutID, Theme.STATUS_DEFAULT);		
 							
 				//trace("case 1: " + _mapping.getMappedIndex(e.value, 0));
 				_mapping.removeMapping(false, layoutID);	
@@ -127,18 +127,18 @@ package cs448b.fp.utils
 			// case 2: layout needs to remove its old mapping
 			if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
 			{				
-				_contentTree.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
-				_layoutTree.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), Theme.STATUS_DEFAULT);	
+				_cNode.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
+				_lNode.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), Theme.STATUS_DEFAULT);	
 				
 				//trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
 				_mapping.removeMapping(true, _selectedContentID);					
 			}				
 			_mapping.addMapping(_selectedContentID, layoutID);	
-			_contentTree.markMapping(_selectedContentID, Theme.STATUS_MAPPED);
-			_layoutTree.markMapping(layoutID, Theme.STATUS_MAPPED);
+			_cNode.markMapping(_selectedContentID, Theme.STATUS_MAPPED);
+			_lNode.markMapping(layoutID, Theme.STATUS_MAPPED);
 			
-			_contentTree.unmarkActivatedID(_selectedContentID);
-			_layoutTree.unmarkActivatedID(layoutID);
+			_cNode.unmarkActivatedID(_selectedContentID);
+			_lNode.unmarkActivatedID(layoutID);
 
 			// Automatically activated children of the mapped node
 			if (Theme.ENABLE_REL == false && Theme.ENABLE_SERIAL == false)
@@ -148,7 +148,7 @@ package cs448b.fp.utils
 				{
 					for(var i:uint=0; i<node.childDegree; i++)
 					{
-						_contentTree.markActivated(node.getChildNode(i));
+						_cNode.markActivated(node.getChildNode(i));
 						//_contentTree.activateAllDescendants(node.getChildNode(i));
 					}	
 				}
@@ -161,11 +161,11 @@ package cs448b.fp.utils
 		private function removeMapping(layoutID:Number):void
 		{
 			_mapping.removeMapping(false, layoutID);	
-			_contentTree.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
-			_layoutTree.markMapping(layoutID, Theme.STATUS_DEFAULT);		
+			_cNode.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
+			_lNode.markMapping(layoutID, Theme.STATUS_DEFAULT);		
 			
-			_contentTree.markActivatedID(_selectedContentID);
-			_layoutTree.markActivatedID(layoutID);	
+			_cNode.markActivatedID(_selectedContentID);
+			_lNode.markActivatedID(layoutID);	
 		}		
 		
 		private function onLayoutTreeEvent(e:MappingEvent):void
@@ -239,8 +239,8 @@ package cs448b.fp.utils
 		 */
 		private function resetSelections(selectedContentID:Number, selectedLayoutID:Number):void
 		{
-			_contentTree.unmarkSelectedID(selectedContentID);
-			_layoutTree.unmarkSelectedID(selectedLayoutID);
+			_cNode.unmarkSelectedID(selectedContentID);
+			_lNode.unmarkSelectedID(selectedLayoutID);
 			
 			_selectedContentID = 0;
 			_selectedLayoutID = 0;
@@ -273,7 +273,7 @@ package cs448b.fp.utils
 			root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 				if (nn.props["mapped"] == null || nn.props["mapped"] == Theme.STATUS_DEFAULT) // null 
 				{
-					_contentTree.markActivated(nn);			
+					_cNode.markActivated(nn);			
 				}
 			});
 				
@@ -288,7 +288,7 @@ package cs448b.fp.utils
 			root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 				if (nn.props["mapped"] == null || nn.props["mapped"] == Theme.STATUS_DEFAULT) // null 
 				{
-					_layoutTree.markActivated(nn);			
+					_lNode.markActivated(nn);			
 				}
 			});			
 		}
@@ -298,14 +298,14 @@ package cs448b.fp.utils
 		 */			
 		private function showActivatedContent(n:NodeSprite):void
 		{	
-			_contentTree.blurOtherNodes(n);		
+			_cNode.blurOtherNodes(n);		
 			
 			if (Theme.ENABLE_SERIAL == false)
 			{
 				for(var i:uint=0; i<n.childDegree; i++)
 				{
-					_contentTree.markActivated(n.getChildNode(i));
-					_contentTree.hideAllDescendants(n.getChildNode(i));
+					_cNode.markActivated(n.getChildNode(i));
+					_cNode.hideAllDescendants(n.getChildNode(i));
 				}
 			}
 			else
@@ -316,9 +316,9 @@ package cs448b.fp.utils
 					if (nn == _contentTree.getCurrentProcessingNode())  
 					{	
 						//nn.props["selected"] = true;
-						_contentTree.markActivated(nn);
+						_cNode.markActivated(nn);
 						// to change the color effect
-						_contentTree.markSelected(nn);
+						_cNode.markSelected(nn);
 						showSelectionFeedback(Number(nn.name));
 						_contentTree.pullNodeForward(nn);
 						 
@@ -328,7 +328,7 @@ package cs448b.fp.utils
 					else
 					{	
 						nn.props["selected"] = false;
-						_contentTree.unmarkActivated(nn);
+						_cNode.unmarkActivated(nn);
 						_cNode.removeDropShadow(nn);
 					}
 				});
@@ -341,12 +341,11 @@ package cs448b.fp.utils
 		 */			
 		private function showActivatedLayout(n:NodeSprite):void
 		{	
-			_layoutTree.blurOtherNodes(n);	
-//			_lNode.addDropShadow(n);
-//			_lNode.addGlow(n);        			
+			_lNode.blurOtherNodes(n);	
+    			
 			for(var i:uint=0; i<n.childDegree; i++)
 			{
-    			_layoutTree.activateAllDescendants(n.getChildNode(i));
+    			_lNode.activateAllDescendants(n.getChildNode(i));
 			}			
 		}
 
@@ -418,7 +417,7 @@ package cs448b.fp.utils
 			var currentContentNode:NodeSprite;
 			var currentLayoutNode:NodeSprite; 
 			var ret:Boolean = false;
-			trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
+			//trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
 			currentContentNode = _contentTree.getCurrentProcessingNode();
 			
 			if (currentContentNode == _contentTree.tree.root)
@@ -438,22 +437,15 @@ package cs448b.fp.utils
 			}
 			return ret;
 		}
-
-		/**
-		 * Proceed and display the next step in the hierarchical matching process
-		 */					
-		public function showPreview():void
-		{
-			
-		}															
+														
 		/**
 		 * Proceed and display the next step in the hierarchical matching process
 		 */					
 		public function showNextStep():void
 		{
 			_contentTree._currentStep++;
-			_contentTree.unblurOtherNodes();	// initialize visual attributes
-        	_layoutTree.unblurOtherNodes();		// initialize visual attributes
+			_cNode.unblurOtherNodes();	// initialize visual attributes
+        	_lNode.unblurOtherNodes();		// initialize visual attributes
         	
         	if (Theme.ENABLE_REL == true)
         	{
@@ -527,154 +519,8 @@ package cs448b.fp.utils
 		       		showQuasiMatchingContent();
 		       		
 		       	}        		
-        		
-        		/*
-        		if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
-	        	{
-	        		_contentTree.checkCompleted();
-	        		//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
-	        	}     
-	        	else		       	
-	        	{	        		
-					if (showMatching() == false)	// if nothing shown, on to the next
-						showNextStep();		
-	       		}	        	   		
-	       		*/
         	}
 		}	
-		
-		
-//		/**
-//		 * Display content page for the hierarchical matching process
-//		 */			
-//		private function showMatchingContent():void
-//		{		
-//			var root:NodeSprite = _contentTree.tree.root as NodeSprite;
-//			var nodeCount:Number = 1;	
-//	       	trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
-//	       	
-//	        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-//	        	if (nodeCount == _contentTree._currentStep)	// found the current node to look at
-//	        	{      		
-//					if (nn.childDegree == 0) // don't do anything, onto the next node
-//						_contentTree._currentStep++;
-//					else	// show on the screen
-//					{	
-//						_contentTree.blurOtherNodes(nn);		
-//						for(var i:uint=0; i<nn.childDegree; i++)
-//						{
-//							_contentTree.markActivated(nn.getChildNode(i));
-//							_contentTree.hideAllDescendants(nn.getChildNode(i));
-//						}					
-//					}	        		
-//	        	}
-//	        	nodeCount++;
-//    	        	
-//			});								
-//		}
-//
-//		/**
-//		 * Display layout page for the hierarchical matching process
-//		 */				
-//		private function showMatchingLayout():void
-//		{
-//			var cRoot:NodeSprite = _contentTree.tree.root as NodeSprite;
-//			var lRoot:NodeSprite = _layoutTree.tree.root as NodeSprite;
-//			var isMappingNull:Boolean = true;
-//			//var nodeCount:Number = 1;
-//			
-//			// 1) Get the current node 'n' on the matching process 
-//			var currentNodeID:Number = _contentTree.getCurrentProcessingNodeID();
-//			var a:NodeSprite = null;
-//			
-//			// 2) Find the closest ancestor a of n such that M(a) is not null 
-//			cRoot.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-//				if (Number(nn.name) == currentNodeID)	// n
-//				{
-//					a = getClosestValidAncestor(nn);	// a
-//				} 
-//			});
-//			
-//			// then activate descendants of M(a)
-//			//var ma:NodeSprite = null;				
-//	        lRoot.visitTreeBreadthFirst(function(nn:NodeSprite):void {
-//	        	if (a != null && Number(nn.name) == _mapping.getMappedIndex(Number(a.name), 1))	
-//	        	{
-//	        		// nn is M(a)	        		
-//	        		if (nn.childDegree == 0)	// skip this node on the content
-//	        			_contentTree._currentStep++;
-//	        		else
-//	        		{
-//	        			isMappingNull = false;
-//						_layoutTree.blurOtherNodes(nn);	        			
-//						for(var i:uint=0; i<nn.childDegree; i++)
-//						{
-//		        			_layoutTree.activateAllDescendants(nn.getChildNode(i));
-//						}
-//	        		}
-//	        	}
-//	        	//nodeCount++;
-//			});		
-//			
-//			// handle the case where there is nothing to show
-//        	if (isMappingNull == true)	
-//        	{
-//        		_contentTree._currentStep++;
-//        	}
-//		}
-//		/**
-//		 * Proceed and display the next step in the hierarchical matching process
-//		 */					
-//		public function showNextStepContent():void
-//		{
-//			_contentTree._currentStep++;
-//			_contentTree.unblurOtherNodes();	// initialize visual attributes
-//        
-//	        if (_currentStage == 0)	// To the hierarchical stage
-//	       	{
-//	       		_currentStage = 1;
-//		        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 1) );   
-//		        showMatchingContent();				
-//	       	}
-//	       	else if (_currentStage == 1)
-//	       	{
-//	        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
-//	        	{
-//	        		_currentStage = 2;
-//		       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", 2) );   	        		
-//	        		showQuasiMatchingContent();
-//	        	}
-//	        	else		       		
-//	       			showMatchingContent();
-//	       		
-//	       	}
-//	       	else if (_currentStage == 2)
-//	       	{
-//	       		showQuasiMatchingContent();
-//	       	}
-//
-//		}		
-//				
-//		/**
-//		 * Dynamically display activated nodes, based on the current content node processing.
-//		 */
-//		public function showNextStepLayout():void
-//		{
-//			_layoutTree.unblurOtherNodes();	// initialize visual attributes
-//			
-//	        if (_currentStage == 0)	// To the hierarchical stage
-//	       	{
-//	       		// cannot be here		
-//	       	}
-//	       	else if (_currentStage == 1)
-//	       	{
-//	       		showMatchingLayout();
-//	       	}
-//	       	else if (_currentStage == 2)
-//	       	{
-//	       		showQuasiMatchingLayout();
-//	       	}		
-//
-//		}			
+			
 	}
 }

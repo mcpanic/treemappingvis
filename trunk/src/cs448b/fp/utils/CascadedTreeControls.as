@@ -156,7 +156,8 @@ package cs448b.fp.utils
             _notice.horizontalAnchor = TextSprite.LEFT;
             _notice.text = Theme.MSG_STAGE1; 
 //            _notice.text = "Stage: Hierarchical Matching";
-            this.addChild( _notice );        
+            if (Theme.ENABLE_DEBUG == true)
+            	this.addChild( _notice );        
         }
         
         public function displayStage(index:Number):void
@@ -183,7 +184,8 @@ package cs448b.fp.utils
             _mappings = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _mappings.horizontalAnchor = TextSprite.LEFT;
             _mappings.text = Theme.MSG_MAPPING_NONE;
-            this.addChild( _mappings );        
+            if (Theme.ENABLE_DEBUG == true)
+            	this.addChild( _mappings );        
         }   
         
         public function displayMappings(message:String):void
