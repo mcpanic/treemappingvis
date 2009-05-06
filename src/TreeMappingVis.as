@@ -205,7 +205,7 @@ package {
 			else if (event.name == "complete")
 			{
 				controls.displayFeedback(event.message);
-			}		
+			}
 			else if (event.name == "continue")
 			{	
 				mappingManager.showNextStep();			

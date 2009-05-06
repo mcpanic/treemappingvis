@@ -70,7 +70,11 @@ package cs448b.fp.utils
 		 */
 		private function showSelectionFeedback(idx:Number):void
 		{
-			var message:String = "Select a mapped segment on the Layout page";
+			var message:String; 
+			if (_contentTree._traversalOrder == Theme.ORDER_DFS)	// root is not number 1
+				message = "Step " + _contentTree._currentStep + " of " + _contentTree.tree.nodes.length + ". Select a mapped segment on the Layout page";
+			else
+				message = "Step " + (_contentTree._currentStep - 1) + " of " + _contentTree.tree.nodes.length + ". Select a mapped segment on the Layout page";
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
 			_selectedContentID = idx;	
 		}
@@ -146,7 +150,7 @@ package cs448b.fp.utils
 			if (_selectedContentID != 0 && e.name == "add")
 			{
 				addMapping(e.value);
-				_contentTree.blinkNode(_contentTree.getNodeByID(_selectedContentID), onEndBlinkingMapped);	
+				_contentTree.blinkNode(_contentTree.getNodeByID(_selectedContentID), onEndBlinkingMapped, 1);	
 				// give feedback to users	
 				//var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
 //				var message:String = "Mapping added";
@@ -286,8 +290,10 @@ package cs448b.fp.utils
 				root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 					if (nn == _contentTree.getCurrentProcessingNode())  
 					{	
-						nn.props["selected"] = true;
+						//nn.props["selected"] = true;
 						_contentTree.markActivated(nn);
+						// to change the color effect
+						_contentTree.markSelected(nn);
 						showSelectionFeedback(Number(nn.name));
 						_contentTree.pullNodeForward(nn);
 					}
@@ -384,6 +390,9 @@ package cs448b.fp.utils
 			trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
 			currentContentNode = _contentTree.getCurrentProcessingNode();
 			
+			if (currentContentNode == _contentTree.tree.root)
+				return false;
+				
 			// Check the display conditions
 			if (checkContent(currentContentNode))
 			{
@@ -460,7 +469,7 @@ package cs448b.fp.utils
 		       	}
 		       	else if (_currentStage == Theme.STAGE_HIERARCHICAL)
 		       	{
-		        	if (_contentTree.tree.nodes.length <= _contentTree._currentStep)	// whole tree traversed
+		        	if (_contentTree.tree.nodes.length < _contentTree._currentStep)	// whole tree traversed
 		        	{
 		        		_currentStage = Theme.STAGE_QUASI;
 			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_QUASI) );   	        		
