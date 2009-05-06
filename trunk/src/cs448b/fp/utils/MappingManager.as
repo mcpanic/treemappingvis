@@ -18,6 +18,9 @@ package cs448b.fp.utils
 		private var _selectedContentID:Number;
 		private var _selectedLayoutID:Number;
 		private var _currentStage:Number;
+		private var _isRootMapped:Boolean = false;
+		private var _cNode:NodeActions;
+		private var _lNode:NodeActions;
 		
 		public function MappingManager()
 		{
@@ -25,35 +28,30 @@ package cs448b.fp.utils
 			_selectedContentID = 0;
 			_selectedLayoutID = 0;
 			_currentStage = Theme.STAGE_INITIAL;
+			
+			
 		}
 
 		public function init():void
 		{
 			// Set the traversal order
 			_contentTree.setTraversalOrder();
-			_contentTree.playPreview();
-			
-			// add root-root mapping
-			_selectedContentID = Number(_contentTree.tree.root.name);
-			addMapping(Number(_layoutTree.tree.root.name));
-							
-			var message:String = _mapping.printMapping();
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  	
-			resetSelections(_selectedContentID, _selectedLayoutID);	
-			//showNextStep();	// for the first time
-			//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  		
+			// Play the review of web page segments to be mapped, in the traversal order specified.
+			_contentTree.playPreview();	
 		}
 		
 		public function setContentTree(t:CascadedTree):void
 		{
 			_contentTree = t;
 			_contentTree.addEventListener(MappingEvent.MOUSE_DOWN, onContentTreeEvent);
+			_cNode = new NodeActions(_contentTree);
 		}
 		
 		public function setLayoutTree(t:CascadedTree):void
 		{
 			_layoutTree = t;
 			_layoutTree.addEventListener(MappingEvent.MOUSE_DOWN, onLayoutTreeEvent);
+			_lNode = new NodeActions(_layoutTree);
 		}
 		
 		private function onContentTreeEvent(e:MappingEvent):void
@@ -72,9 +70,11 @@ package cs448b.fp.utils
 		{
 			var message:String; 
 			if (_contentTree._traversalOrder == Theme.ORDER_DFS)	// root is not number 1
-				message = "Step " + _contentTree._currentStep + " of " + _contentTree.tree.nodes.length + ". Select a mapped segment on the Layout page";
+				message = "Step " + _contentTree._currentStep;
 			else
-				message = "Step " + (_contentTree._currentStep - 1) + " of " + _contentTree.tree.nodes.length + ". Select a mapped segment on the Layout page";
+				message = "Step " + (_contentTree._currentStep - 1);
+			// -1 for the length since root is automatically mapped.
+			message += " of " + (_contentTree.tree.nodes.length - 1) + ". Select a mapped segment on the Layout page";
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
 			_selectedContentID = idx;	
 		}
@@ -89,7 +89,29 @@ package cs448b.fp.utils
 			
 			return _mapping.getMappedIndex(idx, treeId);
 		}
-			
+
+		
+		/**
+		 * 	Add a root-root mapping. 
+		 *  This is a special case because it should be done internally without any user interaction.
+		 *  It is the specific version of addMapping, without user input.
+		 */
+		private function addRootMapping():void
+		{
+			// add root-root mapping
+			_selectedContentID = Number(_contentTree.tree.root.name);
+			addMapping(Number(_layoutTree.tree.root.name));
+							
+			var message:String = _mapping.printMapping();
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  	
+			resetSelections(_selectedContentID, _selectedLayoutID);	
+			//showNextStep();	// for the first time
+			//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	
+		}
+
+		/**
+		 * Add a mapping based on the current user selection
+		 */					
 		private function addMapping(layoutID:Number):void
 		{
 			// first, remove the old mapping if any
@@ -132,7 +154,10 @@ package cs448b.fp.utils
 				}
 			}	  
 		}
-		
+
+		/**
+		 * Remove a mapping based on the current user selection
+		 */			
 		private function removeMapping(layoutID:Number):void
 		{
 			_mapping.removeMapping(false, layoutID);	
@@ -267,7 +292,7 @@ package cs448b.fp.utils
 				}
 			});			
 		}
-
+        
 		/**
 		 * Display current activated nodes on the content page for the hierarchical matching process
 		 */			
@@ -296,11 +321,14 @@ package cs448b.fp.utils
 						_contentTree.markSelected(nn);
 						showSelectionFeedback(Number(nn.name));
 						_contentTree.pullNodeForward(nn);
+						 
+						_cNode.addDropShadow(nn);
 					}
 					else
 					{	
 						nn.props["selected"] = false;
 						_contentTree.unmarkActivated(nn);
+						_cNode.removeDropShadow(nn);
 					}
 				});
 				
@@ -479,7 +507,12 @@ package cs448b.fp.utils
 		        		
 		        	}
 		        	else		       	
-		        	{	        		
+		        	{	    		
+		        		if (_isRootMapped == false) 	// if root has not been mapped, map the root first.
+		        		{
+		        			addRootMapping();
+		        			_isRootMapped = true;
+		        		}
 						if (showMatching() == false)	// if nothing shown, on to the next
 							showNextStep();		
 		       		}

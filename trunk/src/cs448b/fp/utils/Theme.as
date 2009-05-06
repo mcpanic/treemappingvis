@@ -1,5 +1,8 @@
 package cs448b.fp.utils 			
 {
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterQuality;
+	import flash.filters.DropShadowFilter;
 	import flash.text.TextFormat;
 	public class Theme
 	{	
@@ -101,5 +104,32 @@ package cs448b.fp.utils
 		public function Theme()
 		{	
 		}
+		
+		
+	    /**
+    	 * Drop shadow filter for the nodes
+	     */
+ 		public static function getBitmapFilter():BitmapFilter {
+            var color:Number = 0x000000;
+            var angle:Number = 45;
+            var alpha:Number = 0.8;
+            var blurX:Number = 8;
+            var blurY:Number = 8;
+            var distance:Number = 15;
+            var strength:Number = 0.65;
+            var inner:Boolean = false;
+            var knockout:Boolean = false;
+            var quality:Number = BitmapFilterQuality.HIGH;
+            return new DropShadowFilter(distance,
+                                        angle,
+                                        color,
+                                        alpha,
+                                        blurX,
+                                        blurY,
+                                        strength,
+                                        quality,
+                                        inner,
+                                        knockout);
+        }
 	}
 }
