@@ -33,16 +33,14 @@ package {
 		 */		
 		public function TreeMappingVis()
 		{
-			mappingID = 3;	// 1: moo, 2: hybrid, 3: cat
+			mappingID = 1;	// 1: moo, 2: hybrid, 3: cat
 			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 			
 			initComponents();
 			buildSprite();
 			loadData();			
-			//displayTree();
-			
-
+			//displayTree();			
 		}
 		
 		private function initComponents():void
