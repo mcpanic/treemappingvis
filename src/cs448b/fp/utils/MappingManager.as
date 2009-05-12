@@ -22,6 +22,8 @@ package cs448b.fp.utils
 		private var _cNode:NodeActions;
 		private var _lNode:NodeActions;
 		
+		private var _popupManager:PopupManager;
+		
 		public function MappingManager()
 		{
 			_mapping = new Mapping();	
@@ -29,7 +31,7 @@ package cs448b.fp.utils
 			_selectedLayoutID = 0;
 			_currentStage = Theme.STAGE_INITIAL;
 			
-			
+			_popupManager = new PopupManager();	
 		}
 
 		public function init():void
@@ -38,6 +40,15 @@ package cs448b.fp.utils
 			_contentTree.setTraversalOrder();
 			// Play the review of web page segments to be mapped, in the traversal order specified.
 			_contentTree.playPreview();	
+			// Initialize popup manager
+			_popupManager.init();
+			_popupManager.x = Theme.LAYOUT_POPUP_X;
+			_popupManager.y = Theme.LAYOUT_POPUP_Y;
+			_popupManager.width = Theme.LAYOUT_POPUP_WIDTH;
+			_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
+			//_popupManager.height = Theme.LAYOUT_POPUP_HEIGHT;
+			//addChild(_popupManager);
+			
 		}
 		
 		public function setContentTree(t:CascadedTree):void
@@ -53,14 +64,36 @@ package cs448b.fp.utils
 			_layoutTree.addEventListener(MappingEvent.MOUSE_DOWN, onLayoutTreeEvent);
 			_lNode = new NodeActions(_layoutTree, false);
 		}
-		
+
+		/**
+		 * Popup status change event.
+		 * Triggered by popupManager, when button is pressed.
+		 */	
+		private function onPopupStatusEvent( event:ControlsEvent ):void
+		{
+			if (event.name == "merge")
+			{	
+				mergeMapping();			
+			}
+			else if (event.name == "replace")
+			{	
+				replaceMapping();			
+			}
+			else if (event.name == "cancel")
+			{	
+				cancelMapping();			
+			}
+		}
+
+		/**
+		 * Event handler for content tree click event.
+		 * Mapping events are only triggered in layout tree
+		 */					
 		private function onContentTreeEvent(e:MappingEvent):void
 		{	
 			// give feedback to users	
 			if (Theme.ENABLE_SERIAL == false)
-				showSelectionFeedback(e.value);
-			
-			// mapping events are only triggered in layout tree			
+				showSelectionFeedback(e.value);			
 		}
 		
 		/**
@@ -100,7 +133,7 @@ package cs448b.fp.utils
 		{
 			// add root-root mapping
 			_selectedContentID = Number(_contentTree.tree.root.name);
-			addMapping(Number(_layoutTree.tree.root.name));
+			processMapping(Number(_layoutTree.tree.root.name));
 							
 			var message:String = _mapping.printMapping();
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  	
@@ -110,35 +143,49 @@ package cs448b.fp.utils
 		}
 
 		/**
+		 * Merge a mapping based on the current user selection: Add another
+		 */					
+		public function mergeMapping():void
+		{
+			hidePopup();			
+			addMapping();
+			blinkNode();
+		}
+		
+		/**
+		 * Replace a mapping based on the current user selection: Remove and Add
+		 */					
+		public function replaceMapping():void
+		{
+			hidePopup();			
+			removeMapping(_selectedLayoutID);				
+			addMapping();
+			blinkNode();
+		}
+		
+		/**
+		 * Cancel: leave as it is
+		 */					
+		public function cancelMapping():void
+		{
+			hidePopup();
+			// shouldn't progress to the next node!
+		//	blinkNode();	
+		}
+
+		/**
 		 * Add a mapping based on the current user selection
 		 */					
-		private function addMapping(layoutID:Number):void
+		private function addMapping():void
 		{
-			// first, remove the old mapping if any
-			// case 1: content needs to remove its old mapping
-			if (_mapping.getMappedIndex(layoutID, 0) != -1)
-			{					
-				_cNode.markMapping(_mapping.getMappedIndex(layoutID, 0), 0);
-				_lNode.markMapping(layoutID, Theme.STATUS_DEFAULT);		
-							
-				//trace("case 1: " + _mapping.getMappedIndex(e.value, 0));
-				_mapping.removeMapping(false, layoutID);	
-			}
-			// case 2: layout needs to remove its old mapping
-			if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
-			{				
-				_cNode.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
-				_lNode.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), Theme.STATUS_DEFAULT);	
-				
-				//trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
-				_mapping.removeMapping(true, _selectedContentID);					
-			}				
-			_mapping.addMapping(_selectedContentID, layoutID);	
+			trace("add " + _selectedContentID + " " + _selectedLayoutID);
+			
+			_mapping.addMapping(_selectedContentID, _selectedLayoutID);	
 			_cNode.markMapping(_selectedContentID, Theme.STATUS_MAPPED);
-			_lNode.markMapping(layoutID, Theme.STATUS_MAPPED);
+			_lNode.markMapping(_selectedLayoutID, Theme.STATUS_MAPPED);
 			
 			_cNode.unmarkActivatedID(_selectedContentID);
-			_lNode.unmarkActivatedID(layoutID);
+			_lNode.unmarkActivatedID(_selectedLayoutID);
 
 			// Automatically activated children of the mapped node
 			if (Theme.ENABLE_REL == false && Theme.ENABLE_SERIAL == false)
@@ -152,14 +199,73 @@ package cs448b.fp.utils
 						//_contentTree.activateAllDescendants(node.getChildNode(i));
 					}	
 				}
-			}	  
+			}				
 		}
 
+		/**
+		 * Hide the popup
+		 */					
+		private function hidePopup():void
+		{
+			_contentTree.visible = true;
+			_layoutTree.visible = true;
+			removeChild(_popupManager);
+		}
+		
+		/**
+		 * Show the popup
+		 */					
+		private function showPopup():void
+		{
+			_contentTree.visible = false;
+			_layoutTree.visible = false;
+			addChild(_popupManager);
+		}
+						
+		/**
+		 * Check the mapping possibility for the given layout node. 
+		 */					
+		private function processMapping(layoutID:Number):void
+		{
+			// First, update _selectedLayoutID. This is used in all *mapping functions.
+			_selectedLayoutID = layoutID;
+			
+			// case 1:  content node already has a mapping: remove its old mapping
+			//			cannot happen in the current configuration.
+			if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
+			{			
+				_cNode.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
+				_lNode.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), Theme.STATUS_DEFAULT);	
+				
+				trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
+				_mapping.removeMapping(true, _selectedContentID);					
+			}
+			// case 2: layout node already has a mapping: open a popup - merge, replace, cancel possible	
+			else if (_mapping.getMappedIndex(_selectedLayoutID, 0) != -1)
+			{	
+				showPopup();
+			}	
+			// case 3: normal mapping case
+			else
+			{
+				addMapping();
+				blinkNode();
+			}		  
+		}
+
+		/**
+		 * Blink the node. Wrapper for the cascaded tree's equivalent one.
+		 */			
+		private function blinkNode():void
+		{	
+			_contentTree.blinkNode(_contentTree.getNodeByID(_selectedContentID), onEndBlinkingMapped, 1);			
+		}
+		
 		/**
 		 * Remove a mapping based on the current user selection
 		 */			
 		private function removeMapping(layoutID:Number):void
-		{
+		{			
 			_mapping.removeMapping(false, layoutID);	
 			_cNode.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
 			_lNode.markMapping(layoutID, Theme.STATUS_DEFAULT);		
@@ -167,15 +273,18 @@ package cs448b.fp.utils
 			_cNode.markActivatedID(_selectedContentID);
 			_lNode.markActivatedID(layoutID);	
 		}		
-		
+
+		/**
+		 * Event handler for the layout tree click event
+		 */			
 		private function onLayoutTreeEvent(e:MappingEvent):void
 		{
 //			trace("LayoutTree - Mouse Down! " + e.name + " " + e.value);	
 			var message:String;
 			if (_selectedContentID != 0 && e.name == "add")
 			{
-				addMapping(e.value);
-				_contentTree.blinkNode(_contentTree.getNodeByID(_selectedContentID), onEndBlinkingMapped, 1);	
+				processMapping(e.value);
+
 				// give feedback to users	
 				//var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
 //				var message:String = "Mapping added";

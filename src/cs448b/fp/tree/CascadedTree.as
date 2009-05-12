@@ -42,6 +42,10 @@ package cs448b.fp.tree
 			this.x = x;
 			this.y = y;
 			_node = new NodeActions(this, bContentTree);
+//			
+//			var _popupManager:PopupManager = new PopupManager();
+//			_popupManager.init();
+//			addChild(_popupManager);
 		}
 
 		/**
@@ -108,6 +112,7 @@ package cs448b.fp.tree
            	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
            	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_unmapButton.enabled = false;
+           	_unmapButton.useHandCursor = true;
            	addChild(_unmapButton);  			
 		}
 
@@ -344,10 +349,19 @@ package cs448b.fp.tree
 			var root:NodeSprite = tree.root as NodeSprite;
 			if (Theme.ENABLE_SERIAL == true)
 			{
-				// since there's no undo or remove, simply see if the node is mapped.
-				// if mapped, do nothing. if new, map.
-				if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
-					return;
+				// 1) if mapped, open a popup, get user input, and apply 
+				if (n.props["mapped"] == Theme.STATUS_MAPPED)
+				{
+					super.onMouseDown(n);
+					//blurOtherNodes(n);
+					_node.markSelected(n);
+					// dispatch mapping event
+					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));							
+				}
+				// 2) not possible; layout nodes do not have 'unmapped' status.
+				else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
+					return;	
+				// 3) if new, map.
 				else
 				{
 					super.onMouseDown(n);

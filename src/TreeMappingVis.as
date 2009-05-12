@@ -33,7 +33,7 @@ package {
 		 */		
 		public function TreeMappingVis()
 		{
-			mappingID = 1;	// 1: moo, 2: hybrid, 3: cat
+			mappingID = 3;	// 1: moo, 2: hybrid, 3: cat
 			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 			
@@ -153,8 +153,8 @@ package {
 			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
 			printTree(cascadedTree1.tree.root, 0);
 			//mappingManager.showNextStep();	// for the first time	
-
 			
+			addChild(mappingManager);
 		}
 
 		private function onControlsEvent( event:ControlsEvent ):void
@@ -207,7 +207,7 @@ package {
 			else if (event.name == "continue")
 			{	
 				mappingManager.showNextStep();			
-			}
+			}									
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void

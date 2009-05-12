@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = false;
+		public static var ENABLE_DEBUG:Boolean = true;
 		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
@@ -73,7 +73,13 @@ package cs448b.fp.utils
 		public static var LAYOUT_FEEDBACK_Y:Number = 17;		// notice y-coordinate
 		public static var LAYOUT_MAPPINGS_X:Number = 0;			// notice x-coordinate
 		public static var LAYOUT_MAPPINGS_Y:Number = 750;		// notice y-coordinate
-				
+		public static var LAYOUT_POPUP_X:Number = 300;		// popup x-coordinate
+		public static var LAYOUT_POPUP_Y:Number = 150;		// popup y-coordinate
+		public static var LAYOUT_POPUP_WIDTH:Number = 600;		// popup width
+		public static var LAYOUT_POPUP_HEIGHT:Number = 120;		// popup height
+		public static var LAYOUT_POPUP_INNER_X:Number = 50;		// popup content x-coordinate
+		public static var LAYOUT_POPUP_INNER_Y:Number = 30;		// popup content y-coordinate
+						
 		// Messages: used in tree control files
 		public static var MSG_STAGE1:String = "Stage: Initialization";
 		public static var MSG_STAGE2:String = "Stage: Hierarchical Matching";
@@ -82,6 +88,7 @@ package cs448b.fp.utils
 		public static var MSG_MAPPING_NONE:String = "Mappings: None";
 		public static var MSG_MAPPING:String = "Mappings: ";
 		public static var MSG_LOADED:String = "Page loaded.";
+		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Start";
