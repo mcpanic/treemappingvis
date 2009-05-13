@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = true;
+		public static var ENABLE_DEBUG:Boolean = false;
 		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
@@ -34,12 +34,13 @@ package cs448b.fp.utils
 		public static var LINE_WIDTH:uint = 15;
 		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
-		public static var COLOR_FILL_MAPPED:Number = 0xffFFAAAAFF;
-		public static var COLOR_FILL_UNMAPPED:Number = 0xffFFFFAAAA;
-		public static var ALPHA_MAPPED:Number = 0.3;		// alpha value for mapped nodes
+		public static var COLOR_FILL_MAPPED:Number = 0x00000000; //0xffFFAAAAFF;
+		public static var COLOR_FILL_UNMAPPED:Number = 0x00000000; //0xffFFFFAAAA;
+		public static var ALPHA_MAPPED:Number = 0.8;		// alpha value for mapped nodes
 		public static var SHOW_MAPPPED:Boolean = true;		// hide content of the mapped nodes
 		public static var CONNECTED_ALPHA:Number = 0.5;		// alpha value for the connected layout nodes on mouseover
 		public static var CONNECTED_LINE_WIDTH:Number = 1;	// dividend for the connected layout nodes on mouseover
+		public static var ALPHA_POPUP:Number = 0.5; 		// alpha value for the trees while popup menu is open
 		
 		// Mapping status constants
 		public static var STATUS_DEFAULT:Number = 0;
@@ -74,11 +75,16 @@ package cs448b.fp.utils
 		public static var LAYOUT_MAPPINGS_X:Number = 0;			// notice x-coordinate
 		public static var LAYOUT_MAPPINGS_Y:Number = 750;		// notice y-coordinate
 		public static var LAYOUT_POPUP_X:Number = 300;		// popup x-coordinate
-		public static var LAYOUT_POPUP_Y:Number = 150;		// popup y-coordinate
+		public static var LAYOUT_POPUP_Y:Number = 120;		// popup y-coordinate
 		public static var LAYOUT_POPUP_WIDTH:Number = 600;		// popup width
-		public static var LAYOUT_POPUP_HEIGHT:Number = 120;		// popup height
+		public static var LAYOUT_POPUP_HEIGHT:Number = 270;		// popup height
 		public static var LAYOUT_POPUP_INNER_X:Number = 50;		// popup content x-coordinate
 		public static var LAYOUT_POPUP_INNER_Y:Number = 30;		// popup content y-coordinate
+		public static var LAYOUT_POPUP_DIAGRAM_SIZE:Number = 30;	// popup diagram's square size
+		public static var LAYOUT_POPUP_DIAGRAM_INACTIVE_COLOR:Number = 0x888888;	// popup diagram's inactive node color
+		public static var LAYOUT_POPUP_DIAGRAM_ACTIVE_COLOR:Number = 0xffffff;	// popup diagram's active node color
+		public static var LAYOUT_POPUP_DIAGRAM_LINE_COLOR:Number = 0xFFD700;	// popup diagram's line color
+		public static var LAYOUT_POPUP_DIAGRAM_LINE_ALPHA:Number = 0.2;			// popup diagram's line alpha for inactive links 
 						
 		// Messages: used in tree control files
 		public static var MSG_STAGE1:String = "Stage: Initialization";

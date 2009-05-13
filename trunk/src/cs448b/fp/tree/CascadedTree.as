@@ -119,11 +119,20 @@ package cs448b.fp.tree
 		/**
 		 * Enable unmap button
 		 */		
-		private function enableUnmapButton():void
+		public function enableUnmapButton():void
 		{
 			_unmapButton.enabled = true;
 		}
 
+
+		/**
+		 * Disable unmap button
+		 */		
+		public function disableUnmapButton():void
+		{
+			_unmapButton.enabled = false;
+		}
+		
 		/**
 		 * Mark the selected node as unmapped
 		 */
@@ -234,6 +243,10 @@ package cs448b.fp.tree
 		 */						
 		protected override function onMouseOver(n:NodeSprite):void
 		{
+			// Check if the lock is enforced. It is enforced when popup is open.
+			if (NodeActions.lock == true)
+				return;
+							
 			if(n == null || n == tree.root)// || oldNode == n) 
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
@@ -242,8 +255,15 @@ package cs448b.fp.tree
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				n.lineColor = Theme.COLOR_ACTIVATED;
-				n.lineWidth = Theme.LINE_WIDTH;		
-				n.fillColor = Theme.COLOR_FILL_MAPPED;	
+				n.lineWidth = Theme.LINE_WIDTH;
+				//n.lineAlpha = Theme.ALPHA_MAPPED;	
+				//n.fillColor = Theme.COLOR_FILL_MAPPED;	
+				if (isContentTree == false)
+				{
+					//_node.addDropShadow(n);
+					//_node.addGlow(n);	
+					_node.showConnectedNodes(n);	
+				}	
 				pullAllChildrenForward(n);
 //				pullNodeForward(n);	
 //					for (var i:uint=0; i<n.childDegree; i++)
@@ -252,8 +272,11 @@ package cs448b.fp.tree
 			else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
 				n.lineColor = Theme.COLOR_SELECTED;
-				n.lineWidth = Theme.LINE_WIDTH;			
-				n.fillColor = Theme.COLOR_FILL_UNMAPPED;
+				n.lineWidth = Theme.LINE_WIDTH;
+				//n.lineAlpha = Theme.ALPHA_MAPPED;			
+				//n.fillColor = Theme.COLOR_FILL_UNMAPPED;
+				if (isContentTree == false)
+					_node.showConnectedNodes(n);
 				pullAllChildrenForward(n);				
 			}
 			// Border change on connected nodes for activated nodes
@@ -285,22 +308,27 @@ package cs448b.fp.tree
 		 */			
 		protected override function onMouseOut(n:NodeSprite):void
 		{
+			// Check if the lock is enforced. It is enforced when popup is open.
+			if (NodeActions.lock == true)
+				return;
+							
 			if(n == null) 
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
 			;
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
-				_node.hideLine(n);					
+				//n.lineAlpha = 1;
+				_node.hideLine(n);	
+				if (isContentTree == false)
+					_node.hideConnectedNodes(n);				
 			}	
 			else if (n.props["activated"] == true)
 			{
-//				n.lineColor = 0xff0000FF; 
-//				n.lineWidth = 15;
 				n.lineColor = Theme.COLOR_ACTIVATED;
 				_node.showLineWidth(n);
 				_node.hideConnectedNodes(n);
-				_node.removeDropShadow(n);
+				_node.removeFilters(n);
 //				if (nodePulled == true)
 //				{
 //					pushNodeBack(n);	
@@ -343,6 +371,10 @@ package cs448b.fp.tree
 		 */	   		
 		protected override function onMouseDown(n:NodeSprite):void 
 		{
+			// Check if the lock is enforced. It is enforced when popup is open.
+			if (NodeActions.lock == true)
+				return;
+				
 			if (Theme.ENABLE_SERIAL == true && isContentTree == true)
 				return;
 				
@@ -655,13 +687,16 @@ package cs448b.fp.tree
 			else 			// unmapped
 				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_UNMAPPED});
 			var t6:Tween = new Tween(node, Theme.DURATION_BLINKING, {fillColor:0x00000000});
-			
+			var t7:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineWidth:Theme.LINE_WIDTH});
 		    var seq:Sequence = new Sequence(
-			    new Parallel(t1, t5), 
+			    new Parallel(t1, t7, t5), 
 			    new Parallel(t2, t6)      
 		    );
 		    seq.play();
-		    seq.addEventListener(TransitionEvent.END, handler);	
+		    
+		    // it is null for layout node animation
+		    if (handler != null)
+		    	seq.addEventListener(TransitionEvent.END, handler);	
 		}
 
 

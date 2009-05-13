@@ -3,6 +3,7 @@ package cs448b.fp.utils
 	import cs448b.fp.data.Mapping;
 	import cs448b.fp.tree.CascadedTree;
 	
+	import flare.animate.Pause;
 	import flare.animate.TransitionEvent;
 	import flare.vis.data.NodeSprite;
 	
@@ -133,11 +134,13 @@ package cs448b.fp.utils
 		{
 			// add root-root mapping
 			_selectedContentID = Number(_contentTree.tree.root.name);
-			processMapping(Number(_layoutTree.tree.root.name));
+			_selectedLayoutID = Number(_layoutTree.tree.root.name);
+			//processMapping(Number(_layoutTree.tree.root.name));
+			addMapping();
 							
 			var message:String = _mapping.printMapping();
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  	
-			resetSelections(_selectedContentID, _selectedLayoutID);	
+			resetSelections();	
 			//showNextStep();	// for the first time
 			//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	
 		}
@@ -187,6 +190,10 @@ package cs448b.fp.utils
 			_cNode.unmarkActivatedID(_selectedContentID);
 			_lNode.unmarkActivatedID(_selectedLayoutID);
 
+			// Remove all filters for the layout
+			_lNode.removeFilters(_layoutTree.getNodeByID(_selectedLayoutID));
+			_lNode.hideConnectedNodes(_layoutTree.getNodeByID(_selectedLayoutID));
+			
 			// Automatically activated children of the mapped node
 			if (Theme.ENABLE_REL == false && Theme.ENABLE_SERIAL == false)
 			{			
@@ -207,8 +214,16 @@ package cs448b.fp.utils
 		 */					
 		private function hidePopup():void
 		{
-			_contentTree.visible = true;
-			_layoutTree.visible = true;
+//			_contentTree.visible = true;
+//			_layoutTree.visible = true;
+			_contentTree.alpha = 1;
+			_layoutTree.alpha = 1;			
+			
+			// Enable the unmap button
+			_contentTree.enableUnmapButton();
+			// Disable the lock so that interactionis enabled again
+			NodeActions.lock = false;
+				
 			removeChild(_popupManager);
 		}
 		
@@ -217,8 +232,16 @@ package cs448b.fp.utils
 		 */					
 		private function showPopup():void
 		{
-			_contentTree.visible = false;
-			_layoutTree.visible = false;
+//			_contentTree.visible = false;
+//			_layoutTree.visible = false;
+			_contentTree.alpha = Theme.ALPHA_POPUP; //0.5;
+			_layoutTree.alpha = Theme.ALPHA_POPUP; //0.5;			
+			
+			// Disable the unmap button
+			_contentTree.disableUnmapButton();
+			// Enable the lock so that interaction is disabled during popup
+			NodeActions.lock = true;
+			
 			addChild(_popupManager);
 		}
 						
@@ -237,12 +260,13 @@ package cs448b.fp.utils
 				_cNode.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
 				_lNode.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), Theme.STATUS_DEFAULT);	
 				
-				trace("case 2: " + _mapping.getMappedIndex(_selectedContentID, 1));
+				trace("case 1 - content conflict: " + _mapping.getMappedIndex(_selectedContentID, 1));
 				_mapping.removeMapping(true, _selectedContentID);					
 			}
 			// case 2: layout node already has a mapping: open a popup - merge, replace, cancel possible	
 			else if (_mapping.getMappedIndex(_selectedLayoutID, 0) != -1)
 			{	
+				trace("case 2 - layout conflict: " + _mapping.getMappedIndex(_selectedContentID, 1));
 				showPopup();
 			}	
 			// case 3: normal mapping case
@@ -258,7 +282,8 @@ package cs448b.fp.utils
 		 */			
 		private function blinkNode():void
 		{	
-			_contentTree.blinkNode(_contentTree.getNodeByID(_selectedContentID), onEndBlinkingMapped, 1);			
+			_layoutTree.blinkNode(_layoutTree.getNodeByID(_selectedLayoutID), null, 1);				
+			_contentTree.blinkNode(_contentTree.getNodeByID(_selectedContentID), onEndBlinkingMapped, 1);				
 		}
 		
 		/**
@@ -305,14 +330,14 @@ package cs448b.fp.utils
 				
 				message = _mapping.printMapping();
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
-				resetSelections(_selectedContentID, _selectedLayoutID);		
+				resetSelections();		
 				
 			}
 
 			
 //			if (_selectedContentID == 0)	// layout is selected alone.
 //			{
-//				resetSelections(_selectedContentID, _selectedLayoutID);
+//				resetSelections();
 //			}
 //			else	// Reset selections
 //			{
@@ -336,7 +361,7 @@ package cs448b.fp.utils
 
 			message = _mapping.printMapping();
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
-			resetSelections(_selectedContentID, _selectedLayoutID);
+			resetSelections();
 							
 			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
 			if (Theme.ENABLE_SERIAL == true)	
@@ -346,10 +371,10 @@ package cs448b.fp.utils
 		/**
 		 * Reset selections
 		 */
-		private function resetSelections(selectedContentID:Number, selectedLayoutID:Number):void
+		private function resetSelections():void
 		{
-			_cNode.unmarkSelectedID(selectedContentID);
-			_lNode.unmarkSelectedID(selectedLayoutID);
+			_cNode.unmarkSelectedID(_selectedContentID);
+			_lNode.unmarkSelectedID(_selectedLayoutID);
 			
 			_selectedContentID = 0;
 			_selectedLayoutID = 0;
@@ -526,16 +551,18 @@ package cs448b.fp.utils
 			var currentContentNode:NodeSprite;
 			var currentLayoutNode:NodeSprite; 
 			var ret:Boolean = false;
-			//trace(_contentTree._currentStep + " " + _contentTree.tree.nodes.length);
+			
 			currentContentNode = _contentTree.getCurrentProcessingNode();
+			trace("[" + currentContentNode.name + "] " + _contentTree._currentStep + "/" + _contentTree.tree.nodes.length);
 			
 			if (currentContentNode == _contentTree.tree.root)
-				return false;
+				return false;			
 				
 			// Check the display conditions
 			if (checkContent(currentContentNode))
 			{
 				currentLayoutNode = checkLayout(currentContentNode);
+				
 				// All conditions are met. Display on the screen.
 				if (currentLayoutNode != null)
 				{
@@ -617,8 +644,10 @@ package cs448b.fp.utils
 		        			addRootMapping();
 		        			_isRootMapped = true;
 		        		}
+						
 						if (showMatching() == false)	// if nothing shown, on to the next
-							showNextStep();		
+							showNextStep();
+								
 		       		}
 		       		
 		       	}

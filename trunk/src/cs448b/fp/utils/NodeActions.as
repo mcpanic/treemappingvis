@@ -11,6 +11,9 @@ package cs448b.fp.utils
 	 */ 
 	public class NodeActions
 	{
+		// interaction lock
+		public static var lock:Boolean = false;
+		
 		private var _tree:AbstractTree;
 		private var _isContentTree:Boolean;
 		public function NodeActions(tree:AbstractTree, isContentTree:Boolean)
@@ -41,7 +44,7 @@ package cs448b.fp.utils
 		/**
 		 * Remove the drop shadow effect. All other effects are removed as well.
 		 */ 
-		private function removeFilters(n:NodeSprite):void
+		public function removeFilters(n:NodeSprite):void
 		{
 			n.filters = null;
 		}
@@ -65,26 +68,47 @@ package cs448b.fp.utils
 			removeFilters(n);
 		}	
 		
+		/** 
+		 * Apply visual effects for connected node
+		 */		 
+		private function showConnectedEffects(n:NodeSprite):void
+		{
+			n.lineColor = Theme.COLOR_CONNECTED;
+			n.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
+			n.lineAlpha = Theme.CONNECTED_ALPHA;
+			addGlow(n, Theme.CONNECTED_ALPHA, 5, 5);
+		}
 
+		/** 
+		 * Remove visual effects for connected node
+		 */		 
+		private function hideConnectedEffects(n:NodeSprite):void
+		{
+			hideLine(n);
+			removeGlow(n);	
+		}
+				
 		/** 
 		 * Show connected nodes
 		 */		 
 		public function showConnectedNodes(n:NodeSprite):void
 		{
-			if (n.parentNode != _tree.tree.root)
+			if (n.parentNode != null && n.parentNode != _tree.tree.root)
 			{
-				n.parentNode.lineColor = Theme.COLOR_CONNECTED;
-				n.parentNode.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
-				n.parentNode.lineAlpha = Theme.CONNECTED_ALPHA;
-				addGlow(n.parentNode, Theme.CONNECTED_ALPHA, 5, 5);
+				// parent
+				showConnectedEffects(n.parentNode);
+				// siblings
+				for (var i:uint=0; i<n.parentNode.childDegree; i++)
+				{
+					// not me!
+					if (n.parentNode.getChildNode(i) != n)
+						showConnectedEffects(n.parentNode.getChildNode(i));
+				}
 			}
-			
-			for (var i:uint=0; i<n.childDegree; i++)
+			// children
+			for (i=0; i<n.childDegree; i++)
 			{
-				n.getChildNode(i).lineColor = Theme.COLOR_CONNECTED;
-				n.getChildNode(i).lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
-				n.getChildNode(i).lineAlpha = Theme.CONNECTED_ALPHA;
-				addGlow(n.getChildNode(i), Theme.CONNECTED_ALPHA, 5, 5);
+				showConnectedEffects(n.getChildNode(i));
 			}			
 		}
 
@@ -93,12 +117,22 @@ package cs448b.fp.utils
 		 */		 
 		public function hideConnectedNodes(n:NodeSprite):void
 		{
-			hideLine(n.parentNode);
-			removeGlow(n.parentNode);			
-			for (var i:uint=0; i<n.childDegree; i++)
+			if (n.parentNode != null && n.parentNode != _tree.tree.root)
 			{
-				hideLine(n.getChildNode(i));
-				removeGlow(n.getChildNode(i));
+				// parent
+				hideConnectedEffects(n.parentNode);
+				// siblings
+				for (var i:uint=0; i<n.parentNode.childDegree; i++)
+				{
+					// not me!
+					if (n.parentNode.getChildNode(i) != n)
+						hideConnectedEffects(n.parentNode.getChildNode(i));
+				}
+			}
+			// children
+			for (i=0; i<n.childDegree; i++)
+			{
+				hideConnectedEffects(n.getChildNode(i));
 			}			
 		}		
 
