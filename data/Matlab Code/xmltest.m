@@ -1,8 +1,8 @@
 clc; clear all; close all;
 
 % PARSEXML Convert XML file to a MATLAB structure.
-filename = 'tree_hybrid.xml';
-im = imread('hybrid_copy.png', 'png');
+filename = 'courseRank.xml';
+im = imread('courseRank.png', 'png');
 
 try
    tree = xmlread(filename);
