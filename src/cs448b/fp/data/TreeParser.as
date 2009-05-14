@@ -92,8 +92,8 @@ package cs448b.fp.data
 		{
 			var ldr:UILoader = new UILoader();
 
-			//var url:String = _imageLocation + xml.label + ".PNG";
-			var url:String = xml.url;
+			var url:String = _imageLocation + xml.label + ".png";
+			//var url:String = xml.url;
  			var urlReq:URLRequest = new URLRequest(url);
 			ldr.load(urlReq);
 			ldr.name = xml.label.toString();

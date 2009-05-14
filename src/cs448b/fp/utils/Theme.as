@@ -95,6 +95,7 @@ package cs448b.fp.utils
 		public static var MSG_MAPPING:String = "Mappings: ";
 		public static var MSG_LOADED:String = "Page loaded.";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
+		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";
 		
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Start";

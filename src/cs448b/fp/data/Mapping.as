@@ -85,30 +85,36 @@ package cs448b.fp.data
 		 * @param idx - the index to find mapped index.
 		 * @param treeId - the ID of the tree mapped
 		 */	
-		public function getMappedIndex(idx:Number, treeId:Number):Number
+		public function getMappedIndex(idx:Number, treeId:Number):Array
 		{
+			var obj:Object;
+			var point:Point;
+			var result:Array = new Array();
+			
 			if(treeId == 0) // send to content tree
 			{
-				for(var oo:Object in map)
+				for(obj in map)
 				{
-					var pp:Point = map[oo] as Point;
-					
-					if(pp.y == idx) return pp.x;
+					point = map[obj] as Point;				
+					if(point.y == idx)
+						result.push(point.x); 
+						//return point.x;
 				}
 			}
 			else
 			{ // send to all trees
 				// for each mapping
-				for(var o:Object in map)
+				for(obj in map)
 				{
-					var p:Point = map[o] as Point;
-					
-					if(p.x == idx) return p.y;
+					point = map[obj] as Point;				
+					if(point.x == idx)
+						result.push(point.y); 
+						//return point.y;
 				}
 					
 			}
 			
-			return -1;
+			return result;
 		}
 	}
 }

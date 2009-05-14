@@ -85,10 +85,13 @@ package cs448b.fp.tree
 						// Case 1: When mapping definition is already defined in the XML file
 						//var mappedIdx:Number = dataLoader.getMappedIndex(Number(node.name), t.getId());
 						// Case 2: When mapping definition is created by user interface
-						var mappedIdx:Number = mappingManager.getMappedIndex(Number(node.name), t.getId());
-						var mv:String = String(mappedIdx);
-
-						t.handleSyncEvent(mv, evt, node);
+//						var mappedIdx:Number = mappingManager.getMappedIndex(Number(node.name), t.getId());
+//						var mv:String = String(mappedIdx);
+						var result:Array = mappingManager.getMappedIndex(Number(node.name), t.getId());
+						for (var i:uint=0; i<result.length; i++)
+						{							
+							t.handleSyncEvent(String(result[i]), evt, node);
+						}
 					} 
 					else 
 					{

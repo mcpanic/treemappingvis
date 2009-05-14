@@ -49,9 +49,10 @@ package cs448b.fp.data
 		/**
 		 * Wrapper for the index retrieval function
 		 */
-		public function getMappedIndex(idx:Number, treeId:Number):Number
+		public function getMappedIndex(idx:Number, treeId:Number):Array
 		{
-			if(_mappingParser == null) return 0;
+			if(_mappingParser == null) 
+				return null;
 			
 			return _mappingParser.mapping.getMappedIndex(idx, treeId);
 		}
