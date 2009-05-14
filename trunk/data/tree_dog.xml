@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <node>
   <label><![CDATA[1]]></label>
-  <url><![CDATA[../data/dog/1.png]]></url>
+  <url><![CDATA[../data/dog/1.PNG]]></url>
   <position x="0" y="0" width="1024" height="507"></position>
   <children>
     <node>
       <label><![CDATA[16]]></label>
-      <url><![CDATA[../data/dog/16.png]]></url>
+      <url><![CDATA[../data/dog/16.PNG]]></url>
       <position x="11" y="0" width="950" height="90"></position>
       <children>
         <node>
           <label><![CDATA[112]]></label>
-          <url><![CDATA[../data/dog/112.png]]></url>
+          <url><![CDATA[../data/dog/112.PNG]]></url>
           <position x="25" y="5" width="950" height="36"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[115]]></label>
-          <url><![CDATA[../data/dog/115.png]]></url>
+          <url><![CDATA[../data/dog/115.PNG]]></url>
           <position x="28" y="58" width="94" height="15"></position>
           <children></children>
         </node>
@@ -25,18 +25,18 @@
     </node>
     <node>
       <label><![CDATA[41]]></label>
-      <url><![CDATA[../data/dog/41.png]]></url>
+      <url><![CDATA[../data/dog/41.PNG]]></url>
       <position x="757" y="91" width="230" height="198"></position>
       <children>
         <node>
           <label><![CDATA[52]]></label>
-          <url><![CDATA[../data/dog/52.png]]></url>
+          <url><![CDATA[../data/dog/52.PNG]]></url>
           <position x="756" y="91" width="230" height="36"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[56]]></label>
-          <url><![CDATA[../data/dog/56.png]]></url>
+          <url><![CDATA[../data/dog/56.PNG]]></url>
           <position x="763" y="144" width="154" height="126"></position>
           <children></children>
         </node>
@@ -44,24 +44,24 @@
     </node>
     <node>
       <label><![CDATA[32]]></label>
-      <url><![CDATA[../data/dog/32.png]]></url>
+      <url><![CDATA[../data/dog/32.PNG]]></url>
       <position x="513" y="92" width="230" height="399"></position>
       <children>
         <node>
           <label><![CDATA[96]]></label>
-          <url><![CDATA[../data/dog/96.png]]></url>
+          <url><![CDATA[../data/dog/96.PNG]]></url>
           <position x="508" y="88" width="230" height="36"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[99]]></label>
-          <url><![CDATA[../data/dog/99.png]]></url>
+          <url><![CDATA[../data/dog/99.PNG]]></url>
           <position x="517" y="144" width="150" height="150"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[102]]></label>
-          <url><![CDATA[../data/dog/102.png]]></url>
+          <url><![CDATA[../data/dog/102.PNG]]></url>
           <position x="516" y="311" width="150" height="150"></position>
           <children></children>
         </node>
@@ -69,24 +69,24 @@
     </node>
     <node>
       <label><![CDATA[23]]></label>
-      <url><![CDATA[../data/dog/23.png]]></url>
+      <url><![CDATA[../data/dog/23.PNG]]></url>
       <position x="24" y="91" width="470" height="360"></position>
       <children>
         <node>
           <label><![CDATA[105]]></label>
-          <url><![CDATA[../data/dog/105.png]]></url>
+          <url><![CDATA[../data/dog/105.PNG]]></url>
           <position x="19" y="91" width="470" height="36"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[107]]></label>
-          <url><![CDATA[../data/dog/107.png]]></url>
+          <url><![CDATA[../data/dog/107.PNG]]></url>
           <position x="22" y="147" width="470" height="108"></position>
           <children></children>
         </node>
         <node>
           <label><![CDATA[109]]></label>
-          <url><![CDATA[../data/dog/109.png]]></url>
+          <url><![CDATA[../data/dog/109.PNG]]></url>
           <position x="33" y="270" width="470" height="162"></position>
           <children></children>
         </node>
@@ -94,7 +94,7 @@
     </node>
     <node>
       <label><![CDATA[48]]></label>
-      <url><![CDATA[../data/dog/48.png]]></url>
+      <url><![CDATA[../data/dog/48.PNG]]></url>
       <position x="25" y="480" width="950" height="18"></position>
       <children></children>
     </node>
