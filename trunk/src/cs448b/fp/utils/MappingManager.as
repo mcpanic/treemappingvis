@@ -3,7 +3,6 @@ package cs448b.fp.utils
 	import cs448b.fp.data.Mapping;
 	import cs448b.fp.tree.CascadedTree;
 	
-	import flare.animate.Pause;
 	import flare.animate.TransitionEvent;
 	import flare.vis.data.NodeSprite;
 	
@@ -24,6 +23,7 @@ package cs448b.fp.utils
 		private var _lNode:NodeActions;
 		
 		private var _popupManager:PopupManager;
+		private var _resultManager:ResultManager;
 		
 		public function MappingManager()
 		{
@@ -33,6 +33,7 @@ package cs448b.fp.utils
 			_currentStage = Theme.STAGE_INITIAL;
 			
 			_popupManager = new PopupManager();	
+			_resultManager = new ResultManager();
 		}
 
 		public function init():void
@@ -49,6 +50,13 @@ package cs448b.fp.utils
 			_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
 			//_popupManager.height = Theme.LAYOUT_POPUP_HEIGHT;
 			//addChild(_popupManager);
+			// Initialize popup manager
+			_resultManager.init();
+			_resultManager.x = Theme.LAYOUT_POPUP_X;
+			_resultManager.y = Theme.LAYOUT_POPUP_Y;
+			_resultManager.width = Theme.LAYOUT_POPUP_WIDTH;
+			_resultManager.addEventListener(ControlsEvent.STATUS_UPDATE, onResultStatusEvent);
+
 			
 		}
 		
@@ -87,6 +95,18 @@ package cs448b.fp.utils
 		}
 
 		/**
+		 * Result confirm button event.
+		 * Triggered by resultManager, when button is pressed.
+		 */	
+		private function onResultStatusEvent( event:ControlsEvent ):void
+		{
+			if (event.name == "confirm")
+			{	
+				hideResults();			
+			}
+		}
+		
+		/**
 		 * Event handler for content tree click event.
 		 * Mapping events are only triggered in layout tree
 		 */					
@@ -116,10 +136,10 @@ package cs448b.fp.utils
 		/**
 		 * Wrapper for the index retrieval function
 		 */
-		public function getMappedIndex(idx:Number, treeId:Number):Number
+		public function getMappedIndex(idx:Number, treeId:Number):Array
 		{
 			if(_mapping == null) 
-				return 0;
+				return null;
 			
 			return _mapping.getMappedIndex(idx, treeId);
 		}
@@ -244,6 +264,37 @@ package cs448b.fp.utils
 			
 			addChild(_popupManager);
 		}
+
+		/**
+		 * Hide the result popup
+		 */					
+		private function hideResults():void
+		{
+			_contentTree.alpha = 1;
+			_layoutTree.alpha = 1;			
+			
+			// Enable the unmap button
+			//_contentTree.enableUnmapButton();
+			// Disable the lock so that interactionis enabled again
+			NodeActions.lock = false;
+				
+			removeChild(_resultManager);
+		}
+		/**
+		 * Show the result upon mapping completion
+		 */					
+		private function showResults(message:String):void
+		{
+			_contentTree.alpha = Theme.ALPHA_POPUP; //0.5;
+			_layoutTree.alpha = Theme.ALPHA_POPUP; //0.5;			
+			
+			// Disable the unmap button
+			_contentTree.disableUnmapButton();
+			// Enable the lock so that interaction is disabled during popup
+			NodeActions.lock = true;
+			_resultManager.showMessage(message);
+			addChild(_resultManager);
+		}			
 						
 		/**
 		 * Check the mapping possibility for the given layout node. 
@@ -255,16 +306,19 @@ package cs448b.fp.utils
 			
 			// case 1:  content node already has a mapping: remove its old mapping
 			//			cannot happen in the current configuration.
-			if (_mapping.getMappedIndex(_selectedContentID, 1) != -1)
+			if (_mapping.getMappedIndex(_selectedContentID, 1).length > 0)
 			{			
 				_cNode.markMapping(_selectedContentID, Theme.STATUS_DEFAULT);
-				_lNode.markMapping(_mapping.getMappedIndex(_selectedContentID, 1), Theme.STATUS_DEFAULT);	
-				
-				trace("case 1 - content conflict: " + _mapping.getMappedIndex(_selectedContentID, 1));
-				_mapping.removeMapping(true, _selectedContentID);					
+				var result:Array = _mapping.getMappedIndex(_selectedContentID, 1);
+				for (var i:uint = 0; i<result.length; i++)
+				{
+					_lNode.markMapping(result[i], Theme.STATUS_DEFAULT);					
+					trace("case 1 - content conflict: " + result[i]);
+					_mapping.removeMapping(true, _selectedContentID);					
+				}
 			}
 			// case 2: layout node already has a mapping: open a popup - merge, replace, cancel possible	
-			else if (_mapping.getMappedIndex(_selectedLayoutID, 0) != -1)
+			else if (_mapping.getMappedIndex(_selectedLayoutID, 0).length > 0)
 			{	
 				trace("case 2 - layout conflict: " + _mapping.getMappedIndex(_selectedContentID, 1));
 				showPopup();
@@ -386,7 +440,7 @@ package cs448b.fp.utils
 		private function getClosestValidAncestor(n:NodeSprite):NodeSprite
 		{
 			var resultNode:NodeSprite;
-			if (_mapping.getMappedIndex(Number(n.name), 1) != -1)	// if mapping is not null
+			if (_mapping.getMappedIndex(Number(n.name), 1).length > 0)	// if mapping is not null
 				resultNode = n;
 			else
 			{
@@ -527,13 +581,19 @@ package cs448b.fp.utils
 			
 	        lRoot.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 	        	// Find a node where M(a) is not null
-	        	if (a != null && Number(nn.name) == _mapping.getMappedIndex(Number(a.name), 1))	
+	        	if (a != null)	
 	        	{
-	        		// nn is M(a)	        		
-	        		if (nn.childDegree == 0)	// M(a) is a leaf node
-	        			;
-	        		else
-	        			ret = nn;
+	        		var result:Array = _mapping.getMappedIndex(Number(a.name), 1);
+	        		for (var i:uint=0; i<result.length; i++)
+	        		{
+	        			if (nn.name != String(result[i]))
+	        				continue;
+		        		// nn is M(a)	        		
+		        		if (nn.childDegree == 0)	// M(a) is a leaf node
+		        			;
+		        		else
+		        			ret = nn;
+	        		}
 	        	}
 			});		
 			
@@ -633,6 +693,9 @@ package cs448b.fp.utils
 		        		_currentStage = Theme.STAGE_QUASI;
 			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_QUASI) );   	        		
 		        		_contentTree.checkCompleted();
+		        		// Now everything is done. Send the mapping result somewhere!
+		       			var result:String = _mapping.printMapping();
+		     	  		showResults(result);
 		        		//showQuasiMatchingLayout();
 		        		//showQuasiMatchingContent();
 		        		

@@ -91,7 +91,31 @@ package {
 				imageList[0] = "../data/dog/";
 				imageList[1] = "../data/cat/";
 				mappingFile = "../data/map_cat.xml";			
-			}					
+			}	
+			else if (mappingID == 4)
+			{
+				fileList[0] = "../data/google.xml";
+				fileList[1] = "../data/courseRank.xml";			
+				imageList[0] = "../data/google/";
+				imageList[1] = "../data/courseRank/";
+				mappingFile = null;//"../data/map_cat.xml";			
+			}		
+			else if (mappingID == 5)
+			{
+				fileList[0] = "../data/courseRank.xml";
+				fileList[1] = "../data/allRecipes.xml";			
+				imageList[0] = "../data/courseRank/";
+				imageList[1] = "../data/allRecipes/";
+				mappingFile = null;//"../data/map_cat.xml";			
+			}	
+			else if (mappingID == 6)
+			{
+				fileList[0] = "../data/allRecipes.xml";
+				fileList[1] = "../data/tree_moo.xml";			
+				imageList[0] = "../data/allRecipes/";
+				imageList[1] = "../data/moo/";
+				mappingFile = null;//"../data/map_cat.xml";			
+			}											
 			dataLoader = new DataLoader(2, fileList, mappingFile, imageList);
 
 			dataLoader.addLoadEventListener(handleLoaded);			
