@@ -90,12 +90,12 @@ package cs448b.fp.tree
 						var result:Array = mappingManager.getMappedIndex(Number(node.name), t.getId());
 						for (var i:uint=0; i<result.length; i++)
 						{							
-							t.handleSyncEvent(String(result[i]), evt, node);
+							t.handleSyncEvent(String(result[i]), evt, node, false);
 						}
 					} 
 					else 
 					{
-						t.handleSyncEvent(node.name, evt, node);
+						t.handleSyncEvent(node.name, evt, node, true);
 					}
 				}
 			}

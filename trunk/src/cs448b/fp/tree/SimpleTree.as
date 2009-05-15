@@ -155,7 +155,7 @@ package cs448b.fp.tree
 
 		}
 				
-		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event):void
+		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event, isSender:Boolean):void
 		{
 			if(evt.type == MouseEvent.MOUSE_OVER)
 			{

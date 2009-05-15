@@ -212,7 +212,7 @@ package cs448b.fp.tree
 		/**
 		 * Mouse event handler main
 		 */					
-		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event):void
+		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event, isSender:Boolean):void
 		{
 			if(evt.type == MouseEvent.MOUSE_OVER)
 			{
@@ -228,7 +228,7 @@ package cs448b.fp.tree
 			}
 			else if(evt.type == MouseEvent.MOUSE_DOWN)
 			{
-				onMouseDown(n);
+				onMouseDown(n, isSender);
 			}
 			else if(evt.type == MouseEvent.MOUSE_MOVE)
 			{
@@ -369,8 +369,16 @@ package cs448b.fp.tree
 		/**
 		 * Mouse button down handler
 		 */	   		
-		protected override function onMouseDown(n:NodeSprite):void 
+		protected override function onMouseDown(n:NodeSprite, isSender:Boolean = true):void 
 		{
+			// no linking effect for mouse click. only mouse-over and out gets linking
+			if (isSender == false)
+			{
+				trace("other");
+				return;
+			}
+			else
+				trace("me");
 			// Check if the lock is enforced. It is enforced when popup is open.
 			if (NodeActions.lock == true)
 				return;
