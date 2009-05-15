@@ -1,5 +1,6 @@
 package cs448b.fp.tree
 {
+	import flare.display.TextSprite;
 	import flare.vis.Visualization;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
@@ -7,7 +8,6 @@ package cs448b.fp.tree
 	import flare.vis.events.SelectionEvent;
 	import flare.vis.operator.encoder.PropertyEncoder;
 	import flare.vis.operator.layout.Layout;
-	import flare.display.TextSprite;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -15,7 +15,6 @@ package cs448b.fp.tree
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
-	import flash.text.TextField;
 	import flash.text.TextFormat;
 				
 	public class AbstractTree extends Sprite
@@ -303,7 +302,7 @@ package cs448b.fp.tree
 		/**
 		 * Handles the tree sync event
 		 */
-		public function handleSyncEvent(s:String, evt:Event, n:NodeSprite):void
+		public function handleSyncEvent(s:String, evt:Event, n:NodeSprite, isSender:Boolean):void
 		{
 			// handle event
 			var t:Tree = vis.data as Tree;
@@ -314,7 +313,7 @@ package cs448b.fp.tree
 				if( n == null ) return false; 
 				
 				if(n.name == s){
-					handleSyncNodeEvent(n, evt);
+					handleSyncNodeEvent(n, evt, isSender);
 					return true; 
 				}
 				
@@ -329,7 +328,7 @@ package cs448b.fp.tree
 		 * @param n - the node to sync
 		 * @param evt - the event that was sent 
 		 */
-		protected function handleSyncNodeEvent(n:NodeSprite, evt:Event):void {}
+		protected function handleSyncNodeEvent(n:NodeSprite, evt:Event, isSender:Boolean):void {}
 		
 		protected function rollOver(evt:SelectionEvent):void 
 		{		
@@ -347,7 +346,7 @@ package cs448b.fp.tree
 		
 		protected function onMouseUp(n:NodeSprite):void {}
 		
-		protected function onMouseDown(n:NodeSprite):void {}
+		protected function onMouseDown(n:NodeSprite, isSender:Boolean = true):void {}
 		
 		protected function onMouseMove(n:NodeSprite):void {}
 	} // end of class Demo
