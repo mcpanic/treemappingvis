@@ -25,6 +25,8 @@ package cs448b.fp.utils
 		private var _popupManager:PopupManager;
 		private var _resultManager:ResultManager;
 		
+		private var _assignmentId:String;
+		
 		public function MappingManager()
 		{
 			_mapping = new Mapping();	
@@ -60,6 +62,12 @@ package cs448b.fp.utils
 			
 		}
 		
+		public function setAssignmentId(id:String):void
+		{
+			_assignmentId = id;
+			_resultManager.setAssignmentId(_assignmentId);
+		}
+		
 		public function setContentTree(t:CascadedTree):void
 		{
 			_contentTree = t;
@@ -82,7 +90,8 @@ package cs448b.fp.utils
 		{
 			if (event.name == "merge")
 			{	
-				mergeMapping();			
+				showResults("1-224");
+				//mergeMapping();			
 			}
 			else if (event.name == "replace")
 			{	
@@ -99,10 +108,10 @@ package cs448b.fp.utils
 		 * Triggered by resultManager, when button is pressed.
 		 */	
 		private function onResultStatusEvent( event:ControlsEvent ):void
-		{
+		{			
 			if (event.name == "confirm")
-			{	
-				hideResults();			
+			{
+				//hideResults();			
 			}
 		}
 		
@@ -292,7 +301,8 @@ package cs448b.fp.utils
 			_contentTree.disableUnmapButton();
 			// Enable the lock so that interaction is disabled during popup
 			NodeActions.lock = true;
-			_resultManager.showMessage(message);
+
+			_resultManager.addResults(message);
 			addChild(_resultManager);
 		}			
 						

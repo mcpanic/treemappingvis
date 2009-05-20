@@ -1,5 +1,6 @@
 package {
 	import cs448b.fp.data.DataLoader;
+	import cs448b.fp.data.MechanicalTurkManager;
 	import cs448b.fp.tree.CascadedTree;
 	import cs448b.fp.tree.TreeEventSynchronizer;
 	import cs448b.fp.utils.*;
@@ -10,6 +11,7 @@ package {
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.system.Security;
+	import flash.text.TextField;
 	import flash.ui.Keyboard;
 		
 	// Convenient way to pass in compiler arguments
@@ -28,21 +30,35 @@ package {
 		private var mappingID:Number;
 		
 		private var mappingManager:MappingManager;
+		private var mturkManager:MechanicalTurkManager;
+		private var assignmentId:String;
+		
 		/**
 		 * Constructor
 		 */		
 		public function TreeMappingVis()
 		{
-			mappingID = 3;	// 1: moo, 2: hybrid, 3: cat
+			mappingID = 4;	// 1: moo, 2: hybrid, 3: cat
 			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
-			
+		
+//			var url:String = "javascript:alert(gup('assignmentId'));";
+//			var request:URLRequest = new URLRequest(url);
+//			try {
+//			  navigateToURL(request, '_self'); // second argument is target
+//			} catch (e:Error) {
+//			  trace("Error occurred!");
+//			}
+
 			initComponents();
 			buildSprite();
 			loadData();			
-			//displayTree();			
-		}
+			//displayTree();	
 		
+		}
+
+
+        		
 		private function initComponents():void
 		{
 			tes = new TreeEventSynchronizer();
@@ -67,7 +83,24 @@ package {
 			var mappingFile:String;
 			fileList = new Array(2);
 			imageList = new Array(2);
-	
+
+			
+			// See if the task is at the preview or actual phase
+			mturkManager = new MechanicalTurkManager();
+			assignmentId = mturkManager.getAssignmentId();
+			
+			if (assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
+			{
+				trace("Assignment ID not available - preview mode");
+				// Defaults to cats and dogs
+				mappingID = 3;
+			}
+			else if (assignmentId == null)
+				trace("error in assignment ID");
+			else
+				trace("Assignment ID: " + assignmentId);
+			
+				
 			if (mappingID == 1)
 			{
 				fileList[0] = "../data/tree_content.xml";
@@ -174,6 +207,7 @@ package {
 			
 			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
 			mappingManager.init();	// add root-root mapping
+			mappingManager.setAssignmentId(assignmentId);
 			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
 			printTree(cascadedTree1.tree.root, 0);
 			//mappingManager.showNextStep();	// for the first time	

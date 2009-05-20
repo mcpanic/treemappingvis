@@ -373,12 +373,8 @@ package cs448b.fp.tree
 		{
 			// no linking effect for mouse click. only mouse-over and out gets linking
 			if (isSender == false)
-			{
-				trace("other");
 				return;
-			}
-			else
-				trace("me");
+
 			// Check if the lock is enforced. It is enforced when popup is open.
 			if (NodeActions.lock == true)
 				return;
