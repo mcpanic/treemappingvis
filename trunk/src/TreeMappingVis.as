@@ -26,9 +26,7 @@ package {
 		private var fileList:Array;
 		private var imageList:Array;
 		private var controls:CascadedTreeControls;
-		private var tes:TreeEventSynchronizer;
-		private var mappingID:Number;
-		
+		private var tes:TreeEventSynchronizer;		
 		private var mappingManager:MappingManager;
 		private var mturkManager:MechanicalTurkManager;
 		private var assignmentId:String;
@@ -39,9 +37,10 @@ package {
 		 */		
 		public function TreeMappingVis()
 		{
-			//mappingID = 4;	// 1: moo, 2: hybrid, 3: cat
 			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
+			
+			if (Theme.ENABLE_DEBUG == true)
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 
 			dataList = new DataList();
 			initComponents();
@@ -53,8 +52,7 @@ package {
 		private function initComponents():void
 		{
 			tes = new TreeEventSynchronizer();
-			controls = new CascadedTreeControls();
-//			controls.addLoadEventListener(handleDepthChange);		
+			controls = new CascadedTreeControls();		
 			controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );		
 		}
 				
@@ -70,7 +68,6 @@ package {
 		{
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);
-			var mappingFile:String;
 			fileList = new Array(2);
 			imageList = new Array(2);
 			
@@ -81,8 +78,6 @@ package {
 			if (assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
 			{
 				trace("Assignment ID not available - preview mode");
-				// Defaults to cats and dogs
-				//mappingID = 3;
 				dataList.getDataList(fileList, imageList, false);
 			}
 			else if (assignmentId == null)
@@ -96,7 +91,7 @@ package {
 				dataList.getDataList(fileList, imageList, false);
 			}
 														
-			dataLoader = new DataLoader(2, fileList, mappingFile, imageList);
+			dataLoader = new DataLoader(2, fileList, null, imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 			

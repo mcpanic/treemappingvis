@@ -1,6 +1,8 @@
 package cs448b.fp.utils
 {
 	import cs448b.fp.data.Mapping;
+	import cs448b.fp.display.DisplayEvent;
+	import cs448b.fp.display.DisplayManager;
 	import cs448b.fp.tree.CascadedTree;
 	
 	import flare.animate.TransitionEvent;
@@ -21,12 +23,9 @@ package cs448b.fp.utils
 		private var _isRootMapped:Boolean = false;
 		private var _cNode:NodeActions;
 		private var _lNode:NodeActions;
-		
-		private var _popupManager:PopupManager;
-		private var _resultManager:ResultManager;
-		private var _helpManager:HelpManager;
-		
-		private var _assignmentId:String;
+			
+//		private var _assignmentId:String;
+		private var _displayManager:DisplayManager;
 		
 		public function MappingManager()
 		{
@@ -35,9 +34,7 @@ package cs448b.fp.utils
 			_selectedLayoutID = 0;
 			_currentStage = Theme.STAGE_INITIAL;
 			
-			_popupManager = new PopupManager();	
-			_resultManager = new ResultManager();
-			_helpManager = new HelpManager();
+			_displayManager = new DisplayManager();
 		}
 
 		public function init():void
@@ -47,39 +44,21 @@ package cs448b.fp.utils
 			// Play the review of web page segments to be mapped, in the traversal order specified.
 			_contentTree.playPreview();	
 
-			// Initialize popup manager
-			_popupManager.init();
-			_popupManager.x = Theme.LAYOUT_POPUP_X;
-			_popupManager.y = Theme.LAYOUT_POPUP_Y;
-			_popupManager.width = Theme.LAYOUT_POPUP_WIDTH;
-			_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
-			//_popupManager.height = Theme.LAYOUT_POPUP_HEIGHT;
-			//addChild(_popupManager);
-			
-			// Initialize result popup manager
-			_resultManager.init();
-			_resultManager.x = Theme.LAYOUT_POPUP_X;
-			_resultManager.y = Theme.LAYOUT_POPUP_Y;
-			_resultManager.width = Theme.LAYOUT_POPUP_WIDTH;
-			_resultManager.addEventListener(ControlsEvent.STATUS_UPDATE, onResultStatusEvent);
-
-			// Initialize popup manager
-			_helpManager.init();
-			_helpManager.x = Theme.LAYOUT_POPUP_X;
-			_helpManager.y = Theme.LAYOUT_POPUP_Y;
-			_helpManager.width = Theme.LAYOUT_POPUP_WIDTH;
-			_helpManager.addEventListener(ControlsEvent.STATUS_UPDATE, onHelpStatusEvent);			
+			_displayManager.init();	
+			_displayManager.addEventListener(DisplayEvent.DISPLAY_UPDATE, onDisplayUpdateEvent);	
+			addChild(_displayManager);
 		}
 		
 		public function setAssignmentId(id:String):void
 		{
-			_assignmentId = id;
-			_resultManager.setAssignmentId(_assignmentId);
+//			_assignmentId = id;
+			_displayManager.setAssignmentId(id);
 		}
 		
 		public function setContentTree(t:CascadedTree):void
 		{
 			_contentTree = t;
+			_displayManager.setContentTree(_contentTree);
 			_contentTree.addEventListener(MappingEvent.MOUSE_DOWN, onContentTreeEvent);
 			_cNode = new NodeActions(_contentTree, true);
 		}
@@ -87,61 +66,12 @@ package cs448b.fp.utils
 		public function setLayoutTree(t:CascadedTree):void
 		{
 			_layoutTree = t;
+			_displayManager.setLayoutTree(_layoutTree);
 			_layoutTree.addEventListener(MappingEvent.MOUSE_DOWN, onLayoutTreeEvent);
 			_lNode = new NodeActions(_layoutTree, false);
 		}
 
-		/**
-		 * Popup status change event.
-		 * Triggered by popupManager, when button is pressed.
-		 */	
-		private function onPopupStatusEvent( event:ControlsEvent ):void
-		{
-			if (event.name == "merge")
-			{	
-				//_resultManager.addResults("1-222");
-				mergeMapping();			
-			}
-			else if (event.name == "replace")
-			{	
-				replaceMapping();			
-			}
-			else if (event.name == "cancel")
-			{	
-				cancelMapping();			
-			}
-		}
 
-		/**
-		 * Result confirm button event.
-		 * Triggered by resultManager, when button is pressed.
-		 */	
-		private function onResultStatusEvent( event:ControlsEvent ):void
-		{			
-			if (event.name == "confirm")
-			{
-				_resultManager.showMessage("Result successfully submitted.");
-				//hideResults();			
-			}
-			else if (event.name == "close")
-			{
-				hideResults();			
-			}			
-		}
-
-
-		/**
-		 * Help button event.
-		 * Triggered by helpManager, when button is pressed.
-		 */	
-		private function onHelpStatusEvent( event:ControlsEvent ):void
-		{			
-			if (event.name == "close")
-			{
-				hideHelp();			
-			}			
-		}
-				
 		/**
 		 * Event handler for content tree click event.
 		 * Mapping events are only triggered in layout tree
@@ -151,6 +81,27 @@ package cs448b.fp.utils
 			// give feedback to users	
 			if (Theme.ENABLE_SERIAL == false)
 				showSelectionFeedback(e.value);			
+		}
+
+		/**
+		 * Event handler for display update event.
+		 */					
+		private function onDisplayUpdateEvent(e:DisplayEvent):void
+		{	
+			if (e.name == "add")
+				addMapping();
+			else if (e.name == "blink")
+				blinkNode();	
+			else if (e.name == "remove")
+				removeMapping(_selectedLayoutID);	
+		}		
+
+		/**
+		 * Wrapper for opening a help popup
+		 */		
+		public function showHelp():void
+		{
+			_displayManager.showHelp();
 		}
 		
 		/**
@@ -202,37 +153,6 @@ package cs448b.fp.utils
 		}
 
 		/**
-		 * Merge a mapping based on the current user selection: Add another
-		 */					
-		public function mergeMapping():void
-		{
-			hidePopup();			
-			addMapping();
-			blinkNode();
-		}
-		
-		/**
-		 * Replace a mapping based on the current user selection: Remove and Add
-		 */					
-		public function replaceMapping():void
-		{
-			hidePopup();			
-			removeMapping(_selectedLayoutID);				
-			addMapping();
-			blinkNode();
-		}
-		
-		/**
-		 * Cancel: leave as it is
-		 */					
-		public function cancelMapping():void
-		{
-			hidePopup();
-			// shouldn't progress to the next node!
-		//	blinkNode();	
-		}
-
-		/**
 		 * Add a mapping based on the current user selection
 		 */					
 		private function addMapping():void
@@ -266,94 +186,6 @@ package cs448b.fp.utils
 		}
 
 		/**
-		 * Before hiding the popup
-		 */					
-		private function beforeHidePopup():void
-		{
-			_contentTree.alpha = 1;
-			_layoutTree.alpha = 1;			
-			
-			// Enable the unmap button
-			_contentTree.enableUnmapButton();
-			// Enable the help button
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showhelp", 0) );  				
-			// Disable the lock so that interactionis enabled again
-			NodeActions.lock = false;			
-		}
-
-		/**
-		 * Before showing the popup
-		 */					
-		private function beforeShowPopup():void
-		{
-			_contentTree.alpha = Theme.ALPHA_POPUP;
-			_layoutTree.alpha = Theme.ALPHA_POPUP; 		
-			
-			// Disable the unmap button
-			_contentTree.disableUnmapButton();
-			// Disable the help button
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidehelp", 0) );  							
-			// Enable the lock so that interaction is disabled during popup
-			NodeActions.lock = true;					
-		}	
-			
-		/**
-		 * Hide the popup
-		 */					
-		private function hidePopup():void
-		{				
-			beforeHidePopup();
-			removeChild(_popupManager);
-		}
-		
-		/**
-		 * Show the popup
-		 */					
-		private function showPopup():void
-		{
-			beforeShowPopup();
-			addChild(_popupManager);
-		}
-
-		/**
-		 * Hide the result popup
-		 */					
-		private function hideResults():void
-		{
-			beforeHidePopup();
-			removeChild(_resultManager);
-		}
-		/**
-		 * Show the result upon mapping completion
-		 */					
-		private function showResults(message:String):void
-		{
-			beforeShowPopup();
-			_resultManager.addResults(message);
-			addChild(_resultManager);
-		}			
-
-
-
-		/**
-		 * Hide the popup
-		 */					
-		private function hideHelp():void
-		{
-			beforeHidePopup();
-			removeChild(_helpManager);
-		}
-		
-		/**
-		 * Show the popup
-		 */					
-		public function showHelp():void
-		{
-			beforeShowPopup();
-			addChild(_helpManager);
-		}
-								
-		/**
 		 * Check the mapping possibility for the given layout node. 
 		 */					
 		private function processMapping(layoutID:Number):void
@@ -378,7 +210,7 @@ package cs448b.fp.utils
 			else if (_mapping.getMappedIndex(_selectedLayoutID, 0).length > 0)
 			{	
 				trace("case 2 - layout conflict: " + _mapping.getMappedIndex(_selectedContentID, 1));
-				showPopup();
+				_displayManager.showPopup();
 			}	
 			// case 3: normal mapping case
 			else
@@ -752,7 +584,7 @@ package cs448b.fp.utils
 		        		_contentTree.checkCompleted();
 		        		// Now everything is done. Send the mapping result somewhere!
 		       			var result:String = _mapping.printMapping();
-		     	  		showResults(result);
+		     	  		_displayManager.showResults(result);
 		        		//showQuasiMatchingLayout();
 		        		//showQuasiMatchingContent();
 		        		
