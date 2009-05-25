@@ -9,6 +9,9 @@ package cs448b.fp.utils
 	{	
 		public static var ENABLE_DEBUG:Boolean = true;
 		
+		// How many sessions are we having for each task?
+		public static var NUM_SESSIONS:Number = 3;
+		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
 		// Enable / Disable serial node presentation (one content node at a time)

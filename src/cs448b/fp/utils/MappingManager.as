@@ -1,6 +1,7 @@
 package cs448b.fp.utils
 {
 	import cs448b.fp.data.Mapping;
+	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.display.DisplayEvent;
 	import cs448b.fp.display.DisplayManager;
 	import cs448b.fp.tree.CascadedTree;
@@ -50,10 +51,10 @@ package cs448b.fp.utils
 			addChild(_displayManager);
 		}
 		
-		public function setAssignmentId(id:String):void
+		public function setSessionManager(sessionManager:SessionManager):void
 		{
 //			_assignmentId = id;
-			_displayManager.setAssignmentId(id);
+			_displayManager.setSessionManager(sessionManager);
 		}
 		
 		public function setContentTree(t:CascadedTree):void
