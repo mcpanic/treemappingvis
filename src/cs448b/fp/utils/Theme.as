@@ -64,6 +64,10 @@ package cs448b.fp.utils
 		public static var LAYOUT_UNMAP_X:Number = 770;//200;	// unmap button x-coordinate
 		public static var LAYOUT_UNMAP_Y:Number = -60;		// unmap button y-coordinate
 		public static var LAYOUT_UNMAP_WIDTH:Number = 150;	// unmap button width
+		public static var LAYOUT_HELP_X:Number = 950;		// help button x-coordinate
+		public static var LAYOUT_HELP_Y:Number = 15;		// help button y-coordinate
+		public static var LAYOUT_HELP_WIDTH:Number = 50;	// help button width
+		
 		public static var LAYOUT_NODENAME_X:Number = 20;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_NODENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin		
 		public static var LAYOUT_TREENAME_X:Number = 270;	// tree name label x-coordinate, relative to the canvas origin
@@ -93,9 +97,17 @@ package cs448b.fp.utils
 		public static var MSG_STAGE4:String = "Stage: Task Complete";
 		public static var MSG_MAPPING_NONE:String = "Mappings: None";
 		public static var MSG_MAPPING:String = "Mappings: ";
+		public static var MSG_MAPPING_INST:String = "Select a segment on the Layout page that you think corresponds to the highlighted segment.";
 		public static var MSG_LOADED:String = "Page loaded.";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";
+		public static var MSG_HELP:String = "Mouse click: add a mapping\n\n" + 
+				"Mouse over\n" + 
+				"  * unmapped: view current (red) and visually related (purple) segments \n" + 
+				"  * mapped: 	view mapped segment(s) on the other page. \n\n" + 
+				"Mouse wheel \n" + 
+				"  * scroll up: zoom in \n" + 
+				"  * scroll down: zoom out";
 		
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Start";
@@ -104,6 +116,7 @@ package cs448b.fp.utils
 		public static var LABEL_CONTENT:String = "Content";
 		public static var LABEL_LAYOUT:String = "Layout";
 		public static var LABEL_NOMAPPING:String = "Assign no mapping";
+		public static var LABEL_HELP:String = "Help";
 		
 		// Text formats: font styles for controls
 		public static var FONT_LABEL:TextFormat;

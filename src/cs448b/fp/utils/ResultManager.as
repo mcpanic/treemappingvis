@@ -7,11 +7,10 @@ package cs448b.fp.utils
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.net.URLLoader;
-	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
+	import flash.net.navigateToURL;
 	import flash.text.TextField;
 		
 	public class ResultManager extends Sprite
@@ -23,6 +22,7 @@ package cs448b.fp.utils
 		
 		private var _assignmentId:String;
 		private var _results:String;
+		private var _isConfirmed:Boolean;
 		
 		public function ResultManager()
 		{
@@ -30,6 +30,7 @@ package cs448b.fp.utils
 			this.graphics.lineStyle(3, 0xbbbbbb);
 			this.graphics.drawRoundRect(0, 0, Theme.LAYOUT_POPUP_WIDTH, Theme.LAYOUT_POPUP_HEIGHT, 20);
 			this.graphics.endFill();
+			_isConfirmed = false;
 		}
 
 		/**
@@ -86,6 +87,7 @@ package cs448b.fp.utils
 		
         private function sendToServer():void 
         {
+        	
 			var variables:URLVariables = new URLVariables();
             variables.assignmentId = _assignmentId;
             variables.result = _results;
@@ -93,14 +95,16 @@ package cs448b.fp.utils
 			request.url = "http://www.mturk.com/mturk/externalSubmit";
 			request.method = URLRequestMethod.POST;
 			request.data = variables;
-			var loader:URLLoader = new URLLoader();
-			loader.dataFormat = URLLoaderDataFormat.VARIABLES;
-			loader.addEventListener(Event.COMPLETE, onSendComplete);
+//			var loader:URLLoader = new URLLoader();
+//			loader.dataFormat = URLLoaderDataFormat.VARIABLES;
+//			loader.addEventListener(Event.COMPLETE, onSendComplete);
             trace("send: " + request.url + "?" + request.data);
-            _output.appendText("send: " + request.url + "?" + request.data + "\n");			
+            _output.appendText("Sending results to Mechanical Turk server.\n");
+            //_output.appendText("send: " + request.url + "?" + request.data + "\n");			
 			try
 			{
-			    loader.load(request);
+				navigateToURL(request);
+			    //loader.load(request);
 			}
             catch (e:SecurityError) {
                 _output.appendText("A SecurityError occurred: " + e.message + "\n");
@@ -141,10 +145,16 @@ package cs448b.fp.utils
 		 * Event handler for confirm button click
 		 */	
         private function onConfirmButton( mouseEvent:MouseEvent ):void
-        {  			      					
-			sendToServer();
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );     
-		
+        {  			   
+        	if (_isConfirmed == false)
+        	{   					
+				sendToServer();
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );     
+        		_isConfirmed = true;
+        		_confirmButton.label = "Close";
+        	}
+        	else
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "close") );             	
 		}		
 				
 		/**
