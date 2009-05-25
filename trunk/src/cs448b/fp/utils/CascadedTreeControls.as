@@ -10,7 +10,6 @@ package cs448b.fp.utils
 	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.text.TextFormat;
 	import flash.utils.*;
 					        			
 	public class CascadedTreeControls extends Sprite
@@ -22,6 +21,7 @@ package cs448b.fp.utils
 		private var _visualToggle:CheckBox;
 		private var _fitToScreen:Button;
 		private var _continueButton:Button;
+		private var _helpButton:Button;
 		private var _notice:TextSprite;
 		private var _feedback:TextSprite;
 		private var _mappings:TextSprite;
@@ -43,6 +43,7 @@ package cs448b.fp.utils
 			addFeedback();
 			addMappings();
 			addNotice();
+			addHelp();
 			if (Theme.ENABLE_CONTINUE_BUTTON == true)
 				addContinueButton();
 
@@ -121,7 +122,38 @@ package cs448b.fp.utils
         {
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "fit") );        			 
         }
+
+		private function addHelp():void
+		{
+			_helpButton = new Button();
+			_helpButton.label = Theme.LABEL_HELP;
+			_helpButton.toggle = true;
+			_helpButton.x = Theme.LAYOUT_HELP_X;
+			_helpButton.y = Theme.LAYOUT_HELP_Y;
+			_helpButton.width = Theme.LAYOUT_HELP_WIDTH;			
+           	_helpButton.addEventListener(MouseEvent.CLICK, onHelpButton);
+           	_helpButton.setStyle("textFormat", Theme.FONT_BUTTON); 
+           	_helpButton.enabled = false;
+           	_helpButton.useHandCursor = true;
+           	addChild(_helpButton);  			
+					
+		}     
+		
+        private function onHelpButton( mouseEvent:MouseEvent ):void
+        {
+			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "help") );        			 
+        }
         
+        public function showHelpButton():void
+        {
+        	_helpButton.enabled = true;
+        }
+     
+        public function hideHelpButton():void
+        {
+        	_helpButton.enabled = false;
+        }
+        	        		   
 		private function addContinueButton():void
 		{	   
 			_continueButton = new Button();
@@ -132,11 +164,6 @@ package cs448b.fp.utils
            	addChild(_continueButton);  
 		}    
 
-        private function onContinueButton( mouseEvent:MouseEvent ):void
-        {
-			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "continue") );        			 
-        }	
-
 		private function addFeedback():void
 		{
             _feedback = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
@@ -144,6 +171,11 @@ package cs448b.fp.utils
             _feedback.text = Theme.MSG_LOADED;
             this.addChild( _feedback );        
         }
+        
+        private function onContinueButton( mouseEvent:MouseEvent ):void
+        {
+			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "continue") );        			 
+        }	
 
         public function displayFeedback(message:String):void
         {

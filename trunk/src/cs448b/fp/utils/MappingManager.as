@@ -24,6 +24,7 @@ package cs448b.fp.utils
 		
 		private var _popupManager:PopupManager;
 		private var _resultManager:ResultManager;
+		private var _helpManager:HelpManager;
 		
 		private var _assignmentId:String;
 		
@@ -36,6 +37,7 @@ package cs448b.fp.utils
 			
 			_popupManager = new PopupManager();	
 			_resultManager = new ResultManager();
+			_helpManager = new HelpManager();
 		}
 
 		public function init():void
@@ -44,6 +46,7 @@ package cs448b.fp.utils
 			_contentTree.setTraversalOrder();
 			// Play the review of web page segments to be mapped, in the traversal order specified.
 			_contentTree.playPreview();	
+
 			// Initialize popup manager
 			_popupManager.init();
 			_popupManager.x = Theme.LAYOUT_POPUP_X;
@@ -52,14 +55,20 @@ package cs448b.fp.utils
 			_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
 			//_popupManager.height = Theme.LAYOUT_POPUP_HEIGHT;
 			//addChild(_popupManager);
-			// Initialize popup manager
+			
+			// Initialize result popup manager
 			_resultManager.init();
 			_resultManager.x = Theme.LAYOUT_POPUP_X;
 			_resultManager.y = Theme.LAYOUT_POPUP_Y;
 			_resultManager.width = Theme.LAYOUT_POPUP_WIDTH;
 			_resultManager.addEventListener(ControlsEvent.STATUS_UPDATE, onResultStatusEvent);
 
-			
+			// Initialize popup manager
+			_helpManager.init();
+			_helpManager.x = Theme.LAYOUT_POPUP_X;
+			_helpManager.y = Theme.LAYOUT_POPUP_Y;
+			_helpManager.width = Theme.LAYOUT_POPUP_WIDTH;
+			_helpManager.addEventListener(ControlsEvent.STATUS_UPDATE, onHelpStatusEvent);			
 		}
 		
 		public function setAssignmentId(id:String):void
@@ -90,8 +99,8 @@ package cs448b.fp.utils
 		{
 			if (event.name == "merge")
 			{	
-				showResults("1-224");
-				//mergeMapping();			
+				//_resultManager.addResults("1-222");
+				mergeMapping();			
 			}
 			else if (event.name == "replace")
 			{	
@@ -111,10 +120,28 @@ package cs448b.fp.utils
 		{			
 			if (event.name == "confirm")
 			{
+				_resultManager.showMessage("Result successfully submitted.");
 				//hideResults();			
 			}
+			else if (event.name == "close")
+			{
+				hideResults();			
+			}			
 		}
-		
+
+
+		/**
+		 * Help button event.
+		 * Triggered by helpManager, when button is pressed.
+		 */	
+		private function onHelpStatusEvent( event:ControlsEvent ):void
+		{			
+			if (event.name == "close")
+			{
+				hideHelp();			
+			}			
+		}
+				
 		/**
 		 * Event handler for content tree click event.
 		 * Mapping events are only triggered in layout tree
@@ -137,7 +164,7 @@ package cs448b.fp.utils
 			else
 				message = "Step " + (_contentTree._currentStep - 1);
 			// -1 for the length since root is automatically mapped.
-			message += " of " + (_contentTree.tree.nodes.length - 1) + ". Select a mapped segment on the Layout page";
+			message += " of " + (_contentTree.tree.nodes.length - 1) + ". " + Theme.MSG_MAPPING_INST;
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
 			_selectedContentID = idx;	
 		}
@@ -239,20 +266,43 @@ package cs448b.fp.utils
 		}
 
 		/**
-		 * Hide the popup
+		 * Before hiding the popup
 		 */					
-		private function hidePopup():void
+		private function beforeHidePopup():void
 		{
-//			_contentTree.visible = true;
-//			_layoutTree.visible = true;
 			_contentTree.alpha = 1;
 			_layoutTree.alpha = 1;			
 			
 			// Enable the unmap button
 			_contentTree.enableUnmapButton();
+			// Enable the help button
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showhelp", 0) );  				
 			// Disable the lock so that interactionis enabled again
-			NodeActions.lock = false;
-				
+			NodeActions.lock = false;			
+		}
+
+		/**
+		 * Before showing the popup
+		 */					
+		private function beforeShowPopup():void
+		{
+			_contentTree.alpha = Theme.ALPHA_POPUP;
+			_layoutTree.alpha = Theme.ALPHA_POPUP; 		
+			
+			// Disable the unmap button
+			_contentTree.disableUnmapButton();
+			// Disable the help button
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidehelp", 0) );  							
+			// Enable the lock so that interaction is disabled during popup
+			NodeActions.lock = true;					
+		}	
+			
+		/**
+		 * Hide the popup
+		 */					
+		private function hidePopup():void
+		{				
+			beforeHidePopup();
 			removeChild(_popupManager);
 		}
 		
@@ -261,16 +311,7 @@ package cs448b.fp.utils
 		 */					
 		private function showPopup():void
 		{
-//			_contentTree.visible = false;
-//			_layoutTree.visible = false;
-			_contentTree.alpha = Theme.ALPHA_POPUP; //0.5;
-			_layoutTree.alpha = Theme.ALPHA_POPUP; //0.5;			
-			
-			// Disable the unmap button
-			_contentTree.disableUnmapButton();
-			// Enable the lock so that interaction is disabled during popup
-			NodeActions.lock = true;
-			
+			beforeShowPopup();
 			addChild(_popupManager);
 		}
 
@@ -279,14 +320,7 @@ package cs448b.fp.utils
 		 */					
 		private function hideResults():void
 		{
-			_contentTree.alpha = 1;
-			_layoutTree.alpha = 1;			
-			
-			// Enable the unmap button
-			//_contentTree.enableUnmapButton();
-			// Disable the lock so that interactionis enabled again
-			NodeActions.lock = false;
-				
+			beforeHidePopup();
 			removeChild(_resultManager);
 		}
 		/**
@@ -294,18 +328,31 @@ package cs448b.fp.utils
 		 */					
 		private function showResults(message:String):void
 		{
-			_contentTree.alpha = Theme.ALPHA_POPUP; //0.5;
-			_layoutTree.alpha = Theme.ALPHA_POPUP; //0.5;			
-			
-			// Disable the unmap button
-			_contentTree.disableUnmapButton();
-			// Enable the lock so that interaction is disabled during popup
-			NodeActions.lock = true;
-
+			beforeShowPopup();
 			_resultManager.addResults(message);
 			addChild(_resultManager);
 		}			
-						
+
+
+
+		/**
+		 * Hide the popup
+		 */					
+		private function hideHelp():void
+		{
+			beforeHidePopup();
+			removeChild(_helpManager);
+		}
+		
+		/**
+		 * Show the popup
+		 */					
+		public function showHelp():void
+		{
+			beforeShowPopup();
+			addChild(_helpManager);
+		}
+								
 		/**
 		 * Check the mapping possibility for the given layout node. 
 		 */					

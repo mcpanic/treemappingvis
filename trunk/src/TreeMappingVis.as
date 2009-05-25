@@ -1,4 +1,5 @@
 package {
+	import cs448b.fp.data.DataList;
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.data.MechanicalTurkManager;
 	import cs448b.fp.tree.CascadedTree;
@@ -11,7 +12,6 @@ package {
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.system.Security;
-	import flash.text.TextField;
 	import flash.ui.Keyboard;
 		
 	// Convenient way to pass in compiler arguments
@@ -32,40 +32,30 @@ package {
 		private var mappingManager:MappingManager;
 		private var mturkManager:MechanicalTurkManager;
 		private var assignmentId:String;
-		
+		private var dataList:DataList;
+					
 		/**
 		 * Constructor
 		 */		
 		public function TreeMappingVis()
 		{
-			mappingID = 4;	// 1: moo, 2: hybrid, 3: cat
+			//mappingID = 4;	// 1: moo, 2: hybrid, 3: cat
 			Security.loadPolicyFile("http://www.stanford.edu/~juhokim/treemapping/crossdomain.xml");		
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
-		
-//			var url:String = "javascript:alert(gup('assignmentId'));";
-//			var request:URLRequest = new URLRequest(url);
-//			try {
-//			  navigateToURL(request, '_self'); // second argument is target
-//			} catch (e:Error) {
-//			  trace("Error occurred!");
-//			}
 
+			dataList = new DataList();
 			initComponents();
 			buildSprite();
 			loadData();			
-			//displayTree();	
-		
+			//displayTree();			
 		}
-
-
-        		
+      		
 		private function initComponents():void
 		{
 			tes = new TreeEventSynchronizer();
 			controls = new CascadedTreeControls();
 //			controls.addLoadEventListener(handleDepthChange);		
 			controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );		
-
 		}
 				
 		private function buildSprite():void
@@ -83,79 +73,34 @@ package {
 			var mappingFile:String;
 			fileList = new Array(2);
 			imageList = new Array(2);
-
 			
 			// See if the task is at the preview or actual phase
 			mturkManager = new MechanicalTurkManager();
 			assignmentId = mturkManager.getAssignmentId();
-			
+	
 			if (assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
 			{
 				trace("Assignment ID not available - preview mode");
 				// Defaults to cats and dogs
-				mappingID = 3;
+				//mappingID = 3;
+				dataList.getDataList(fileList, imageList, false);
 			}
 			else if (assignmentId == null)
+			{
 				trace("error in assignment ID");
-			else
-				trace("Assignment ID: " + assignmentId);
-			
-				
-			if (mappingID == 1)
-			{
-				fileList[0] = "../data/tree_content.xml";
-				fileList[1] = "../data/tree_moo.xml";			
-				imageList[0] = "../data/content/";
-				imageList[1] = "../data/moo/";
-				mappingFile = "../data/map_moo.xml";			
+				dataList.getDataList(fileList, imageList, false);
 			}
-			else if (mappingID == 2)
+			else
 			{
-				fileList[0] = "../data/tree_content.xml";
-				fileList[1] = "../data/tree_hybrid.xml";			
-				imageList[0] = "../data/content/";
-				imageList[1] = "../data/hybrid/";
-				mappingFile = "../data/map_hybrid.xml";			
-			}	
-			else if (mappingID == 3)
-			{
-				fileList[0] = "../data/tree_dog.xml";
-				fileList[1] = "../data/tree_cat.xml";			
-				imageList[0] = "../data/dog/";
-				imageList[1] = "../data/cat/";
-				mappingFile = "../data/map_cat.xml";			
-			}	
-			else if (mappingID == 4)
-			{
-				fileList[0] = "../data/google.xml";
-				fileList[1] = "../data/courseRank.xml";			
-				imageList[0] = "../data/google/";
-				imageList[1] = "../data/courseRank/";
-				mappingFile = null;//"../data/map_cat.xml";			
-			}		
-			else if (mappingID == 5)
-			{
-				fileList[0] = "../data/courseRank.xml";
-				fileList[1] = "../data/allRecipes.xml";			
-				imageList[0] = "../data/courseRank/";
-				imageList[1] = "../data/allRecipes/";
-				mappingFile = null;//"../data/map_cat.xml";			
-			}	
-			else if (mappingID == 6)
-			{
-				fileList[0] = "../data/allRecipes.xml";
-				fileList[1] = "../data/tree_moo.xml";			
-				imageList[0] = "../data/allRecipes/";
-				imageList[1] = "../data/moo/";
-				mappingFile = null;//"../data/map_cat.xml";			
-			}											
+				trace("Assignment ID: " + assignmentId);
+				dataList.getDataList(fileList, imageList, false);
+			}
+														
 			dataLoader = new DataLoader(2, fileList, mappingFile, imageList);
-
 			dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 			
 			tes.setDataLoader(dataLoader);
-
 		}
 
 		/**
@@ -237,6 +182,10 @@ package {
 			{	
 				mappingManager.showNextStep();			
 			}
+			else if (event.name == "help")
+			{	
+				mappingManager.showHelp();			
+			}			
 		}
 		
 		private function onControlsStatusEvent( event:ControlsEvent ):void
@@ -265,7 +214,15 @@ package {
 			else if (event.name == "continue")
 			{	
 				mappingManager.showNextStep();			
-			}									
+			}	
+			else if (event.name == "showhelp")
+			{	
+				controls.showHelpButton();			
+			}
+			else if (event.name == "hidehelp")
+			{	
+				controls.hideHelpButton();			
+			}			
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void

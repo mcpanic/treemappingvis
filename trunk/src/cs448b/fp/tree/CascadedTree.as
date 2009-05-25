@@ -668,6 +668,7 @@ package cs448b.fp.tree
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
 	     	enableUnmapButton();   		
+	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showhelp", 0) );  
 		}
 		
 		/**
