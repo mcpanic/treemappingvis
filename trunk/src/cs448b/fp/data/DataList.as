@@ -6,6 +6,8 @@ package cs448b.fp.data
 	{
 		public static var NUMPAIRS:Number = 5;
 		private var _mappingList:Array;
+		private var _cName:String;
+		private var _lName:String;
 		 
 		public function DataList()
 		{
@@ -48,7 +50,23 @@ package cs448b.fp.data
 			}	
 			return ret;		
 		}
-		
+
+		/**
+		 * Get the name of the content page
+		 */				
+		public function get cName():String
+		{
+			return _cName;	
+		}		
+
+		/**
+		 * Get the name of the layout page
+		 */				
+		public function get lName():String
+		{
+			return _lName;	
+		}		
+				
 		/**
 		 * Populate the data list based on random assignment
 		 */				
@@ -62,7 +80,9 @@ package cs448b.fp.data
 				fileList[0] = "../data/tree_dog.xml";
 				fileList[1] = "../data/tree_cat.xml";			
 				imageList[0] = "../data/dog/";
-				imageList[1] = "../data/cat/";				
+				imageList[1] = "../data/cat/";	
+				_cName = "dog";
+				_lName = "cat";			
 			}
 			else
 			{				
@@ -91,7 +111,9 @@ package cs448b.fp.data
 					fileList[1] = "../data/tree_moo.xml";			
 					imageList[0] = "../data/content/";
 					imageList[1] = "../data/moo/";
-	//				mappingFile = "../data/map_moo.xml";			
+	//				mappingFile = "../data/map_moo.xml";	
+					_cName = "homer";
+					_lName = "moo";				
 				}
 				else if (mappingID == 1)
 				{
@@ -99,7 +121,9 @@ package cs448b.fp.data
 					fileList[1] = "../data/tree_hybrid.xml";			
 					imageList[0] = "../data/content/";
 					imageList[1] = "../data/hybrid/";
-	//				mappingFile = "../data/map_hybrid.xml";			
+	//				mappingFile = "../data/map_hybrid.xml";		
+					_cName = "homer";
+					_lName = "hybrid";			
 				}		
 				else if (mappingID == 2)
 				{
@@ -107,7 +131,9 @@ package cs448b.fp.data
 					fileList[1] = "../data/courseRank.xml";			
 					imageList[0] = "../data/google/";
 					imageList[1] = "../data/courseRank/";
-	//				mappingFile = null;//"../data/map_cat.xml";			
+	//				mappingFile = null;//"../data/map_cat.xml";	
+					_cName = "google";
+					_lName = "courseRank";				
 				}		
 				else if (mappingID == 3)
 				{
@@ -115,7 +141,9 @@ package cs448b.fp.data
 					fileList[1] = "../data/allRecipes.xml";			
 					imageList[0] = "../data/courseRank/";
 					imageList[1] = "../data/allRecipes/";
-	//				mappingFile = null;//"../data/map_cat.xml";			
+	//				mappingFile = null;//"../data/map_cat.xml";
+					_cName = "courseRank";
+					_lName = "allRecipes";					
 				}	
 				else if (mappingID == 4)
 				{
@@ -123,7 +151,9 @@ package cs448b.fp.data
 					fileList[1] = "../data/tree_moo.xml";			
 					imageList[0] = "../data/allRecipes/";
 					imageList[1] = "../data/moo/";
-	//				mappingFile = null;//"../data/map_cat.xml";			
+	//				mappingFile = null;//"../data/map_cat.xml";		
+					_cName = "allRecipes";
+					_lName = "moo";			
 				}	
 			}
 		}

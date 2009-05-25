@@ -1,5 +1,6 @@
 package cs448b.fp.display
 {
+	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.tree.CascadedTree;
 	import cs448b.fp.utils.ControlsEvent;
 	import cs448b.fp.utils.NodeActions;
@@ -69,12 +70,12 @@ package cs448b.fp.display
 		}
 
 		/**
-		 * Set the assignment ID (called from MappingManager)
+		 * Set the session manager (called from MappingManager)
 		 * Wrapper for ResultManager
 		 */			
-		public function setAssignmentId(id:String):void
+		public function setSessionManager(sessionManager:SessionManager):void
 		{
-			_resultManager.setAssignmentId(id);
+			_resultManager.setSessionManager(sessionManager);
 		}		
 		
 		/**
@@ -105,8 +106,9 @@ package cs448b.fp.display
 		{			
 			if (event.name == "confirm")
 			{
-				_resultManager.showMessage("Result successfully submitted.");
-				//hideResults();			
+				//_resultManager.showMessage("Result successfully submitted.");
+				hideResults();
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "finish") ); 			
 			}
 			else if (event.name == "close")
 			{

@@ -1,5 +1,6 @@
 package cs448b.fp.display
 {
+	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.utils.ControlsEvent;
 	import cs448b.fp.utils.Theme;
 	
@@ -20,11 +21,12 @@ package cs448b.fp.display
 	{
 		private var _confirmButton:Button;
 		private var _inst:TextSprite;
-		private var _message:TextSprite;
+//		private var _message:TextSprite;
 		private var _output:TextField;
 		
-		private var _assignmentId:String;
-		private var _results:String;
+		private var _sessionManager:SessionManager;
+//		private var _assignmentId:String;
+//		private var _results:String;
 		private var _isConfirmed:Boolean;
 		
 		public function ResultManager()
@@ -46,25 +48,9 @@ package cs448b.fp.display
 			addMessage();
 		}
 		
-		public function setAssignmentId(id:String):void
+		public function setSessionManager(sessionManager:SessionManager):void
 		{
-			_assignmentId = id;
-		}
-
-		/**
-		 * 
-		 */			
-		public function showPopup():void
-		{
-			//addChild(this);
-		}
-
-		/**
-		 * 
-		 */			
-		public function hidePopup():void
-		{
-			//removeChild(this);
+			_sessionManager = sessionManager;
 		}
 
 		/**
@@ -73,7 +59,7 @@ package cs448b.fp.display
 		private function addConfirmButton():void
 		{	   
 			_confirmButton = new Button();
-			_confirmButton.label = "Confirm";
+			_confirmButton.label = "Continue";
 			_confirmButton.toggle = true;
 			_confirmButton.x = Theme.LAYOUT_POPUP_WIDTH / 2;
 			_confirmButton.y = Theme.LAYOUT_POPUP_HEIGHT - 40;
@@ -92,16 +78,23 @@ package cs448b.fp.display
         {
         	
 			var variables:URLVariables = new URLVariables();
-            variables.assignmentId = _assignmentId;
-            variables.result = _results;
-			var request:URLRequest = new URLRequest();
+            variables.assignmentId = _sessionManager.assignmentId;
+            for (var i:uint=1; i<=Theme.NUM_SESSIONS; i++)
+            {
+            	variables["cname"+i] 	= _sessionManager.getCName(i);
+            	variables["lname"+i] 	= _sessionManager.getLName(i);
+            	variables["result"+i] 	= _sessionManager.getResult(i);
+            	trace("Result" + i + ": " + _sessionManager.getCName(i) + "--" + _sessionManager.getLName(i) + ":" + _sessionManager.getResult(i));
+            }
+            
+            var request:URLRequest = new URLRequest();
 			request.url = "http://www.mturk.com/mturk/externalSubmit";
 			request.method = URLRequestMethod.POST;
 			request.data = variables;
 //			var loader:URLLoader = new URLLoader();
 //			loader.dataFormat = URLLoaderDataFormat.VARIABLES;
 //			loader.addEventListener(Event.COMPLETE, onSendComplete);
-			trace("result: " + _results);
+
             trace("send: " + request.url + "?" + request.data);
             _output.appendText("Sending results to Mechanical Turk server.\n");
             //_output.appendText("send: " + request.url + "?" + request.data + "\n");			
@@ -149,8 +142,12 @@ package cs448b.fp.display
 		 * Event handler for confirm button click
 		 */	
         private function onConfirmButton( mouseEvent:MouseEvent ):void
-        {  			   
-        	if (_isConfirmed == false)
+        {  	
+        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
+        	{
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );
+        	}
+        	else if (_isConfirmed == false && _sessionManager.curSession == Theme.NUM_SESSIONS)
         	{   					
 				sendToServer();
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );     
@@ -159,7 +156,8 @@ package cs448b.fp.display
         	}
         	else
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "close") );             	
-		}		
+        	
+        }
 				
 		/**
 		 * Add an instruction for mapping completion
@@ -183,7 +181,7 @@ package cs448b.fp.display
             _output.x = 50;
             _output.y = 70;
             _output.textColor = 0xbbbbbb;
-            _output.width = 300;
+            _output.width = Theme.LAYOUT_POPUP_WIDTH - 100;
             _output.height = 130;
             _output.multiline = true;
             _output.wordWrap = true;
@@ -191,12 +189,11 @@ package cs448b.fp.display
             _output.text = "";
             addChild(_output);
 
-			
-            _message = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
-            _message.horizontalAnchor = TextSprite.LEFT;
-            _message.text = "";
-            _message.x = 50;
-            _message.y = 70;
+//            _message = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
+//            _message.horizontalAnchor = TextSprite.LEFT;
+//            _message.text = "";
+//            _message.x = 50;
+//            _message.y = 70;
             //addChild( _message );        
         }  
         
@@ -207,7 +204,17 @@ package cs448b.fp.display
          
         public function addResults(results:String):void
         {
-        	_results = results;
+        	showMessage("Task " + _sessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
+        	// Task not over yet
+        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
+        	{
+        		showMessage("Click on the 'Continue' button to start the next task.");
+        	}
+        	else
+        	{
+        		showMessage("Click on the 'Continue' button to submit the result and finish this HIT.");
+        	}
+        	_sessionManager.addResult(results);
         }  
 	}
 }

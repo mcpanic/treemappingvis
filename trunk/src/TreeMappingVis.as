@@ -2,6 +2,7 @@ package {
 	import cs448b.fp.data.DataList;
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.data.MechanicalTurkManager;
+	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.tree.CascadedTree;
 	import cs448b.fp.tree.TreeEventSynchronizer;
 	import cs448b.fp.utils.*;
@@ -29,10 +30,9 @@ package {
 		private var tes:TreeEventSynchronizer;		
 		private var mappingManager:MappingManager;
 		private var mturkManager:MechanicalTurkManager;
-		private var assignmentId:String;
+		private var sessionManager:SessionManager;
 		private var dataList:DataList;
 		
-		private var sessionNo:Number;
 					
 		/**
 		 * Constructor
@@ -44,7 +44,6 @@ package {
 			if (Theme.ENABLE_DEBUG == true)
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 
-			dataList = new DataList();
 			initComponents();
 			buildSprite();
 			loadData();			
@@ -68,11 +67,14 @@ package {
 		 */
 		private function loadData():void
 		{
+			dataList = new DataList();
+			sessionManager = new SessionManager();
+						
 			// See if the task is at the preview or actual phase
 			mturkManager = new MechanicalTurkManager();
-			assignmentId = mturkManager.getAssignmentId();
-	
-			sessionNo = 1;
+			sessionManager.assignmentId = mturkManager.getAssignmentId();
+			sessionManager.curSession = 1; 
+			
 			loadPair();
 		}
 
@@ -83,21 +85,23 @@ package {
 		{
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);			
-			if (assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
+			if (sessionManager.assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
 			{
 				trace("Assignment ID not available - preview mode");
 				dataList.getDataList(fileList, imageList, false);
 			}
-			else if (assignmentId == null)
+			else if (sessionManager.assignmentId == null)
 			{
 				trace("error in assignment ID");
 				dataList.getDataList(fileList, imageList, false);
 			}
 			else
 			{
-				trace("Assignment ID: " + assignmentId);
+				trace("Assignment ID: " + sessionManager.assignmentId);
 				dataList.getDataList(fileList, imageList, false);
 			}
+			
+			sessionManager.addPairName(dataList.cName, dataList.lName);
 														
 			dataLoader = new DataLoader(2, fileList, null, imageList);
 			dataLoader.addLoadEventListener(handleLoaded);			
@@ -156,7 +160,7 @@ package {
 			
 			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
 			mappingManager.init();	// add root-root mapping
-			mappingManager.setAssignmentId(assignmentId);
+			mappingManager.setSessionManager(sessionManager);
 			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
 			printTree(cascadedTree1.tree.root, 0);
 			//mappingManager.showNextStep();	// for the first time	
@@ -238,12 +242,12 @@ package {
 			else if (event.name == "finish")
 			{
 				trace("finish");
-				if (sessionNo == 3)
+				if (sessionManager.curSession == Theme.NUM_SESSIONS)
 					trace("all sessions finished!");
 				else
 				{
-					trace("Session " + sessionNo + " complete.");
-					sessionNo++;
+					trace("Session " + sessionManager.curSession + " complete.");
+					sessionManager.curSession++;
 					cleanup();
 					loadPair();
 				}
