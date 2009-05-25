@@ -31,6 +31,8 @@ package {
 		private var mturkManager:MechanicalTurkManager;
 		private var assignmentId:String;
 		private var dataList:DataList;
+		
+		private var sessionNo:Number;
 					
 		/**
 		 * Constructor
@@ -62,19 +64,25 @@ package {
 		}
 		
 		/**
-		 * Load the tree and mapping data from external files
+		 * Initialize data loading
 		 */
 		private function loadData():void
 		{
-			var fileList:Array = new Array(2);
-			var imageList:Array = new Array(2);
-			fileList = new Array(2);
-			imageList = new Array(2);
-			
 			// See if the task is at the preview or actual phase
 			mturkManager = new MechanicalTurkManager();
 			assignmentId = mturkManager.getAssignmentId();
 	
+			sessionNo = 1;
+			loadPair();
+		}
+
+		/**
+		 * Load the tree and mapping data from external files
+		 */		
+		private function loadPair():void
+		{
+			var fileList:Array = new Array(2);
+			var imageList:Array = new Array(2);			
 			if (assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
 			{
 				trace("Assignment ID not available - preview mode");
@@ -96,6 +104,7 @@ package {
 			dataLoader.loadData();
 			
 			tes.setDataLoader(dataLoader);
+
 		}
 
 		/**
@@ -155,6 +164,9 @@ package {
 			addChild(mappingManager);
 		}
 
+		/**
+		 * Event handler for controls
+		 */	
 		private function onControlsEvent( event:ControlsEvent ):void
 		{
 			//trace( event.name );
@@ -183,6 +195,9 @@ package {
 			}			
 		}
 		
+		/**
+		 * Event handler for status update
+		 */			
 		private function onControlsStatusEvent( event:ControlsEvent ):void
 		{
 			//trace( event.name );
@@ -212,12 +227,42 @@ package {
 			}	
 			else if (event.name == "showhelp")
 			{	
+				trace("showhelp");
 				controls.showHelpButton();			
 			}
 			else if (event.name == "hidehelp")
 			{	
+				trace("hidehelp");
 				controls.hideHelpButton();			
+			}
+			else if (event.name == "finish")
+			{
+				trace("finish");
+				if (sessionNo == 3)
+					trace("all sessions finished!");
+				else
+				{
+					trace("Session " + sessionNo + " complete.");
+					sessionNo++;
+					cleanup();
+					loadPair();
+				}
 			}			
+		}
+		
+		/**
+		 * Cleanup every pair-specific vis components,
+		 * so that the next pair can be created continuously.
+		 */			
+		private function cleanup():void
+		{
+			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
+			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);			
+			tes.removeTree(cascadedTree1);
+			tes.removeTree(cascadedTree2);
+			removeChild(cascadedTree1);
+			removeChild(cascadedTree2);
+			removeChild(mappingManager);	
 		}
 		
 		private function handleKeyDown(ke:KeyboardEvent):void
