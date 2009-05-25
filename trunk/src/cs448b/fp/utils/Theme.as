@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = false;
+		public static var ENABLE_DEBUG:Boolean = true;
 		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;

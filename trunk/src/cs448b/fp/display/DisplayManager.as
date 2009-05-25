@@ -110,7 +110,8 @@ package cs448b.fp.display
 			}
 			else if (event.name == "close")
 			{
-				hideResults();			
+				hideResults();	
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "finish") ); 		
 			}			
 		}
 

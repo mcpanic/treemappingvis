@@ -44,7 +44,7 @@ package cs448b.fp.tree
 		/**
 		 * Removes the tree.
 		 */
-		public function removeTree(tree:SimpleTree):void
+		public function removeTree(tree:AbstractTree):void
 		{
 			trees.splice(trees.indexOf(tree), 1);
 			

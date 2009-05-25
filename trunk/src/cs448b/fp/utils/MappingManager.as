@@ -46,6 +46,7 @@ package cs448b.fp.utils
 
 			_displayManager.init();	
 			_displayManager.addEventListener(DisplayEvent.DISPLAY_UPDATE, onDisplayUpdateEvent);	
+			_displayManager.addEventListener(ControlsEvent.STATUS_UPDATE, onStatusUpdateEvent);	
 			addChild(_displayManager);
 		}
 		
@@ -83,6 +84,63 @@ package cs448b.fp.utils
 				showSelectionFeedback(e.value);			
 		}
 
+		/**
+		 * Event handler for the layout tree click event
+		 */			
+		private function onLayoutTreeEvent(e:MappingEvent):void
+		{
+//			trace("LayoutTree - Mouse Down! " + e.name + " " + e.value);	
+			var message:String;
+			if (_selectedContentID != 0 && e.name == "add")
+			{
+				processMapping(e.value);
+
+				// give feedback to users	
+				//var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
+//				var message:String = "Mapping added";
+//				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   
+//				
+//				// check if the whole tree is done
+//				_contentTree.checkCompleted();
+
+			}
+			// remove is not needed anymore since we do not have any undo function for the interface
+			else if (_selectedContentID != 0 && e.name == "remove")
+			{
+				removeMapping(e.value);
+				// give feedback to users	
+				//message = "Mapping removed: " + _selectedContentID + "--" + e.value;
+				message = "Mapping removed";
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   	
+				
+				message = _mapping.printMapping();
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
+				resetSelections();		
+				
+			}
+
+			
+//			if (_selectedContentID == 0)	// layout is selected alone.
+//			{
+//				resetSelections();
+//			}
+//			else	// Reset selections
+//			{
+//			
+//				_selectedLayoutID = e.value;
+				
+
+//			}
+		}
+
+		/**
+		 * Invoke event received from displayManager for status update event.
+		 */					
+		private function onStatusUpdateEvent(e:ControlsEvent):void
+		{	
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, e.name, e.value, e.message) );
+		}	
+		
 		/**
 		 * Event handler for display update event.
 		 */					
@@ -241,55 +299,6 @@ package cs448b.fp.utils
 			_cNode.markActivatedID(_selectedContentID);
 			_lNode.markActivatedID(layoutID);	
 		}		
-
-		/**
-		 * Event handler for the layout tree click event
-		 */			
-		private function onLayoutTreeEvent(e:MappingEvent):void
-		{
-//			trace("LayoutTree - Mouse Down! " + e.name + " " + e.value);	
-			var message:String;
-			if (_selectedContentID != 0 && e.name == "add")
-			{
-				processMapping(e.value);
-
-				// give feedback to users	
-				//var message:String = "Mapping added: " + _selectedContentID + "--" + e.value;
-//				var message:String = "Mapping added";
-//				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   
-//				
-//				// check if the whole tree is done
-//				_contentTree.checkCompleted();
-
-			}
-			// remove is not needed anymore since we do not have any undo function for the interface
-			else if (_selectedContentID != 0 && e.name == "remove")
-			{
-				removeMapping(e.value);
-				// give feedback to users	
-				//message = "Mapping removed: " + _selectedContentID + "--" + e.value;
-				message = "Mapping removed";
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   	
-				
-				message = _mapping.printMapping();
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
-				resetSelections();		
-				
-			}
-
-			
-//			if (_selectedContentID == 0)	// layout is selected alone.
-//			{
-//				resetSelections();
-//			}
-//			else	// Reset selections
-//			{
-//			
-//				_selectedLayoutID = e.value;
-				
-
-//			}
-		}
 
 
 		/**

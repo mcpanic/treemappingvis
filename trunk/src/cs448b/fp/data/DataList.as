@@ -1,5 +1,7 @@
 package cs448b.fp.data
 {
+	import cs448b.fp.utils.Theme;
+	
 	public class DataList
 	{
 		public static var NUMPAIRS:Number = 5;
@@ -73,7 +75,16 @@ package cs448b.fp.data
 					if (checkDuplicate(mappingID) == false)
 						break;
 				}
-											
+				
+				// When debugging, make everything easy
+				if (Theme.ENABLE_DEBUG == true)
+				{	
+					if (mappingID == 0 || mappingID == 1)
+						mappingID = 2;
+					else if (mappingID == 4)
+						mappingID = 3;
+				}
+												
 				if (mappingID == 0)
 				{
 					fileList[0] = "../data/tree_content.xml";
