@@ -24,7 +24,7 @@ package cs448b.fp.utils
 		private var _isRootMapped:Boolean = false;
 		private var _cNode:NodeActions;
 		private var _lNode:NodeActions;
-			
+		private var _isPreview:Boolean;
 //		private var _assignmentId:String;
 		private var _displayManager:DisplayManager;
 		
@@ -38,19 +38,34 @@ package cs448b.fp.utils
 			_displayManager = new DisplayManager();
 		}
 
-		public function init():void
+		public function init(isPreview:Boolean):void
 		{
-			// Set the traversal order
-			_contentTree.setTraversalOrder();
-			// Play the review of web page segments to be mapped, in the traversal order specified.
-			_contentTree.playPreview();	
-
+			
+			_isPreview = isPreview;
+			// Tutorial session
+			if (_isPreview == true)			
+				_displayManager.showTutorial();						
+			
+			startSession();
+				
 			_displayManager.init();	
 			_displayManager.addEventListener(DisplayEvent.DISPLAY_UPDATE, onDisplayUpdateEvent);	
 			_displayManager.addEventListener(ControlsEvent.STATUS_UPDATE, onStatusUpdateEvent);	
 			addChild(_displayManager);
 		}
-		
+
+		/**
+		 * Start the mapping session by playing a preview 
+		 */							
+		public function startSession():void
+		{
+			// Set the traversal order
+			_contentTree.setTraversalOrder();
+			// Play the review of web page segments to be mapped, in the traversal order specified.
+			_contentTree.playPreview();	
+			
+		}
+
 		public function setSessionManager(sessionManager:SessionManager):void
 		{
 //			_assignmentId = id;
@@ -153,6 +168,8 @@ package cs448b.fp.utils
 				blinkNode();	
 			else if (e.name == "remove")
 				removeMapping(_selectedLayoutID);	
+			else if (e.name == "start")
+				startSession();
 		}		
 
 		/**

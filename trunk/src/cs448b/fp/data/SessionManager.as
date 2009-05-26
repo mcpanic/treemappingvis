@@ -33,6 +33,27 @@ package cs448b.fp.data
 		{
 			_curSession = session;
 		}
+		
+		/**
+		 * Is this a preview session?
+		 */
+		public function isPreview():Boolean
+		{
+			var ret:Boolean;
+			if (Theme.ENABLE_MANUAL_PREVIEW == 0)
+			{		
+				if (_assignmentId == null || _assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
+					ret = true;
+				else
+					ret = false;
+			}
+			else if (Theme.ENABLE_MANUAL_PREVIEW == 1)
+				ret = true;
+			else
+				ret = false;
+			return ret;
+			
+		}
 
 		/**
 		 * Add tree names (before starting a session)
