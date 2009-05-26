@@ -85,15 +85,10 @@ package {
 		{
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);			
-			if (sessionManager.assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
+			if (sessionManager.isPreview() == true)
 			{
-				trace("Assignment ID not available - preview mode");
-				dataList.getDataList(fileList, imageList, false);
-			}
-			else if (sessionManager.assignmentId == null)
-			{
-				trace("error in assignment ID");
-				dataList.getDataList(fileList, imageList, false);
+				trace("Assignment ID: " + sessionManager.assignmentId);
+				dataList.getDataList(fileList, imageList, true);
 			}
 			else
 			{
@@ -116,9 +111,19 @@ package {
 		 */
 		private function displayTree():void
 		{
-			cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, true);
-			cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, false);
-
+			// adjust the layout for the tutorial window
+			controls.setIsPreview(sessionManager.isPreview());
+			if (sessionManager.isPreview() == true)
+			{				
+				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, true);
+				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, false);
+			}
+			else
+			{
+				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, true);
+				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, false);
+			}
+			
 			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
 			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
 			
@@ -159,7 +164,7 @@ package {
 			tes.setMappingManager(mappingManager);
 			
 			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
-			mappingManager.init();	// add root-root mapping
+			mappingManager.init(sessionManager.isPreview());	// add root-root mapping
 			mappingManager.setSessionManager(sessionManager);
 			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
 			printTree(cascadedTree1.tree.root, 0);

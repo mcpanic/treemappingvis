@@ -13,6 +13,7 @@ package cs448b.fp.display
 		private var _popupManager:PopupManager;
 		private var _resultManager:ResultManager;
 		private var _helpManager:HelpManager;
+		private var _tutorialManager:TutorialManager;
 		private var _contentTree:CascadedTree = null;
 		private var _layoutTree:CascadedTree = null;
 						
@@ -21,7 +22,8 @@ package cs448b.fp.display
 			super();
 			_popupManager = new PopupManager();	
 			_resultManager = new ResultManager();
-			_helpManager = new HelpManager();			
+			_helpManager = new HelpManager();	
+			_tutorialManager = new TutorialManager();		
 		}
 
 		/**
@@ -50,7 +52,15 @@ package cs448b.fp.display
 			_helpManager.x = Theme.LAYOUT_POPUP_X;
 			_helpManager.y = Theme.LAYOUT_POPUP_Y;
 			_helpManager.width = Theme.LAYOUT_POPUP_WIDTH;
-			_helpManager.addEventListener(ControlsEvent.STATUS_UPDATE, onHelpStatusEvent);				
+			_helpManager.addEventListener(ControlsEvent.STATUS_UPDATE, onHelpStatusEvent);	
+			
+			// Initialize tutorial manager
+			_tutorialManager.init();
+			_tutorialManager.x = Theme.LAYOUT_TUTORIAL_X;
+			_tutorialManager.y = Theme.LAYOUT_TUTORIAL_Y;
+			_tutorialManager.width = Theme.LAYOUT_TUTORIAL_WIDTH;
+			//_tutorialManager.height = Theme.LAYOUT_TUTORIAL_HEIGHT;
+			_tutorialManager.addEventListener(ControlsEvent.STATUS_UPDATE, onTutorialStatusEvent);							
 		}
 
 		/**
@@ -130,6 +140,26 @@ package cs448b.fp.display
 			}			
 		}
 
+		/**
+		 * Tutorial button event.
+		 * Triggered by tutorialManager, when button is pressed.
+		 */	
+		private function onTutorialStatusEvent( event:ControlsEvent ):void
+		{	
+			if (event.name == "prev")
+			{
+				_tutorialManager.showPrev();			
+			}					
+			else if (event.name == "next")
+			{
+				_tutorialManager.showNext();			
+			}			
+			else if (event.name == "close")
+			{
+				hideTutorial();			
+			}			
+		}
+		
 		/**
 		 * Before hiding the popup
 		 */					
@@ -216,7 +246,26 @@ package cs448b.fp.display
 			beforeShowPopup();
 			addChild(_helpManager);
 		}
-								
+
+
+		/**
+		 * Hide the popup
+		 */					
+		private function hideTutorial():void
+		{
+			//beforeHidePopup();
+			removeChild(_tutorialManager);
+			//dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "start") ); 
+		}
+		
+		/**
+		 * Show the popup
+		 */					
+		public function showTutorial():void
+		{
+			//beforeShowPopup();
+			addChild(_tutorialManager);
+		}								
 								
 		/**
 		 * Merge a mapping based on the current user selection: Add another

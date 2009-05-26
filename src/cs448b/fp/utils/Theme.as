@@ -7,10 +7,11 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = true;
+		public static var ENABLE_DEBUG:Boolean = false;
+		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
-		public static var NUM_SESSIONS:Number = 3;
+		public static var NUM_SESSIONS:Number = 5;
 		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
@@ -92,6 +93,11 @@ package cs448b.fp.utils
 		public static var LAYOUT_POPUP_DIAGRAM_ACTIVE_COLOR:Number = 0xffffff;	// popup diagram's active node color
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_COLOR:Number = 0xFFD700;	// popup diagram's line color
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_ALPHA:Number = 0.2;			// popup diagram's line alpha for inactive links 
+		public static var LAYOUT_TUTORIAL_X:Number = 20;		// popup x-coordinate
+		public static var LAYOUT_TUTORIAL_Y:Number = 10;		// popup y-coordinate
+		public static var LAYOUT_TUTORIAL_WIDTH:Number = 720;		// popup width
+		public static var LAYOUT_TUTORIAL_HEIGHT:Number = 100;		// popup height
+		public static var LAYOUT_TUTORIAL_OFFSET:Number = 70;		// pixel offset 
 						
 		// Messages: used in tree control files
 		public static var MSG_STAGE1:String = "Stage: Initialization";
@@ -108,10 +114,24 @@ package cs448b.fp.utils
 				"Mouse over\n" + 
 				"  * unmapped: view current (red) and visually related (purple) segments \n" + 
 				"  * mapped: 	view mapped segment(s) on the other page. \n\n" + 
-				"Mouse wheel \n" + 
+				"Mouse wheel (Place the cursor on either page) \n" + 
 				"  * scroll up: zoom in \n" + 
 				"  * scroll down: zoom out";
-		
+
+		// Tutorial messages: used in tutorial session
+		public static var MSG_TUT1:String = "Welcome! \nThis tutorial will guide you through the mapping interface.";
+		public static var MSG_TUT2:String = "When the task starts, it first shows an animated preview of \npage segments you will find mappings for.";
+		public static var MSG_TUT3:String = "For each highlighted segment on the left (content) page, \nyour task is to find a segment on the right (layout) page \nthat you think corresponds to the highlighted segment.";		
+		public static var MSG_TUT4:String = "You can explore the layout page by moving the mouse cursor around. \nWhen your cursor is placed on top of a segment, it is highlighted in red. \nVisually related segments are also highlighted in purple.";	
+		public static var MSG_TUT5:String = "Note that there are larger segments containing multiple small segments. \nKeep in mind they can be mapped as well.";			
+		public static var MSG_TUT6:String = "When you find an appropriate segment, click that node as it is highlighted in red.";	
+		public static var MSG_TUT7:String = "If you think there are no corresponding segments on the right (layout) page \nfor the current left (content) segment, click 'Assign no mapping' button.";		
+		public static var MSG_TUT8:String = "If you think more than one segments map to a segment on the right (layout) page, \nyou can 'merge' mappings by clicking on the mapped node again. \nWhen a popup menu opens, choose 'Merge'."; 
+		public static var MSG_TUT9:String = "Select 'Replace' if you want to remove existing mappings and \napply the new mapping. \nSelect 'Cancel' if you do not want to change anything.";	
+		public static var MSG_TUT10:String = "Once you have defined a mapping, \nmouse over the mapped segment to see the mapped node on the other page. \nBlue border means a valid mapping, red means no mapping assigned.";
+		public static var MSG_TUT11:String = "The mapping process automatically continues until all segments are mapped. \nWhen the task is complete, a popup window opens. \nClick 'Confirm' to submit your results.";
+		public static var MSG_TUT12:String = "That's it! You can practice with the example set, \nor start the actual HIT by accepting it if you are ready. \nYou can always click the 'help' button to see the interactions.";	
+
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Start";
 		public static var LABEL_CONT2:String = "Continue";
@@ -133,8 +153,15 @@ package cs448b.fp.utils
 		public static var FONT_MESSAGE:TextFormat;
 			FONT_MESSAGE = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
 			FONT_MESSAGE.color = "0xFFFFFF"; 
+
+		public static var FONT_TUTORIAL:TextFormat;
+			FONT_TUTORIAL = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
+			FONT_TUTORIAL.color = "0xFFFFFF"; 		
 		
-									
+		public static var FONT_TUTORIAL_STEP:TextFormat;
+			FONT_TUTORIAL_STEP = new TextFormat("Verdana,Tahoma,Arial",14,0,false);
+			FONT_TUTORIAL_STEP.color = "0xFFFFFF"; 		
+										
 		public function Theme()
 		{	
 		}

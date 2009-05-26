@@ -26,7 +26,8 @@ package cs448b.fp.utils
 		private var _feedback:TextSprite;
 		private var _mappings:TextSprite;
 //		private var _textFormat:TextFormat;
-							
+		private var _isPreview:Boolean;
+									
 		public function CascadedTreeControls()
 		{
 
@@ -123,13 +124,25 @@ package cs448b.fp.utils
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "fit") );        			 
         }
 
+		public function setIsPreview(isPreview:Boolean):void
+		{
+			_isPreview = isPreview;
+			if (_isPreview == true)
+				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+			else
+				_helpButton.y = Theme.LAYOUT_HELP_Y;			
+		}
+		
 		private function addHelp():void
 		{
 			_helpButton = new Button();
 			_helpButton.label = Theme.LABEL_HELP;
 			_helpButton.toggle = true;
 			_helpButton.x = Theme.LAYOUT_HELP_X;
-			_helpButton.y = Theme.LAYOUT_HELP_Y;
+			if (_isPreview == true)
+				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+			else
+				_helpButton.y = Theme.LAYOUT_HELP_Y;
 			_helpButton.width = Theme.LAYOUT_HELP_WIDTH;			
            	_helpButton.addEventListener(MouseEvent.CLICK, onHelpButton);
            	_helpButton.setStyle("textFormat", Theme.FONT_BUTTON); 

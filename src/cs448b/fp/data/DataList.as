@@ -107,53 +107,53 @@ package cs448b.fp.data
 												
 				if (mappingID == 0)
 				{
-					fileList[0] = "../data/tree_content.xml";
-					fileList[1] = "../data/tree_moo.xml";			
-					imageList[0] = "../data/content/";
-					imageList[1] = "../data/moo/";
-	//				mappingFile = "../data/map_moo.xml";	
-					_cName = "homer";
-					_lName = "moo";				
+					_cName = "kayak";
+					_lName = "google";						
+					fileList[0] = "../data/" + _cName + ".xml";
+					fileList[1] = "../data/" + _lName + ".xml";			
+					imageList[0] = "../data/" + _cName + "/";
+					imageList[1] = "../data/" + _lName + "/";
+	//				mappingFile = "../data/map_" + _lName + ".xml";				
 				}
 				else if (mappingID == 1)
 				{
-					fileList[0] = "../data/tree_content.xml";
-					fileList[1] = "../data/tree_hybrid.xml";			
-					imageList[0] = "../data/content/";
-					imageList[1] = "../data/hybrid/";
-	//				mappingFile = "../data/map_hybrid.xml";		
-					_cName = "homer";
-					_lName = "hybrid";			
+					_cName = "courseRank";
+					_lName = "moo";						
+					fileList[0] = "../data/" + _cName + ".xml";
+					fileList[1] = "../data/" + _lName + ".xml";			
+					imageList[0] = "../data/" + _cName + "/";
+					imageList[1] = "../data/" + _lName + "/";
+	//				mappingFile = "../data/map_" + _lName + ".xml";			
 				}		
 				else if (mappingID == 2)
 				{
-					fileList[0] = "../data/google.xml";
-					fileList[1] = "../data/courseRank.xml";			
-					imageList[0] = "../data/google/";
-					imageList[1] = "../data/courseRank/";
-	//				mappingFile = null;//"../data/map_cat.xml";	
-					_cName = "google";
-					_lName = "courseRank";				
+					_cName = "flickr";
+					_lName = "mint";						
+					fileList[0] = "../data/" + _cName + ".xml";
+					fileList[1] = "../data/" + _lName + ".xml";			
+					imageList[0] = "../data/" + _cName + "/";
+					imageList[1] = "../data/" + _lName + "/";
+	//				mappingFile = "../data/map_" + _lName + ".xml";						
 				}		
 				else if (mappingID == 3)
 				{
-					fileList[0] = "../data/courseRank.xml";
-					fileList[1] = "../data/allRecipes.xml";			
-					imageList[0] = "../data/courseRank/";
-					imageList[1] = "../data/allRecipes/";
-	//				mappingFile = null;//"../data/map_cat.xml";
-					_cName = "courseRank";
-					_lName = "allRecipes";					
+					_cName = "allRecipes";
+					_lName = "nature";						
+					fileList[0] = "../data/" + _cName + ".xml";
+					fileList[1] = "../data/" + _lName + ".xml";			
+					imageList[0] = "../data/" + _cName + "/";
+					imageList[1] = "../data/" + _lName + "/";
+	//				mappingFile = "../data/map_" + _lName + ".xml";						
 				}	
 				else if (mappingID == 4)
 				{
-					fileList[0] = "../data/allRecipes.xml";
-					fileList[1] = "../data/tree_moo.xml";			
-					imageList[0] = "../data/allRecipes/";
-					imageList[1] = "../data/moo/";
-	//				mappingFile = null;//"../data/map_cat.xml";		
-					_cName = "allRecipes";
-					_lName = "moo";			
+					_cName = "rockTheVote";
+					_lName = "dwell";						
+					fileList[0] = "../data/" + _cName + ".xml";
+					fileList[1] = "../data/" + _lName + ".xml";			
+					imageList[0] = "../data/" + _cName + "/";
+					imageList[1] = "../data/" + _lName + "/";
+	//				mappingFile = "../data/map_" + _lName + ".xml";				
 				}	
 			}
 		}
