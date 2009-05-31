@@ -42,7 +42,8 @@ package cs448b.fp.display
 			_closeButton = new Button();
 			_closeButton.label = "Close";
 			_closeButton.toggle = true;
-			_closeButton.x = Theme.LAYOUT_POPUP_WIDTH / 2;
+			_closeButton.width = 100;
+			_closeButton.x = Theme.LAYOUT_POPUP_WIDTH / 2 - _closeButton.width / 2;
 			_closeButton.y = Theme.LAYOUT_POPUP_HEIGHT - 40;
            	_closeButton.addEventListener(MouseEvent.CLICK, onCloseButton);
            	_closeButton.setStyle("textFormat", Theme.FONT_BUTTON);

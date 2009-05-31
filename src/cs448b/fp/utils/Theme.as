@@ -126,9 +126,10 @@ package cs448b.fp.utils
 				"Mouse over\n" + 
 				"  * unmapped: view current (red) and visually related (purple) segments \n" + 
 				"  * mapped:   view mapped segment(s) on the other page. \n\n" + 
-				"Mouse wheel (Place the cursor on either page) \n" + 
-				"  * scroll up: zoom in \n" + 
-				"  * scroll down: zoom out";
+				"Zoom control \n" + 
+				"  * (+): zoom in \n" + 
+				"  * (-): zoom out \n" + 
+				"  * Reset: back to default scale";
 
 		// Tutorial messages: used in tutorial session
 		public static var MSG_TUT1:String = "Welcome! \nThis tutorial will guide you through the mapping interface.";
