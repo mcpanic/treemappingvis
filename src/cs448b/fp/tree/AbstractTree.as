@@ -1,5 +1,7 @@
 package cs448b.fp.tree
 {
+	import cs448b.fp.utils.Theme;
+	
 	import flare.display.TextSprite;
 	import flare.vis.Visualization;
 	import flare.vis.data.Data;
@@ -35,8 +37,8 @@ package cs448b.fp.tree
 		protected var nodes:Object;
 		protected var edges:Object;
 		
-		private static var MAX_ZOOM:Number = 4;
-		private static var MIN_ZOOM:Number = 0.25;
+//		private static var MAX_ZOOM:Number = 4;
+//		private static var MIN_ZOOM:Number = 0.25;
 		
 		private var prevX:Number = 0;
 		private var prevY:Number = 0;
@@ -166,7 +168,7 @@ package cs448b.fp.tree
 			
 			if(me.delta > 0)
 			{ // zoom in
-				if(vis.scaleX < MAX_ZOOM)
+				if(vis.scaleX < Theme.MAX_ZOOM)
 				{
 					vis.scaleX *= 1.1;
 					vis.scaleY *= 1.1;
@@ -174,7 +176,7 @@ package cs448b.fp.tree
 			} 
 			else
 			{ // zoom out
-				if(vis.scaleX > MIN_ZOOM)
+				if(vis.scaleX > Theme.MIN_ZOOM)
 				{
 					vis.scaleX /= 1.1;
 					vis.scaleY /= 1.1;

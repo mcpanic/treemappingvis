@@ -169,9 +169,12 @@ package cs448b.fp.display
 			_layoutTree.alpha = 1;			
 			
 			// Enable the unmap button
-			_contentTree.enableUnmapButton();
-			// Enable the help button
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showhelp", 0) );  				
+//			_contentTree.enableUnmapButton();
+//			_contentTree.enableZoomButtons();
+//			_layoutTree.enableZoomButtons();
+			
+			// Enable all buttons
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  				
 			// Disable the lock so that interactionis enabled again
 			NodeActions.lock = false;			
 		}
@@ -185,9 +188,12 @@ package cs448b.fp.display
 			_layoutTree.alpha = Theme.ALPHA_POPUP; 		
 			
 			// Disable the unmap button
-			_contentTree.disableUnmapButton();
-			// Disable the help button
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidehelp", 0) );  							
+//			_contentTree.disableUnmapButton();
+//			_contentTree.disableZoomButtons();
+//			_layoutTree.disableZoomButtons();
+			
+			// Disable all buttons
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) );  							
 			// Enable the lock so that interaction is disabled during popup
 			NodeActions.lock = true;					
 		}	

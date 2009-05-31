@@ -71,6 +71,7 @@ package cs448b.fp.utils
             _depthTitle = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _depthTitle.horizontalAnchor = TextSprite.CENTER;
             _depthTitle.text = "Current Depth";
+            _depthTitle.textMode = TextSprite.DEVICE;	
             this.addChild( _depthTitle );
             			
 			_depthSlider = new Slider();
@@ -84,6 +85,7 @@ package cs448b.fp.utils
             _depthText = new TextSprite("", Theme.FONT_LABEL);//_textFormat);
             _depthText.horizontalAnchor = TextSprite.CENTER;
             _depthText.text = (_depthSlider.value + 1).toString();
+            _depthText.textMode = TextSprite.DEVICE;
             this.addChild( _depthText );
            			
 		}
@@ -157,12 +159,12 @@ package cs448b.fp.utils
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "help") );        			 
         }
         
-        public function showHelpButton():void
+        public function enableHelpButton():void
         {
         	_helpButton.enabled = true;
         }
      
-        public function hideHelpButton():void
+        public function disableHelpButton():void
         {
         	_helpButton.enabled = false;
         }
@@ -182,6 +184,7 @@ package cs448b.fp.utils
             _feedback = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _feedback.horizontalAnchor = TextSprite.LEFT;
             _feedback.text = Theme.MSG_LOADED;
+            _feedback.textMode = TextSprite.DEVICE;
             this.addChild( _feedback );        
         }
         
@@ -200,6 +203,7 @@ package cs448b.fp.utils
             _notice = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _notice.horizontalAnchor = TextSprite.LEFT;
             _notice.text = Theme.MSG_STAGE1; 
+            _notice.textMode = TextSprite.DEVICE;
 //            _notice.text = "Stage: Hierarchical Matching";
             if (Theme.ENABLE_DEBUG == true)
             	this.addChild( _notice );        
@@ -229,6 +233,7 @@ package cs448b.fp.utils
             _mappings = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
             _mappings.horizontalAnchor = TextSprite.LEFT;
             _mappings.text = Theme.MSG_MAPPING_NONE;
+            _mappings.textMode = TextSprite.DEVICE;
             if (Theme.ENABLE_DEBUG == true)
             	this.addChild( _mappings );        
         }   

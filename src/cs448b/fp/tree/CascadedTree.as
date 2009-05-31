@@ -29,6 +29,9 @@ package cs448b.fp.tree
 		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
 		private var _title:TextSprite;
 		private var _unmapButton:Button;
+		private var _zoomInButton:Button;
+		private var _zoomOutButton:Button;
+		private var _zoomResetButton:Button;
 		private var _node:NodeActions;
 		// Order of tree traversal
 		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
@@ -75,7 +78,10 @@ package cs448b.fp.tree
 			if (Theme.ENABLE_DEBUG == true)
 				addChild(tf);			
 			addLabel();
-			addUnmapButton();									
+			addUnmapButton();	
+			addZoomInButton();
+			addZoomOutButton();
+			addZoomResetButton();								
 			addChild(vis);
 		}
 
@@ -90,7 +96,7 @@ package cs448b.fp.tree
             	_title.text = Theme.LABEL_CONTENT;
             else
             	_title.text = Theme.LABEL_LAYOUT;
-            	
+            _title.textMode = TextSprite.DEVICE;	
             _title.x = Theme.LAYOUT_TREENAME_X;
             _title.y = Theme.LAYOUT_TREENAME_Y;
             addChild( _title );			
@@ -115,24 +121,44 @@ package cs448b.fp.tree
            	_unmapButton.useHandCursor = true;
            	addChild(_unmapButton);  			
 		}
-
+		
 		/**
-		 * Enable unmap button
+		 * Enable button controls
 		 */		
 		public function enableUnmapButton():void
 		{
 			_unmapButton.enabled = true;
 		}
 
-
 		/**
-		 * Disable unmap button
+		 * Disable button controls
 		 */		
 		public function disableUnmapButton():void
 		{
-			_unmapButton.enabled = false;
+			_unmapButton.enabled = false;		
 		}
-		
+
+		/**
+		 * Enable button controls
+		 */		
+		public function enableZoomButtons():void
+		{
+			_zoomInButton.enabled = true;
+			_zoomOutButton.enabled = true;
+			_zoomResetButton.enabled = true;
+		}
+
+
+		/**
+		 * Disable button controls
+		 */		
+		public function disableZoomButtons():void
+		{
+			_zoomInButton.enabled = false;
+			_zoomOutButton.enabled = false;
+			_zoomResetButton.enabled = false;			
+		}
+				
 		/**
 		 * Mark the selected node as unmapped
 		 */
@@ -162,8 +188,94 @@ package cs448b.fp.tree
 			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped, 2);			
 		}
 
+		
+		/**
+		 * Add zoom-in button for each tree layout
+		 */		
+		private function addZoomInButton():void
+		{		
+			_zoomInButton = new Button();
+			_zoomInButton.label = Theme.LABEL_ZOOM_IN;
+			_zoomInButton.toggle = true;
+			_zoomInButton.x = Theme.LAYOUT_ZOOM_X;
+			_zoomInButton.y = Theme.LAYOUT_ZOOM_Y;
+			_zoomInButton.width = Theme.LAYOUT_ZOOM_WIDTH;			
+           	_zoomInButton.addEventListener(MouseEvent.CLICK, onZoomInButton);
+           	_zoomInButton.setStyle("textFormat", Theme.FONT_BUTTON); 
+           	_zoomInButton.enabled = false;
+           	_zoomInButton.useHandCursor = true;
+           	addChild(_zoomInButton);  			
+		}
 
+		/**
+		 * Add zoom-out button for each tree layout
+		 */		
+		private function addZoomOutButton():void
+		{		
+			_zoomOutButton = new Button();
+			_zoomOutButton.label = Theme.LABEL_ZOOM_OUT;
+			_zoomOutButton.toggle = true;
+			_zoomOutButton.x = Theme.LAYOUT_ZOOM_X + 120;
+			_zoomOutButton.y = Theme.LAYOUT_ZOOM_Y;
+			_zoomOutButton.width = Theme.LAYOUT_ZOOM_WIDTH;			
+           	_zoomOutButton.addEventListener(MouseEvent.CLICK, onZoomOutButton);
+           	_zoomOutButton.setStyle("textFormat", Theme.FONT_BUTTON); 
+           	_zoomOutButton.enabled = false;
+           	_zoomOutButton.useHandCursor = true;
+           	addChild(_zoomOutButton);  			
+		}
 
+		/**
+		 * Add zoom-reset button for each tree layout
+		 */		
+		private function addZoomResetButton():void
+		{		
+			_zoomResetButton = new Button();
+			_zoomResetButton.label = Theme.LABEL_ZOOM_RESET;
+			_zoomResetButton.toggle = true;
+			_zoomResetButton.x = Theme.LAYOUT_ZOOM_X + 60;
+			_zoomResetButton.y = Theme.LAYOUT_ZOOM_Y;
+			_zoomResetButton.width = Theme.LAYOUT_ZOOM_RESET_WIDTH;			
+           	_zoomResetButton.addEventListener(MouseEvent.CLICK, onZoomResetButton);
+           	_zoomResetButton.setStyle("textFormat", Theme.FONT_BUTTON); 
+           	_zoomResetButton.enabled = false;
+           	_zoomResetButton.useHandCursor = true;
+           	addChild(_zoomResetButton);  			
+		}
+
+		/**
+		 * Zoom in
+		 */
+		private function onZoomInButton(event:MouseEvent):void
+		{
+			if(vis.scaleX < Theme.MAX_ZOOM)
+			{
+				vis.scaleX *= 1.1;
+				vis.scaleY *= 1.1;
+			}		
+		}
+
+		/**
+		 * Zoom out
+		 */
+		private function onZoomOutButton(event:MouseEvent):void
+		{
+			if(vis.scaleX > Theme.MIN_ZOOM)
+			{
+				vis.scaleX /= 1.1;
+				vis.scaleY /= 1.1;
+			}		
+		}
+		
+		/**
+		 * Zoom reset
+		 */
+		private function onZoomResetButton(event:MouseEvent):void
+		{
+			vis.scaleX = getScale();
+			vis.scaleY = getScale();		
+		}
+				
 		/**
 		 * Adjust the tree size based on the scale of canvas size and actual page size
 		 */		 	
@@ -667,8 +779,9 @@ package cs448b.fp.tree
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
-	     	enableUnmapButton();   		
-	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showhelp", 0) );  
+//	     	enableUnmapButton();
+//	     	enableZoomButtons();   		
+	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
 		}
 		
 		/**
