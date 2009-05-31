@@ -215,7 +215,7 @@ package cs448b.fp.tree
 			_zoomOutButton = new Button();
 			_zoomOutButton.label = Theme.LABEL_ZOOM_OUT;
 			_zoomOutButton.toggle = true;
-			_zoomOutButton.x = Theme.LAYOUT_ZOOM_X + 120;
+			_zoomOutButton.x = Theme.LAYOUT_ZOOM_X + Theme.LAYOUT_ZOOM_WIDTH + 10 + Theme.LAYOUT_ZOOM_RESET_WIDTH + 10;
 			_zoomOutButton.y = Theme.LAYOUT_ZOOM_Y;
 			_zoomOutButton.width = Theme.LAYOUT_ZOOM_WIDTH;			
            	_zoomOutButton.addEventListener(MouseEvent.CLICK, onZoomOutButton);
@@ -233,7 +233,7 @@ package cs448b.fp.tree
 			_zoomResetButton = new Button();
 			_zoomResetButton.label = Theme.LABEL_ZOOM_RESET;
 			_zoomResetButton.toggle = true;
-			_zoomResetButton.x = Theme.LAYOUT_ZOOM_X + 60;
+			_zoomResetButton.x = Theme.LAYOUT_ZOOM_X + Theme.LAYOUT_ZOOM_WIDTH + 10;
 			_zoomResetButton.y = Theme.LAYOUT_ZOOM_Y;
 			_zoomResetButton.width = Theme.LAYOUT_ZOOM_RESET_WIDTH;			
            	_zoomResetButton.addEventListener(MouseEvent.CLICK, onZoomResetButton);
