@@ -169,6 +169,7 @@ package cs448b.fp.display
             _inst.text = Theme.MSG_RESULT;
             _inst.x = 50;
             _inst.y = 30;
+            _inst.textMode = TextSprite.DEVICE;
             addChild( _inst );        
         }  
         				
@@ -180,7 +181,8 @@ package cs448b.fp.display
             _output = new TextField();
             _output.x = 50;
             _output.y = 70;
-            _output.textColor = 0xbbbbbb;
+            _output.textColor = 0xffffff;
+            _output.defaultTextFormat = Theme.FONT_MESSAGE;
             _output.width = Theme.LAYOUT_POPUP_WIDTH - 100;
             _output.height = 130;
             _output.multiline = true;
@@ -204,17 +206,22 @@ package cs448b.fp.display
          
         public function addResults(results:String):void
         {
-        	showMessage("Task " + _sessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
-        	// Task not over yet
-        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
-        	{
-        		showMessage("Click on the 'Continue' button to start the next task.");
-        	}
+        	if (_sessionManager.isPreview() == true)
+        		showMessage("Practice task complete. How about moving on to the actual task now?");
         	else
         	{
-        		showMessage("Click on the 'Continue' button to submit the result and finish this HIT.");
+	        	showMessage("Task " + _sessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
+	        	// Task not over yet
+	        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
+	        	{
+	        		showMessage("Click on the 'Continue' button to start the next task.");
+	        	}
+	        	else
+	        	{
+	        		showMessage("Click on the 'Continue' button to submit the result and finish this HIT.");
+	        	}
+	        	_sessionManager.addResult(results);
         	}
-        	_sessionManager.addResult(results);
         }  
 	}
 }

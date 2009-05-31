@@ -234,19 +234,22 @@ package {
 			{	
 				mappingManager.showNextStep();			
 			}	
-			else if (event.name == "showhelp")
+			else if (event.name == "showbutton")
 			{	
-				trace("showhelp");
-				controls.showHelpButton();			
+				controls.enableHelpButton();	
+				cascadedTree1.enableUnmapButton();
+				cascadedTree1.enableZoomButtons();
+				cascadedTree2.enableZoomButtons();	
 			}
-			else if (event.name == "hidehelp")
+			else if (event.name == "hidebutton")
 			{	
-				trace("hidehelp");
-				controls.hideHelpButton();			
+				controls.enableHelpButton();			
+				cascadedTree1.disableUnmapButton();
+				cascadedTree1.disableZoomButtons();					
+				cascadedTree2.disableZoomButtons();
 			}
 			else if (event.name == "finish")
 			{
-				trace("finish");
 				if (sessionManager.curSession == Theme.NUM_SESSIONS)
 					trace("all sessions finished!");
 				else

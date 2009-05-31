@@ -223,6 +223,7 @@ package cs448b.fp.display
             _message.text = Theme.MSG_POPUP;
             _message.x = 50;
             _message.y = 30;
+            _message.textMode = TextSprite.DEVICE;
             addChild( _message );        
         }                   	
 	}

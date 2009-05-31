@@ -5,10 +5,9 @@ package cs448b.fp.display
 	
 	import fl.controls.Button;
 	
-	import flare.display.TextSprite;
-	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 //	import flash.display.DisplayObject;
 //	import flash.display.DisplayObjectContainer;
 //	import flash.events.Event;
@@ -16,7 +15,7 @@ package cs448b.fp.display
 	public class HelpManager extends Sprite
 	{
 		private var _closeButton:Button;
-		private var _message:TextSprite;
+		private var _message:TextField;
 		
 		public function HelpManager()
 		{
@@ -65,12 +64,25 @@ package cs448b.fp.display
 		 */	        
 		private function addMessage():void
 		{
-            _message = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
-            _message.horizontalAnchor = TextSprite.LEFT;
-            _message.text = Theme.MSG_HELP;
+//            _message = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
+//            _message.horizontalAnchor = TextSprite.LEFT;
+//            _message.text = Theme.MSG_HELP;
+//            _message.x = 50;
+//            _message.y = 30;
+//            addChild( _message );    
+            
+            _message = new TextField();
             _message.x = 50;
             _message.y = 30;
-            addChild( _message );        
+//            _output.textColor = 0xffffff;
+            _message.defaultTextFormat = Theme.FONT_MESSAGE;
+            _message.width = Theme.LAYOUT_POPUP_WIDTH - 100;
+            _message.height = Theme.LAYOUT_POPUP_HEIGHT - 100;
+            _message.multiline = true;
+            _message.wordWrap = true;
+            _message.border = false;
+            _message.text = Theme.MSG_HELP;
+            addChild(_message);                
         }                   	
 	}
 }
