@@ -70,9 +70,9 @@ package cs448b.fp.data
 		/**
 		 * Populate the data list based on random assignment
 		 */				
-		public function getDataList(fileList:Array, imageList:Array, isPreview:Boolean):void
+		public function getDataList(fileList:Array, imageList:Array, isPreview:Boolean, id:Number=-1):Number
 		{
-			var mappingID:Number;
+			var mappingID:Number = -1;
 			// For preview, hard-code the pair for tutorial & instructions
 			// For actual sessions, randomly assign a pair
 			if (isPreview == true)
@@ -85,17 +85,23 @@ package cs448b.fp.data
 				_lName = "cat";			
 			}
 			else
-			{				
-				while (1)
-				{
-					// Get a random number
-					mappingID = getRandomNumberWithinRange(NUMPAIRS);
-					trace("assigned ID: " + mappingID);
-					// If duplicate number assigned, get another one
-					if (checkDuplicate(mappingID) == false)
-						break;
+			{	
+				// when a pair is fixed
+				if (id != -1)
+					mappingID = id;
+				// when a new random pair is needed
+				else
+				{			
+					while (1)
+					{
+						// Get a random number
+						mappingID = getRandomNumberWithinRange(NUMPAIRS);
+						trace("assigned ID: " + mappingID);
+						// If duplicate number assigned, get another one
+						if (checkDuplicate(mappingID) == false)
+							break;
+					}
 				}
-				
 				// When debugging, make everything easy
 				if (Theme.ENABLE_DEBUG == true)
 				{	
@@ -156,6 +162,7 @@ package cs448b.fp.data
 	//				mappingFile = "../data/map_" + _lName + ".xml";				
 				}	
 			}
+			return mappingID;
 		}
 	}
 }

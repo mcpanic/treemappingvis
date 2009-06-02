@@ -32,6 +32,7 @@ package {
 		private var mturkManager:MechanicalTurkManager;
 		private var sessionManager:SessionManager;
 		private var dataList:DataList;
+		private var currentPairId:Number;
 		
 					
 		/**
@@ -44,6 +45,7 @@ package {
 			if (Theme.ENABLE_DEBUG == true)
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 
+			currentPairId = -1;	// invalid
 			initComponents();
 			buildSprite();
 			loadData();			
@@ -75,13 +77,13 @@ package {
 			sessionManager.assignmentId = mturkManager.getAssignmentId();
 			sessionManager.curSession = 1; 
 			
-			loadPair();
+			loadPair(true);
 		}
 
 		/**
 		 * Load the tree and mapping data from external files
 		 */		
-		private function loadPair():void
+		private function loadPair(isRandom:Boolean):void
 		{
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);			
@@ -90,10 +92,16 @@ package {
 				trace("Assignment ID: " + sessionManager.assignmentId);
 				dataList.getDataList(fileList, imageList, true);
 			}
-			else
+			// load a new pair
+			else if (isRandom == true)
 			{
 				trace("Assignment ID: " + sessionManager.assignmentId);
-				dataList.getDataList(fileList, imageList, false);
+				currentPairId = dataList.getDataList(fileList, imageList, false);				
+			}
+			// load the current pair
+			else
+			{
+				currentPairId = dataList.getDataList(fileList, imageList, false, currentPairId);
 			}
 			
 			sessionManager.addPairName(dataList.cName, dataList.lName);
@@ -201,7 +209,13 @@ package {
 			else if (event.name == "help")
 			{	
 				mappingManager.showHelp();			
-			}			
+			}	
+			else if (event.name == "restart")
+			{
+				trace("restart");
+				cleanup();
+				loadPair(false);
+			}						
 		}
 		
 		/**
@@ -237,17 +251,19 @@ package {
 			else if (event.name == "showbutton")
 			{	
 				controls.enableHelpButton();	
+				controls.enableRestartButton();
 				cascadedTree1.enableUnmapButton();
 				cascadedTree1.enableZoomButtons();
 				cascadedTree2.enableZoomButtons();	
 			}
 			else if (event.name == "hidebutton")
 			{	
-				controls.disableHelpButton();			
+				controls.disableHelpButton();		
+				controls.disableRestartButton();	
 				cascadedTree1.disableUnmapButton();
 				cascadedTree1.disableZoomButtons();					
 				cascadedTree2.disableZoomButtons();
-			}
+			}			
 			else if (event.name == "finish")
 			{
 				if (sessionManager.curSession == Theme.NUM_SESSIONS)
@@ -257,7 +273,7 @@ package {
 					trace("Session " + sessionManager.curSession + " complete.");
 					sessionManager.curSession++;
 					cleanup();
-					loadPair();
+					loadPair(true);
 				}
 			}			
 		}
@@ -268,8 +284,8 @@ package {
 		 */			
 		private function cleanup():void
 		{
-			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
-			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);			
+			cascadedTree1.removeEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
+			cascadedTree2.removeEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);			
 			tes.removeTree(cascadedTree1);
 			tes.removeTree(cascadedTree2);
 			removeChild(cascadedTree1);
