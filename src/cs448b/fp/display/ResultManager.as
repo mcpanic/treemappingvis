@@ -61,7 +61,8 @@ package cs448b.fp.display
 			_confirmButton = new Button();
 			_confirmButton.label = "Continue";
 			_confirmButton.toggle = true;
-			_confirmButton.x = Theme.LAYOUT_POPUP_WIDTH / 2;
+			_confirmButton.width = 100;
+			_confirmButton.x = Theme.LAYOUT_POPUP_WIDTH / 2 - _confirmButton.width / 2;
 			_confirmButton.y = Theme.LAYOUT_POPUP_HEIGHT - 40;
            	_confirmButton.addEventListener(MouseEvent.CLICK, onConfirmButton);
            	_confirmButton.setStyle("textFormat", Theme.FONT_BUTTON);
@@ -100,7 +101,7 @@ package cs448b.fp.display
             //_output.appendText("send: " + request.url + "?" + request.data + "\n");			
 			try
 			{
-				navigateToURL(request);
+				navigateToURL(request, "_self");
 			    //loader.load(request);
 			}
             catch (e:SecurityError) {

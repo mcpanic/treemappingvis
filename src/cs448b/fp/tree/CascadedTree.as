@@ -500,11 +500,16 @@ package cs448b.fp.tree
 				// 1) if mapped, open a popup, get user input, and apply 
 				if (n.props["mapped"] == Theme.STATUS_MAPPED)
 				{
-					super.onMouseDown(n);
-					//blurOtherNodes(n);
-					_node.markSelected(n);
-					// dispatch mapping event
-					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));							
+					if (Theme.ENABLE_MERGE == true)
+					{
+						super.onMouseDown(n);
+						//blurOtherNodes(n);
+						_node.markSelected(n);
+						// dispatch mapping event
+						dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));
+					}
+					else
+						return;							
 				}
 				// 2) not possible; layout nodes do not have 'unmapped' status.
 				else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
@@ -605,9 +610,10 @@ package cs448b.fp.tree
 				}			
 			});
 			
+			// Blank message shown so that page is clean while loading the next pair
 			if (ret == true)
 			{
-				var message:String = "Mapping completed!";
+				var message:String = "";
 				dispatchEvent(new ControlsEvent( ControlsEvent.STATUS_UPDATE, "complete", 0, message) );				
 			}
 			return ret;

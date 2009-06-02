@@ -286,7 +286,8 @@ package cs448b.fp.utils
 			else if (_mapping.getMappedIndex(_selectedLayoutID, 0).length > 0)
 			{	
 				trace("case 2 - layout conflict: " + _mapping.getMappedIndex(_selectedContentID, 1));
-				_displayManager.showPopup();
+				if (Theme.ENABLE_MERGE == true)
+					_displayManager.showPopup();
 			}	
 			// case 3: normal mapping case
 			else
