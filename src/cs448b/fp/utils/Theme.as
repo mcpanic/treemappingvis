@@ -8,10 +8,10 @@ package cs448b.fp.utils
 	public class Theme
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
-		public static var NUM_SESSIONS:Number = 1;
+		public static var NUM_SESSIONS:Number = 2;
 		
 		// Enable /Disable merge popup (1 to N mapping possible)
 		public static var ENABLE_MERGE:Boolean = false;
@@ -68,27 +68,30 @@ package cs448b.fp.utils
 		public static var USE_DROPSHADOW:Boolean = false;
 		
 		public static var LAYOUT_CANVAS_WIDTH:uint = 550;	// single tree canvas width
-		public static var LAYOUT_CANVAS_HEIGHT:uint = 700;	// single tree canvas height
+		public static var LAYOUT_CANVAS_HEIGHT:uint = 600;	// single tree canvas height
 		public static var LAYOUT_CTREE_X:uint = 25;			// content tree x-coordinate
-		public static var LAYOUT_CTREE_Y:uint = 75;			// content tree y-coordinate
+		public static var LAYOUT_CTREE_Y:uint = 85;			// content tree y-coordinate
 		public static var LAYOUT_LTREE_X:uint = 600;		// layout tree x-coordinate
-		public static var LAYOUT_LTREE_Y:uint = 75;			// layout tree y-coordinate
+		public static var LAYOUT_LTREE_Y:uint = 85;			// layout tree y-coordinate
 		
-		public static var LAYOUT_UNMAP_X:Number = 770;//200;	// unmap button x-coordinate
-		public static var LAYOUT_UNMAP_Y:Number = -60;		// unmap button y-coordinate
+		public static var LAYOUT_UNMAP_X:Number = 650;//200;	// unmap button x-coordinate
+		public static var LAYOUT_UNMAP_Y:Number = -70;		// unmap button y-coordinate
 		public static var LAYOUT_UNMAP_WIDTH:Number = 150;	// unmap button width		
-		public static var LAYOUT_HELP_X:Number = 950;		// help button x-coordinate
+		public static var LAYOUT_HELP_X:Number = 830;		// help button x-coordinate
 		public static var LAYOUT_HELP_Y:Number = 15;		// help button y-coordinate
 		public static var LAYOUT_HELP_WIDTH:Number = 50;	// help button width
+		public static var LAYOUT_RESTART_X:Number = 885;		// restart button x-coordinate
+		public static var LAYOUT_RESTART_Y:Number = 15;		// restart button y-coordinate
+		public static var LAYOUT_RESTART_WIDTH:Number = 70;	// restart button width		
 		public static var LAYOUT_FEEDBACK_X:Number = 25;//450;	// notice x-coordinate
 		public static var LAYOUT_FEEDBACK_Y:Number = 17;		// notice y-coordinate
 				
 		public static var LAYOUT_NODENAME_X:Number = 20;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_NODENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin		
 		public static var LAYOUT_TREENAME_X:Number = 270;	// tree name label x-coordinate, relative to the canvas origin
-		public static var LAYOUT_TREENAME_Y:Number = -30;	// tree name label y-coordinate, relative to the canvas origin
-		public static var LAYOUT_ZOOM_X:Number = 350;		// zoom button x-coordinate
-		public static var LAYOUT_ZOOM_Y:Number = -30;		// zoom button y-coordinate
+		public static var LAYOUT_TREENAME_Y:Number = -35;	// tree name label y-coordinate, relative to the canvas origin
+		public static var LAYOUT_ZOOM_X:Number = 40;		// zoom button x-coordinate
+		public static var LAYOUT_ZOOM_Y:Number = -35;		// zoom button y-coordinate
 		public static var LAYOUT_ZOOM_WIDTH:Number = 30;	// zoom button width	
 		public static var LAYOUT_ZOOM_RESET_WIDTH:Number = 50;	// zoom reset button width	
 		public static var LAYOUT_NOTICE_X:Number = 0;		// notice x-coordinate
@@ -122,7 +125,7 @@ package cs448b.fp.utils
 		public static var MSG_STAGE4:String = "Stage: Task Complete";
 		public static var MSG_MAPPING_NONE:String = "Mappings: None";
 		public static var MSG_MAPPING:String = "Mappings: ";
-		public static var MSG_MAPPING_INST:String = "Select a segment on the Layout page that you think corresponds to the highlighted segment.";
+		public static var MSG_MAPPING_INST:String = "Select a corresponding segment on the Layout page for the highlighted segment.";
 		public static var MSG_LOADED:String = "Loading...";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";
@@ -157,6 +160,7 @@ package cs448b.fp.utils
 		public static var LABEL_LAYOUT:String = "Layout";
 		public static var LABEL_NOMAPPING:String = "Assign no mapping";
 		public static var LABEL_HELP:String = "Help";
+		public static var LABEL_RESTART:String = "Restart";
 		public static var LABEL_ZOOM_IN:String = "+";
 		public static var LABEL_ZOOM_OUT:String = "-";
 		public static var LABEL_ZOOM_RESET:String = "Reset";

@@ -22,6 +22,7 @@ package cs448b.fp.utils
 		private var _fitToScreen:Button;
 		private var _continueButton:Button;
 		private var _helpButton:Button;
+		private var _restartButton:Button;
 		private var _notice:TextSprite;
 		private var _feedback:TextSprite;
 		private var _mappings:TextSprite;
@@ -45,6 +46,7 @@ package cs448b.fp.utils
 			addMappings();
 			addNotice();
 			addHelp();
+			addRestart();
 			if (Theme.ENABLE_CONTINUE_BUTTON == true)
 				addContinueButton();
 
@@ -168,7 +170,42 @@ package cs448b.fp.utils
         {
         	_helpButton.enabled = false;
         }
+
+		private function addRestart():void
+		{
+			_restartButton = new Button();
+			_restartButton.label = Theme.LABEL_RESTART;
+			_restartButton.toggle = true;
+			_restartButton.x = Theme.LAYOUT_RESTART_X;
+			if (_isPreview == true)
+				_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+			else
+				_restartButton.y = Theme.LAYOUT_RESTART_Y;
+			_restartButton.width = Theme.LAYOUT_RESTART_WIDTH;			
+           	_restartButton.addEventListener(MouseEvent.CLICK, onRestartButton);
+           	_restartButton.setStyle("textFormat", Theme.FONT_BUTTON); 
+           	_restartButton.enabled = false;
+           	_restartButton.useHandCursor = true;
+           	addChild(_restartButton);  			
+					
+		}     
+		
+        private function onRestartButton( mouseEvent:MouseEvent ):void
+        {
+			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "restart") );        			 
+        }
+        
+        public function enableRestartButton():void
+        {
+        	_restartButton.enabled = true;
+        }
+     
+        public function disableRestartButton():void
+        {
+        	_restartButton.enabled = false;
+        }
         	        		   
+        	        		           	        		   
 		private function addContinueButton():void
 		{	   
 			_continueButton = new Button();
