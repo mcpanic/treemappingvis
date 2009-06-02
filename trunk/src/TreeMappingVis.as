@@ -243,7 +243,7 @@ package {
 			}
 			else if (event.name == "hidebutton")
 			{	
-				controls.enableHelpButton();			
+				controls.disableHelpButton();			
 				cascadedTree1.disableUnmapButton();
 				cascadedTree1.disableZoomButtons();					
 				cascadedTree2.disableZoomButtons();

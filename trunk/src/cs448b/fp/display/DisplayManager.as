@@ -20,7 +20,8 @@ package cs448b.fp.display
 		public function DisplayManager()
 		{
 			super();
-			_popupManager = new PopupManager();	
+			if (Theme.ENABLE_MERGE == true)
+				_popupManager = new PopupManager();	
 			_resultManager = new ResultManager();
 			_helpManager = new HelpManager();	
 			_tutorialManager = new TutorialManager();		
@@ -31,6 +32,8 @@ package cs448b.fp.display
 		 */	
 		public function init():void
 		{
+			if (Theme.ENABLE_MERGE == true)
+			{
 			// Initialize popup manager
 			_popupManager.init();
 			_popupManager.x = Theme.LAYOUT_POPUP_X;
@@ -39,6 +42,7 @@ package cs448b.fp.display
 			_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
 			//_popupManager.height = Theme.LAYOUT_POPUP_HEIGHT;
 			//addChild(_popupManager);
+			}
 			
 			// Initialize result popup manager
 			_resultManager.init();

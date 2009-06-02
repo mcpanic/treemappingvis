@@ -8,10 +8,13 @@ package cs448b.fp.utils
 	public class Theme
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
-		public static var NUM_SESSIONS:Number = 5;
+		public static var NUM_SESSIONS:Number = 1;
+		
+		// Enable /Disable merge popup (1 to N mapping possible)
+		public static var ENABLE_MERGE:Boolean = false;
 		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
@@ -21,6 +24,7 @@ package cs448b.fp.utils
 		public static var ENABLE_CONTINUE_BUTTON:Boolean = ENABLE_REL;
 		// Enable /Disable blinking effect for mapping actions
 		public static var ENABLE_BLINKING:Boolean = true;
+		
 		
 		// Tree traversal order
 		public static var ORDER_PREORDER:Number = 1;
@@ -119,7 +123,7 @@ package cs448b.fp.utils
 		public static var MSG_MAPPING_NONE:String = "Mappings: None";
 		public static var MSG_MAPPING:String = "Mappings: ";
 		public static var MSG_MAPPING_INST:String = "Select a segment on the Layout page that you think corresponds to the highlighted segment.";
-		public static var MSG_LOADED:String = "Page loaded.";
+		public static var MSG_LOADED:String = "Loading...";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";
 		public static var MSG_HELP:String = "Mouse click: add a mapping\n\n" + 
