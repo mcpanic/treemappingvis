@@ -194,12 +194,15 @@ package cs448b.fp.tree
 
 				var dX:Number = sX - prevX;
 				var dY:Number = sY - prevY;
-	
-				vis.x += dX;
-				vis.y += dY;
-		
-				prevX = sX;
-				prevY = sY;
+				
+				if (vis.y + dY > 0)
+				{
+					vis.x += dX;
+					vis.y += dY;
+
+				}		
+					prevX = sX;
+					prevY = sY;				
 			}
 			else
 			{
@@ -271,13 +274,15 @@ package cs448b.fp.tree
 		{
 			var node:NodeSprite = evt.target as NodeSprite;
 			var loader:Loader = evt.target as Loader;
-			if(node == null && loader == null) return;
+			if(node == null && loader == null) 
+				return;
 			
 			if(node == null)
 			{
 				node = loader.parent.parent.parent as NodeSprite;
 			}
-			if(node == null) return;
+			if(node == null) 
+				return;
 			
 			// this is very bad coding...
 			if(evt.type == MouseEvent.MOUSE_DOWN)

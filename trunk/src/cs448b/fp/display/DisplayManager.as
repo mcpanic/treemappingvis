@@ -6,6 +6,8 @@ package cs448b.fp.display
 	import cs448b.fp.utils.NodeActions;
 	import cs448b.fp.utils.Theme;
 	
+	import flare.animate.Pause;
+	
 	import flash.display.Sprite;
 
 	public class DisplayManager extends Sprite
@@ -128,7 +130,12 @@ package cs448b.fp.display
 			{
 				hideResults();	
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "finish") ); 		
-			}			
+			}	
+			else if (event.name == "tutorial_submit")
+			{
+				hideResults();	
+				_tutorialManager.showNext();		
+			}						
 		}
 
 
@@ -161,7 +168,28 @@ package cs448b.fp.display
 			else if (event.name == "close")
 			{
 				hideTutorial();			
-			}			
+			}	
+			else if (event.name == "tutorial_preview")
+			{
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_preview") ); 		
+			}	
+			else if (event.name == "tutorial_highlight")
+			{
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_highlight") ); 		
+			}	
+			else if (event.name == "tutorial_click")
+			{
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_click") ); 		
+			}	
+			else if (event.name == "tutorial_unmap")
+			{
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) ); 
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_unmap") ); 		
+			}		
+			else if (event.name == "tutorial_result")
+			{
+				//showResults("");	
+			}																
 		}
 		
 		/**
@@ -238,7 +266,7 @@ package cs448b.fp.display
 			_resultManager.addResults(message);
 			addChild(_resultManager);
 		}			
-
+		
 		/**
 		 * Hide the popup
 		 */					
@@ -272,11 +300,27 @@ package cs448b.fp.display
 		 * Show the popup
 		 */					
 		public function showTutorial():void
-		{
-			//beforeShowPopup();
+		{			
+			NodeActions.lock = true;	
 			addChild(_tutorialManager);
 		}								
-								
+				
+		/**
+		 * Show the next step in tutorial
+		 */					
+		public function showTutorialNextStep():void
+		{			
+			_tutorialManager.showNext();
+		}								
+
+		/**
+		 * Get the current tutorial step
+		 */	
+		public function get currentTutorialStep():Number
+		{			
+			return _tutorialManager.curStep;
+		}
+						
 		/**
 		 * Merge a mapping based on the current user selection: Add another
 		 */					

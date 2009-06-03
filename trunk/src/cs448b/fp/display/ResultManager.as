@@ -144,20 +144,26 @@ package cs448b.fp.display
 		 */	
         private function onConfirmButton( mouseEvent:MouseEvent ):void
         {  	
-        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
+        	if (_sessionManager.isPreview() == true)
         	{
-        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );
-        	}
-        	else if (_isConfirmed == false && _sessionManager.curSession == Theme.NUM_SESSIONS)
-        	{   					
-				sendToServer();
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );     
-        		_isConfirmed = true;
-        		_confirmButton.label = "Close";
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_submit") );     
         	}
         	else
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "close") );             	
-        	
+        	{
+	        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
+	        	{
+	        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );
+	        	}
+	        	else if (_isConfirmed == false && _sessionManager.curSession == Theme.NUM_SESSIONS)
+	        	{   					
+					sendToServer();
+					dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );     
+	        		_isConfirmed = true;
+	        		_confirmButton.label = "Close";
+	        	}
+	        	else
+					dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "close") );             	
+        	}
         }
 				
 		/**
@@ -208,7 +214,7 @@ package cs448b.fp.display
         public function addResults(results:String):void
         {
         	if (_sessionManager.isPreview() == true)
-        		showMessage("Practice task complete. How about moving on to the actual task now?");
+        		showMessage("Practice task 1 of 1 complete. Click 'Confirm' to submit your results.");
         	else
         	{
 	        	showMessage("Task " + _sessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");

@@ -124,15 +124,14 @@ package {
 			controls.setIsPreview(sessionManager.isPreview());
 			if (sessionManager.isPreview() == true)
 			{				
-				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, true);
-				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, false);
+				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, true, sessionManager.isPreview());
+				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, false, sessionManager.isPreview());
 			}
 			else
 			{
-				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, true);
-				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, false);
-			}
-			
+				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, true, sessionManager.isPreview());
+				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, false, sessionManager.isPreview());
+			}		
 			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
 			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
 			
@@ -249,6 +248,10 @@ package {
 			{	
 				mappingManager.showNextStep();			
 			}	
+			else if (event.name == "tutorial_advance")
+			{	
+				mappingManager.showTutorialNextStep();			
+			}				
 			else if (event.name == "showbutton")
 			{	
 				controls.enableHelpButton();	
