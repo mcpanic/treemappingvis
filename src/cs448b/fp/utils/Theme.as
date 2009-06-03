@@ -11,8 +11,10 @@ package cs448b.fp.utils
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
-		public static var NUM_SESSIONS:Number = 2;
-		
+		public static var NUM_SESSIONS:Number = 5;
+		// How many pairs are in the database
+		public static var NUM_PAIRS:Number = 15;
+				
 		// Enable /Disable merge popup (1 to N mapping possible)
 		public static var ENABLE_MERGE:Boolean = false;
 		

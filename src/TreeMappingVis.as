@@ -12,6 +12,7 @@ package {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.geom.Point;
 	import flash.system.Security;
 	import flash.ui.Keyboard;
 		
@@ -32,7 +33,7 @@ package {
 		private var mturkManager:MechanicalTurkManager;
 		private var sessionManager:SessionManager;
 		private var dataList:DataList;
-		private var currentPairId:Number;
+		private var currentPair:Point;
 		
 					
 		/**
@@ -45,7 +46,7 @@ package {
 			if (Theme.ENABLE_DEBUG == true)
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
 
-			currentPairId = -1;	// invalid
+			currentPair = new Point(-1, -1);	// invalid
 			initComponents();
 			buildSprite();
 			loadData();			
@@ -96,12 +97,12 @@ package {
 			else if (isRandom == true)
 			{
 				trace("Assignment ID: " + sessionManager.assignmentId);
-				currentPairId = dataList.getDataList(fileList, imageList, false);				
+				currentPair = dataList.getDataList(fileList, imageList, false);				
 			}
 			// load the current pair
 			else
 			{
-				currentPairId = dataList.getDataList(fileList, imageList, false, currentPairId);
+				currentPair = dataList.getDataList(fileList, imageList, false, currentPair);
 			}
 			
 			sessionManager.addPairName(dataList.cName, dataList.lName);
