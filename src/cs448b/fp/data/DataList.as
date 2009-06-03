@@ -18,11 +18,13 @@ package cs448b.fp.data
 		{
 			_pairList = new Array();
 				
-			_contentArray 	= new Array("511", "allRecipes", "breastCancer_content", "courseRank", "dwell", "flickr", 
-			"google", "kayak", "mint", "moo", "nature", "paloAlto_content", "rockTheVote", "yelp", "zopa_content");
+			_contentArray 	= new Array("courseRank_content", "moo_content", "yelp_content", "nymbler_content", 
+			"zopa_content", "allRecipes", "breastCancer_content", "dwell", "flickr", 
+			"google", "kayak", "mint", "nature", "paloAlto_content", "rockTheVote");
 			
-			_layoutArray 	= new Array("511", "allRecipes", "breastCancer_layout",  "courseRank", "dwell", "flickr", 
-			"google", "kayak", "mint", "moo", "nature", "paloAlto_layout",  "rockTheVote", "yelp", "zopa_layout");											
+			_layoutArray 	= new Array("courseRank_layout", "moo_layout", "yelp_layout", "nymbler_layout", 
+			"zopa_layout", "allRecipes", "breastCancer_layout", "dwell", "flickr", 
+			"google", "kayak", "mint", "nature", "paloAlto_layout",  "rockTheVote");											
 		}
 
 		/**
@@ -163,14 +165,14 @@ package cs448b.fp.data
 
 				printPairs();
 				_cName = getContentName(cId);
-				_lName = getLayoutName(lId);		
-				
-				fileList[0] = "../data/" + _cName + ".xml";
-				fileList[1] = "../data/" + _lName + ".xml";			
-				imageList[0] = "../data/" + _cName + "/";
-				imageList[1] = "../data/" + _lName + "/";
-//				mappingFile = "../data/map_" + _lName + ".xml";						
+				_lName = getLayoutName(lId);					
 			}
+				
+			fileList[0] = "../data/" + _cName + ".xml";
+			fileList[1] = "../data/" + _lName + ".xml";			
+			imageList[0] = "../data/" + _cName + "/";
+			imageList[1] = "../data/" + _lName + "/";
+//			mappingFile = "../data/map_" + _lName + ".xml";						
 			return (new Point(cId, lId));
 		}
 	}

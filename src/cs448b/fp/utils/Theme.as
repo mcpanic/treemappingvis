@@ -8,12 +8,14 @@ package cs448b.fp.utils
 	public class Theme
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
-		public static var NUM_SESSIONS:Number = 5;
+		public static var NUM_SESSIONS:Number = 2;
 		// How many pairs are in the database
-		public static var NUM_PAIRS:Number = 15;
+		public static var NUM_PAIRS:Number = 2;
+		// How many steps are in the tutorial session
+		public static var NUM_TUTORIAL_STEPS:Number = 7;
 				
 		// Enable /Disable merge popup (1 to N mapping possible)
 		public static var ENABLE_MERGE:Boolean = false;
@@ -116,7 +118,7 @@ package cs448b.fp.utils
 		
 		public static var LAYOUT_TUTORIAL_X:Number = 20;		// popup x-coordinate
 		public static var LAYOUT_TUTORIAL_Y:Number = 10;		// popup y-coordinate
-		public static var LAYOUT_TUTORIAL_WIDTH:Number = 740;		// popup width
+		public static var LAYOUT_TUTORIAL_WIDTH:Number = 640;		// popup width
 		public static var LAYOUT_TUTORIAL_HEIGHT:Number = 100;		// popup height
 		public static var LAYOUT_TUTORIAL_OFFSET:Number = 70;		// pixel offset 
 						
@@ -133,26 +135,39 @@ package cs448b.fp.utils
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";
 		public static var MSG_HELP:String = "Mouse click: add a mapping\n\n" + 
 				"Mouse over\n" + 
-				"  * unmapped: view current (red) and visually related (purple) segments \n" + 
-				"  * mapped:   view mapped segment(s) on the other page. \n\n" + 
+				"  * mapped not yet: view current(red) and visually related(purple) segments \n" + 
+				"  * mapped already: blue - there is a mapped segment on the other page. \n" + 
+				"                    red  - you assigned 'no mapping' for this segment.\n\n" + 
 				"Zoom control \n" + 
 				"  * (+): zoom in \n" + 
 				"  * (-): zoom out \n" + 
-				"  * Reset: back to default scale";
+				"  * Reset: back to default scale \n\n" + 
+				"Panning: Control Key + Mousge Drag \n";
 
 		// Tutorial messages: used in tutorial session
-		public static var MSG_TUT1:String = "Welcome! \nThis tutorial will guide you through the mapping interface.";
-		public static var MSG_TUT2:String = "When the task starts, it first shows an animated preview of \npage segments you will find mappings for.";
-		public static var MSG_TUT3:String = "For each highlighted segment on the left (content) page, \nyour task is to find a segment on the right (layout) page \nthat you think corresponds to the highlighted segment.";		
-		public static var MSG_TUT4:String = "You can explore the layout page by moving the mouse cursor around. \nWhen your cursor is placed on top of a segment, it is highlighted in red. \nVisually related segments are also highlighted in purple.";	
-		public static var MSG_TUT5:String = "Note that there are larger segments containing multiple small segments. \nKeep in mind they can be mapped as well.";			
-		public static var MSG_TUT6:String = "When you find an appropriate segment, click that node as it is highlighted in red.";	
-		public static var MSG_TUT7:String = "If you think there are no corresponding segments on the right (layout) page \nfor the current left (content) segment, click 'Assign no mapping' button.";		
-		public static var MSG_TUT8:String = "If you think more than one segments map to a segment on the right (layout) page, \nyou can 'merge' mappings by clicking on the mapped node again. \nWhen a popup menu opens, choose 'Merge'."; 
-		public static var MSG_TUT9:String = "Select 'Replace' if you want to remove existing mappings and \napply the new mapping. \nSelect 'Cancel' if you do not want to change anything.";	
-		public static var MSG_TUT10:String = "Once you have defined a mapping, \nmouse over the mapped segment to see the mapped node on the other page. \nBlue border means a valid mapping, red means no mapping assigned.";
-		public static var MSG_TUT11:String = "The mapping process automatically continues until all segments are mapped. \nWhen the task is complete, a popup window opens. \nClick 'Confirm' to submit your results.";
-		public static var MSG_TUT12:String = "That's it! You can practice with the example set, \nor start the actual HIT by accepting it if you are ready. \nYou can always click the 'help' button to see the interactions.";	
+		public static var MSG_TUT1:String = "We want to learn how design elements in a pair of web pages relate to each other, " + 
+										"for our research project to build a better web design tool. \n" + 
+										"This tutorial will guide you through the mapping interface.";
+		public static var MSG_TUT2:String = "When the task starts, it first shows an animated preview of \n" + 
+										"page segments you will find mappings for.";
+		public static var MSG_TUT3:String = "For each highlighted segment on the left (content) page, \n" + 
+										"your task is to find a segment on the right (layout) page \n" + 
+										"that you think corresponds to the highlighted segment.";		
+		//public static var MSG_TUT4:String = "Explore the layout page by moving the mouse cursor around. \nPlace your cursor on top of a segment, which is highlighted in red. \nVisually related segments are also highlighted in purple.";	
+		//public static var MSG_TUT5:String = "Note that there are larger segments containing multiple small segments. \nKeep in mind they can be mapped as well.";			
+		public static var MSG_TUT4:String = "For the header, the header on the Layout page seems like a nice match.\n" + 
+										"Locate the header by moving the cursor over, and click the highlighted header.";	
+		public static var MSG_TUT5:String = "For this dog image, there doesn't seem to be any \n" + 
+										"corresponding segment on the Layout page.\n" + 
+										"In this case, click 'Assign no mapping' button.";			
+		//public static var MSG_TUT8:String = "If you think more than one segments map to a segment on the right (layout) page, \nyou can 'merge' mappings by clicking on the mapped node again. \nWhen a popup menu opens, choose 'Merge'."; 
+		//public static var MSG_TUT9:String = "Select 'Replace' if you want to remove existing mappings and \napply the new mapping. \nSelect 'Cancel' if you do not want to change anything.";			
+		public static var MSG_TUT6:String = "Complete the task by mapping three remaining menu segments to the corresponding segments on the Layout page. \n" +
+										"Careful: Once a node is mapped, it cannot be mapped to any other segments. \n" + 										 
+										"When the task is complete, a popup window opens.";
+		public static var MSG_TUT7:String = "Congratulations! Click 'Restart' to see this tutorial again, or \n" + 
+										"start the actual HIT by accepting it if you are ready. \n" + 
+										"Click 'help' button for interaction tips.";	
 
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Start";

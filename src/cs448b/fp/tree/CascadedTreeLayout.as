@@ -145,11 +145,14 @@ package cs448b.fp.tree
 
 	        // apply offsets
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
-				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
-				//n.props["image"].visible = false;
+//	        	if (n.name == "1")
+//	        	{
+				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));				
+//				n.props["image"].width = Number(n.props["width"]);
+//				n.props["image"].height = Number(n.props["height"]);
 				n.props["image"].x = Number(n.props["x"]) + n.depth * _cascadeOffset;
 				n.props["image"].y = Number(n.props["y"]) + n.depth * _cascadeOffset;	     
-		   	
+//		  		}
 	        });
         
         
@@ -277,7 +280,7 @@ package cs448b.fp.tree
 	        		o.u = n.props["x"] + n.depth * _cascadeOffset;
 	        		o.v = n.props["y"] + n.depth * _cascadeOffset;
 	        		o.w = n.props["width"];
-	        		o.h = n.props["height"];	  	
+	        		o.h = n.props["height"];
 
 	        	o.x = 0;
 	        	o.y = 0;

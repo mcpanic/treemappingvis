@@ -287,7 +287,7 @@ package cs448b.fp.utils
 	        		if (action == Theme.STATUS_MAPPED)
 	        		{
 						nn.props["mapped"] = Theme.STATUS_MAPPED;	
-						nn.fillColor = Theme.COLOR_FILL_MAPPED;
+						//nn.fillColor = Theme.COLOR_FILL_MAPPED;
 						hideLine(nn);
 						nn.alpha = Theme.ALPHA_MAPPED;
 						nn.props["image"].visible = Theme.SHOW_MAPPPED;	
@@ -295,7 +295,7 @@ package cs448b.fp.utils
 	        		else if (action == Theme.STATUS_UNMAPPED)
 	        		{
 	        			nn.props["mapped"] = Theme.STATUS_UNMAPPED;	
-						nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
+						//nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
 						hideLine(nn);
 						nn.alpha = Theme.ALPHA_MAPPED;
 						nn.props["image"].visible = Theme.SHOW_MAPPPED;		        		

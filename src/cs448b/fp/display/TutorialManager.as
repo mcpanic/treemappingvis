@@ -21,7 +21,7 @@ package cs448b.fp.display
 		private var _step:TextSprite;
 		private var _message:TextSprite;
 		private var _curStep:Number;
-		private var _numStep:Number = 12;
+		private var _numStep:Number = Theme.NUM_TUTORIAL_STEPS;
 		private var _output:TextField;
 		
 		public function TutorialManager()
@@ -44,6 +44,14 @@ package cs448b.fp.display
 			addMessage();
 		}
 
+		/**
+		 * Get the current tutorial step
+		 */        
+        public function get curStep():Number
+        {
+        	return _curStep;
+        }  
+        
 		/**
 		 * Add a previous button
 		 */					
@@ -137,6 +145,7 @@ package cs448b.fp.display
 		private function addStep():void
 		{
             _step = new TextSprite("", Theme.FONT_TUTORIAL_STEP);//_textFormat);
+            _step.textMode = TextSprite.DEVICE;
             _step.horizontalAnchor = TextSprite.LEFT;           	
             _step.x = 15;
             _step.y = 10;        
@@ -184,6 +193,30 @@ package cs448b.fp.display
         		_prevButton.enabled = true;
         	showStep();
         	showMessage(Theme["MSG_TUT" + _curStep]);
+        	
+        	if (_curStep == 2)	// play preview
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_preview") );
+        	else if (_curStep == 3)	// highlight the first node
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_highlight") );
+        	else if (_curStep == 4)	// enable clicking the first node
+        	{
+        		_nextButton.enabled = false;
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_click") );
+        	}
+        	else if (_curStep == 5)	// assign no mapping practice
+        	{        		
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_unmap") );
+        	}	   
+        	else if (_curStep == 6)	// submitting results after a session completes
+        	{
+        		_nextButton.enabled = false;
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_result") );
+        	}	
+        	else if (_curStep == 7)	// final step
+        	{
+        		_nextButton.enabled = true;
+        		_nextButton.label = "Finish";
+        	}		         		         		           		        		
         }                               	
 	}
 }

@@ -6,6 +6,7 @@ package cs448b.fp.data
 	import flare.vis.data.Tree;
 	
 	import flash.display.DisplayObject;
+	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -81,8 +82,22 @@ package cs448b.fp.data
 		private function addImageNode(n:NodeSprite, xml:XML):void
 		{
 			var image:DisplayObject = addImage(n, xml);
-			n.props["image"] = image;
-			n.addChild(image);
+
+//			if (n.name == "1")
+//			{				
+				n.props["image"] = image;
+				n.addChild(image);						
+//			}
+//			else
+//			{
+//	            var shape:Shape = new Shape();
+//	            //shape.graphics.beginFill(0x101010);
+//				shape.graphics.lineStyle(3, 0xbbbbbb);
+//				shape.graphics.drawRoundRect(n.props["x"], n.props["y"], n.props["width"], n.props["height"], 20);
+//				//shape.graphics.endFill();
+//				n.props["image"] = shape;				
+//				n.addChild(shape);				
+//			}
 		}
 
 		/**
@@ -114,8 +129,8 @@ package cs448b.fp.data
 		 */	
 		private function addNode(nodeSprite:NodeSprite, xml:XML):void
 		{
+			addDataNode(nodeSprite, xml);				
 			addImageNode(nodeSprite, xml);
-			addDataNode(nodeSprite, xml);	    
 	 		_numNodes++;			
 		} 
 				

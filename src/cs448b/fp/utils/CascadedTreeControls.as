@@ -132,9 +132,15 @@ package cs448b.fp.utils
 		{
 			_isPreview = isPreview;
 			if (_isPreview == true)
+			{
 				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+				_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+			}
 			else
-				_helpButton.y = Theme.LAYOUT_HELP_Y;			
+			{	
+				_helpButton.y = Theme.LAYOUT_HELP_Y;
+				_restartButton.y = Theme.LAYOUT_RESTART_Y;
+			}				
 		}
 		
 		private function addHelp():void
@@ -143,10 +149,10 @@ package cs448b.fp.utils
 			_helpButton.label = Theme.LABEL_HELP;
 			_helpButton.toggle = true;
 			_helpButton.x = Theme.LAYOUT_HELP_X;
-			if (_isPreview == true)
-				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
-			else
-				_helpButton.y = Theme.LAYOUT_HELP_Y;
+//			if (_isPreview == true)
+//				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+//			else
+			_helpButton.y = Theme.LAYOUT_HELP_Y;
 			_helpButton.width = Theme.LAYOUT_HELP_WIDTH;			
            	_helpButton.addEventListener(MouseEvent.CLICK, onHelpButton);
            	_helpButton.setStyle("textFormat", Theme.FONT_BUTTON); 
@@ -177,9 +183,9 @@ package cs448b.fp.utils
 			_restartButton.label = Theme.LABEL_RESTART;
 			_restartButton.toggle = true;
 			_restartButton.x = Theme.LAYOUT_RESTART_X;
-			if (_isPreview == true)
-				_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
-			else
+//			if (_isPreview == true)
+//				_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+//			else
 				_restartButton.y = Theme.LAYOUT_RESTART_Y;
 			_restartButton.width = Theme.LAYOUT_RESTART_WIDTH;			
            	_restartButton.addEventListener(MouseEvent.CLICK, onRestartButton);

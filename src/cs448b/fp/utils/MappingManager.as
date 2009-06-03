@@ -28,6 +28,8 @@ package cs448b.fp.utils
 //		private var _assignmentId:String;
 		private var _displayManager:DisplayManager;
 		
+		private var _nextStepLock:Boolean;
+				
 		public function MappingManager()
 		{
 			_mapping = new Mapping();	
@@ -36,6 +38,7 @@ package cs448b.fp.utils
 			_currentStage = Theme.STAGE_INITIAL;
 			
 			_displayManager = new DisplayManager();
+			_nextStepLock = true;
 		}
 
 		public function init(isPreview:Boolean):void
@@ -45,8 +48,8 @@ package cs448b.fp.utils
 			// Tutorial session
 			if (_isPreview == true)			
 				_displayManager.showTutorial();						
-			
-			startSession();
+			else
+				startSession();
 				
 			_displayManager.init();	
 			_displayManager.addEventListener(DisplayEvent.DISPLAY_UPDATE, onDisplayUpdateEvent);	
@@ -60,7 +63,8 @@ package cs448b.fp.utils
 		public function startSession():void
 		{
 			// Set the traversal order
-			_contentTree.setTraversalOrder();
+			_contentTree.setTraversalOrder(_isPreview);
+			
 			// Play the review of web page segments to be mapped, in the traversal order specified.
 			_contentTree.playPreview();	
 			
@@ -119,6 +123,13 @@ package cs448b.fp.utils
 //				// check if the whole tree is done
 //				_contentTree.checkCompleted();
 
+				// post-processing for preview click
+				if (_isPreview == true && _displayManager.currentTutorialStep == 4)
+				{
+					//showNextStep();
+					_displayManager.showTutorialNextStep();	
+				}
+
 			}
 			// remove is not needed anymore since we do not have any undo function for the interface
 			else if (_selectedContentID != 0 && e.name == "remove")
@@ -170,8 +181,29 @@ package cs448b.fp.utils
 				removeMapping(_selectedLayoutID);	
 			else if (e.name == "start")
 				startSession();
+			// tutorial related
+			else if (e.name == "tutorial_preview")
+				startSession();	
+			else if (e.name == "tutorial_highlight")
+				showNextStep();
+			else if (e.name == "tutorial_click")
+			{
+				NodeActions.lock = false;
+			}	
+			else if (e.name == "tutorial_unmap")
+			{
+				
+			}												
 		}		
 
+		/**
+		 * Advance a step in tutorial
+		 */					
+		public function showTutorialNextStep():void
+		{
+			_displayManager.showTutorialNextStep();
+		}	
+		
 		/**
 		 * Wrapper for opening a help popup
 		 */		
@@ -595,48 +627,50 @@ package cs448b.fp.utils
         	}
         	else		// Single phase, no ancestor-descendent relationship enforced
         	{
-		        if (_currentStage == Theme.STAGE_INITIAL)	// To the hierarchical stage
-		       	{
-		       		_currentStage = Theme.STAGE_HIERARCHICAL;
-		       		// stage event is now called by preview function in CascadedTree.as
-//			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );   
-			        if (showMatching() == false)	// if nothing shown, on to the next 
-			        	showNextStep();			
-		       	}
-		       	else if (_currentStage == Theme.STAGE_HIERARCHICAL)
-		       	{
-		        	if (_contentTree.tree.nodes.length < _contentTree._currentStep)	// whole tree traversed
-		        	{
-		        		_currentStage = Theme.STAGE_QUASI;
-			       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_QUASI) );   	        		
-		        		_contentTree.checkCompleted();
-		        		// Now everything is done. Send the mapping result somewhere!
-		       			var result:String = _mapping.printMapping();
-		     	  		_displayManager.showResults(result);
-		        		//showQuasiMatchingLayout();
-		        		//showQuasiMatchingContent();
-		        		
-		        	}
-		        	else		       	
-		        	{	    		
-		        		if (_isRootMapped == false) 	// if root has not been mapped, map the root first.
-		        		{
-		        			addRootMapping();
-		        			_isRootMapped = true;
-		        		}
-						
-						if (showMatching() == false)	// if nothing shown, on to the next
-							showNextStep();
-								
-		       		}
-		       		
-		       	}
-		       	else if (_currentStage == Theme.STAGE_QUASI)
-		       	{
-		       		showQuasiMatchingLayout();
-		       		showQuasiMatchingContent();
-		       		
-		       	}        		
+        		if (_isPreview == true && _nextStepLock == true)
+        			_nextStepLock = false;
+        		else
+        		{
+			        if (_currentStage == Theme.STAGE_INITIAL)	// To the hierarchical stage
+			       	{
+			       		_currentStage = Theme.STAGE_HIERARCHICAL;
+			       		// stage event is now called by preview function in CascadedTree.as
+	//			        dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );   
+				        if (showMatching() == false)	// if nothing shown, on to the next 
+				        	showNextStep();			
+			       	}
+			       	else if (_currentStage == Theme.STAGE_HIERARCHICAL)
+			       	{
+			        	if (_contentTree.tree.nodes.length < _contentTree._currentStep)	// whole tree traversed
+			        	{
+			        		_currentStage = Theme.STAGE_QUASI;
+				       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_QUASI) );   	        		
+			        		_contentTree.checkCompleted();
+			        		// Now everything is done. Send the mapping result somewhere!
+			       			var result:String = _mapping.printMapping();
+			     	  		_displayManager.showResults(result);
+			        		//showQuasiMatchingLayout();
+			        		//showQuasiMatchingContent();		        		
+			        	}
+			        	else		       	
+			        	{	    		
+			        		if (_isRootMapped == false) 	// if root has not been mapped, map the root first.
+			        		{
+			        			addRootMapping();
+			        			_isRootMapped = true;
+			        		}						
+							if (showMatching() == false)	// if nothing shown, on to the next
+								showNextStep();								
+			       		}
+			       		
+			       	}
+			       	else if (_currentStage == Theme.STAGE_QUASI)
+			       	{
+			       		showQuasiMatchingLayout();
+			       		showQuasiMatchingContent();
+			       		
+			       	}     
+		       	}   		
         	}
 		}	
 			

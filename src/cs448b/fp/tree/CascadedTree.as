@@ -24,7 +24,8 @@ package cs448b.fp.tree
 						
 	public class CascadedTree extends AbstractTree
 	{		
-		private var _isContentTree:Boolean;					
+		private var _isContentTree:Boolean;		
+		private var _isPreview:Boolean;			
 		private var _canvasWidth:Number = Theme.LAYOUT_CANVAS_WIDTH;
 		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
 		private var _title:TextSprite;
@@ -38,9 +39,10 @@ package cs448b.fp.tree
 		
 		public var _currentStep:Number = 0;
 			
-		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean)
+		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean, bPreview:Boolean)
 		{
 			this._isContentTree = bContentTree;			
+			this._isPreview = bPreview;
 			super(i, tree, x, y);
 			this.x = x;
 			this.y = y;
@@ -70,8 +72,16 @@ package cs448b.fp.tree
 			vis.bounds = bounds;		
 			vis.update();
 			
-			vis.scaleX = getScale();
-			vis.scaleY = getScale();          						
+			if (_isPreview == true)
+			{
+				vis.scaleX = 0.7;
+				vis.scaleY = 0.7;
+			}
+			else
+			{
+				vis.scaleX = getScale();
+				vis.scaleY = getScale();          						
+			}
 			tf.x = Theme.LAYOUT_NODENAME_X;
 			tf.y = Theme.LAYOUT_NODENAME_Y;
 
@@ -185,7 +195,10 @@ package cs448b.fp.tree
 				}			
 			});
 
-			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped, 2);			
+			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped, 2);	
+			
+			if (_isPreview == true)
+				dispatchEvent(new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance") );			
 		}
 
 		
@@ -299,7 +312,8 @@ package cs448b.fp.tree
 			// init values		
 			nodes = {
 				shape: Shapes.BLOCK, // needed for treemap sqaures
-				fillColor: 0x88D5D5ff, 
+				//fillColor: 0x88D5D5ff, 
+				//fillColor:0x00000000,
 				lineColor: 0x00000000,
 				lineWidth: 0
 			}
@@ -317,8 +331,8 @@ package cs448b.fp.tree
 		 */					
 		protected override function initNode(n:NodeSprite, i:Number):void
 		{
-			n.fillAlpha = 1/25;
-			n.lineAlpha = 1/25;	
+			n.fillAlpha = 0;//1/25;
+			n.lineAlpha = 0;//1/25;	
 		}
 
 		/**
@@ -344,12 +358,19 @@ package cs448b.fp.tree
 			}
 			else if(evt.type == MouseEvent.MOUSE_MOVE)
 			{
-				onMouseUp(n);
+				onMouseMove(n);
 			}
 		}
 		
 		private var oldNode:NodeSprite = null;
-		
+
+		/**
+		 * Mouse cursor move handler
+		 */	
+//		protected function onMouseMove(n:NodeSprite):void 
+//		{
+//			Rectangle.contains( Point )	
+//		}		
 		/**
 		 * Mouse cursor over handler
 		 */						
@@ -402,6 +423,7 @@ package cs448b.fp.tree
 				_node.addGlow(n);			
 				
 				_node.showConnectedNodes(n);
+				//pullNodeForward(n);	
 				pullAllChildrenForward(n);
 ////				if (nodePulled == false)
 ////				{
@@ -742,7 +764,13 @@ package cs448b.fp.tree
 			var node:NodeSprite = null;	
 			var message:String = "Now showing a preview of mapping order for the task.";
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );
-			
+
+	        // turn off visibility so that borders do not overlap
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (nn != root)
+					nn.props["image"].visible = false;
+	        });			
+	        
 			while (nodeCount <= tree.nodes.length)
 			{
 		        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
@@ -756,21 +784,9 @@ package cs448b.fp.tree
 	        //trace("COUNT:" + nodeCount);
 	        previewSeq.delay = 1;
 		    previewSeq.play();  
-		    //previewSeq.addEventListener(TransitionEvent.STEP, onStepPreview);	
 		    previewSeq.addEventListener(TransitionEvent.END, onEndPreview);	
 		}
 
-		private var _previewStep:Number = 0;
-		/**
-		 * For each preview animation step
-		 */		
-		private function onStepPreview(e:TransitionEvent):void
-		{
-			_previewStep++;
-			trace(_previewStep);
-			var message:String = "Now showing a preview of mapping order for the task. " + _previewStep ;
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );	
-		}
 		/**
 		 * When preview animation finishes playing
 		 */		
@@ -785,9 +801,9 @@ package cs448b.fp.tree
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
-//	     	enableUnmapButton();
-//	     	enableZoomButtons();   		
-	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
+			
+			if (_isPreview == false)  		
+	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
 		}
 		
 		/**
@@ -812,9 +828,10 @@ package cs448b.fp.tree
 				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_UNMAPPED});
 			var t6:Tween = new Tween(node, Theme.DURATION_BLINKING, {fillColor:0x00000000});
 			var t7:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineWidth:Theme.LINE_WIDTH});
+			var t8:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineWidth:0});
 		    var seq:Sequence = new Sequence(
-			    new Parallel(t1, t7, t5), 
-			    new Parallel(t2, t6)      
+			    new Parallel(t1, t7), 
+			    new Parallel(t2, t8)      
 		    );
 		    seq.play();
 		    
@@ -846,14 +863,14 @@ package cs448b.fp.tree
 		/**
 		 * Assign the traversal order of the tree
 		 */
-		public function setTraversalOrder():void
+		public function setTraversalOrder(isPreview:Boolean):void
 		{
 			if (!_isContentTree)	// nothing if layout tree
 				return;
 			_nodeCount = 1;
 			// initialize the tree
 			var root:NodeSprite = tree.root as NodeSprite;
-			if (_traversalOrder == Theme.ORDER_BFS)
+			if (isPreview == true || _traversalOrder == Theme.ORDER_BFS)
 			{	
 		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 		        	nn.props["traversed"] = false;
