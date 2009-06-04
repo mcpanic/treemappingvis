@@ -52,6 +52,7 @@ package cs448b.fp.tree
 		public function get sizeField():String { return _size.name; }
 		public function set sizeField(s:String):void { _size = Property.$(s); }
 		
+		private var _maxDepth:uint;
 		// --------------------------------------------------------------------
 		
 		/**
@@ -74,7 +75,9 @@ package cs448b.fp.tree
 			_r.y = b.y;
 			_r.width=b.width-1; 
 	        _r.height=b.height-1;
-	        
+
+
+			_maxDepth = getMaxTreeDepth(root);	        
 	        // process size values
 	        computeAreas(root);
 			//computeAreasOld(root);
@@ -120,7 +123,22 @@ package cs448b.fp.tree
                                         inner,
                                         knockout);
         }
-        		
+
+		
+		/**
+		 * Get the maximum tree depth
+		 */				    
+		public function getMaxTreeDepth(root:NodeSprite):uint
+		{
+			var maxDepth:uint = 0;
+			//var root:NodeSprite = tree.root as NodeSprite;
+	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+				if (maxDepth < nn.depth)
+					maxDepth = nn.depth;
+			});			
+			return maxDepth;
+		}
+		        		
 	    /**
     	 * Compute the pixel areas of nodes based on their size values.
 	     */
@@ -142,16 +160,32 @@ package cs448b.fp.tree
 					n.filters = myFilters;
 	            }
 	        });
-
+			
 	        // apply offsets
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
 //	        	if (n.name == "1")
 //	        	{
-				n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));				
-//				n.props["image"].width = Number(n.props["width"]);
-//				n.props["image"].height = Number(n.props["height"]);
-				n.props["image"].x = Number(n.props["x"]) + n.depth * _cascadeOffset;
-				n.props["image"].y = Number(n.props["y"]) + n.depth * _cascadeOffset;	     
+				if (Theme.ENABLE_CASCADE_OFFSET == 0)
+				{
+					n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
+					n.props["image"].x = Number(n.props["x"]);
+					n.props["image"].y = Number(n.props["y"]);
+				}
+				else if (Theme.ENABLE_CASCADE_OFFSET == 1)
+				{
+					n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
+					// (depth - 1) since we want the root to be not cascaded (it's not selectable)
+					n.props["image"].x = Number(n.props["x"]) + (n.depth - 1) * _cascadeOffset;
+					n.props["image"].y = Number(n.props["y"]) + (n.depth - 1) * _cascadeOffset;
+				}
+				else if (Theme.ENABLE_CASCADE_OFFSET == 2)
+				{
+
+					n.props["image"].width = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
+					n.props["image"].height = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
+					n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+					n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+				}	     					     
 //		  		}
 	        });
         
@@ -265,6 +299,7 @@ package cs448b.fp.tree
 			var xx:Number = r.x, yy:Number = r.y, d:Number = 0;
 			var hh:Number = ww==0 ? 0 : s/ww;
 			var horiz:Boolean = (ww == r.width);
+
 	        
 	        // set node positions and dimensions
 	        for each (n in row) {
@@ -276,11 +311,30 @@ package cs448b.fp.tree
 //	        		o.u = n.props["image"].x;
 //	        		o.v = n.props["image"].y;
 //	        		o.w = n.props["image"].width;
-//	        		o.h = n.props["height"].height;	       
-	        		o.u = n.props["x"] + n.depth * _cascadeOffset;
-	        		o.v = n.props["y"] + n.depth * _cascadeOffset;
-	        		o.w = n.props["width"];
-	        		o.h = n.props["height"];
+//	        		o.h = n.props["height"].height;	    
+					if (Theme.ENABLE_CASCADE_OFFSET == 0)
+					{
+						o.u = n.props["x"];
+		        		o.v = n.props["y"];
+		        		o.w = n.props["width"];
+		        		o.h = n.props["height"];
+					}
+					else if (Theme.ENABLE_CASCADE_OFFSET == 1)
+					{
+					// (depth - 1) since we want the root to be not cascaded (it's not selectable)	
+						o.u = n.props["x"] + (n.depth - 1) * _cascadeOffset;
+		        		o.v = n.props["y"] + (n.depth - 1) * _cascadeOffset;
+		        		o.w = n.props["width"];
+		        		o.h = n.props["height"];
+					}
+					else if (Theme.ENABLE_CASCADE_OFFSET == 2)
+					{
+						o.u = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+		        		o.v = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+		        		o.w = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
+		        		o.h = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;	
+					}	   
+	        		
 
 	        	o.x = 0;
 	        	o.y = 0;
