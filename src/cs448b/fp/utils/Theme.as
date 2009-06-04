@@ -8,18 +8,21 @@ package cs448b.fp.utils
 	public class Theme
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
 		public static var NUM_SESSIONS:Number = 2;
 		// How many pairs are in the database
-		public static var NUM_PAIRS:Number = 2;
+		public static var NUM_PAIRS:Number = 15;
 		// How many steps are in the tutorial session
 		public static var NUM_TUTORIAL_STEPS:Number = 7;
 				
-		// Enable /Disable merge popup (1 to N mapping possible)
-		public static var ENABLE_MERGE:Boolean = false;
+		// Node offset options for better parent selection. 0: nothing, 1: cascaded offset, 2: expanded parent
+		public static var ENABLE_CASCADE_OFFSET:uint = 2;
+		public static var CASCADE_OFFSET:uint = 10;
 		
+		// Enable /Disable merge popup (1 to N mapping possible)
+		public static var ENABLE_MERGE:Boolean = false;		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
 		// Enable / Disable serial node presentation (one content node at a time)
@@ -68,7 +71,6 @@ package cs448b.fp.utils
 		public static var STAGE_QUASI:Number = 2;
 		
 		// Tree layout options: used in tree layout files
-		public static var CASCADE_OFFSET:uint = 0;
 		public static var USE_DROPSHADOW:Boolean = false;
 		
 		public static var LAYOUT_CANVAS_WIDTH:uint = 550;	// single tree canvas width
