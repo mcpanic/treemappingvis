@@ -38,6 +38,7 @@ package cs448b.fp.tree
 		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
 		
 		public var _currentStep:Number = 0;
+//		private var _currentSelectedNodeId:Number;
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean, bPreview:Boolean)
 		{
@@ -47,7 +48,10 @@ package cs448b.fp.tree
 			this.x = x;
 			this.y = y;
 			_node = new NodeActions(this, bContentTree);
-//			
+
+//			// initialize the current selected node
+//			_currentSelectedNodeId = -1; 
+						
 //			var _popupManager:PopupManager = new PopupManager();
 //			_popupManager.init();
 //			addChild(_popupManager);
@@ -66,8 +70,7 @@ package cs448b.fp.tree
 		 */			
 		public override function init():void
 		{	
-			super.init();
-
+			super.init();			
 			bounds = new Rectangle(_x, _y, 1024, 768);
 			vis.bounds = bounds;		
 			vis.update();
@@ -384,6 +387,8 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
 			;
+//			else if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
+//			;
 			// Brushing and linking for mapped nodes
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
@@ -436,7 +441,15 @@ package cs448b.fp.tree
 
 			//oldNode = n;
 		}
-						
+
+		/**
+		 * Public version of onMouseOver
+		 */
+		public function forceOnMouseOver(n:NodeSprite):void
+		{
+			onMouseOver(n);
+		}	
+							
 		/**
 		 * Mouse cursor out handler
 		 */			
@@ -450,6 +463,8 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
 			;
+//			else if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
+//			;
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
 				//n.lineAlpha = 1;
@@ -459,10 +474,19 @@ package cs448b.fp.tree
 			}	
 			else if (n.props["activated"] == true)
 			{
-				n.lineColor = Theme.COLOR_ACTIVATED;
-				_node.showLineWidth(n);
-				_node.hideConnectedNodes(n);
-				_node.removeFilters(n);
+				// do not remove selected effects for selected nodes in the 2-click interface
+				if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
+				{
+					trace("mouse over - selected");
+					_node.markSelected(n);
+				}
+				else
+				{
+					n.lineColor = Theme.COLOR_ACTIVATED;
+					_node.showLineWidth(n);
+					_node.hideConnectedNodes(n);
+					_node.removeFilters(n);
+				}
 //				if (nodePulled == true)
 //				{
 //					pushNodeBack(n);	
@@ -501,53 +525,108 @@ package cs448b.fp.tree
 		}
 
 		/**
-		 * Mouse button down handler
+		 * Process 1 click mapping
 		 */	   		
-		protected override function onMouseDown(n:NodeSprite, isSender:Boolean = true):void 
+		private function process1Click(n:NodeSprite):void 
 		{
-			// no linking effect for mouse click. only mouse-over and out gets linking
-			if (isSender == false)
-				return;
-
-			// Check if the lock is enforced. It is enforced when popup is open.
-			if (NodeActions.lock == true)
-				return;
-				
-			if (Theme.ENABLE_SERIAL == true && isContentTree == true)
-				return;
-				
-			var root:NodeSprite = tree.root as NodeSprite;
-			if (Theme.ENABLE_SERIAL == true)
-			{
-				// 1) if mapped, open a popup, get user input, and apply 
-				if (n.props["mapped"] == Theme.STATUS_MAPPED)
-				{
-					if (Theme.ENABLE_MERGE == true)
+			// 1) if mapped, open a popup, get user input, and apply 
+					if (n.props["mapped"] == Theme.STATUS_MAPPED)
+					{
+						if (Theme.ENABLE_MERGE == true)
+						{
+							super.onMouseDown(n);
+							//blurOtherNodes(n);
+							_node.markSelected(n);
+							// dispatch mapping event
+							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));
+						}
+						else
+							return;							
+					}
+					// 2) not possible; layout nodes do not have 'unmapped' status.
+					else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
+						return;	
+					// 3) if new, map.
+					else
 					{
 						super.onMouseDown(n);
 						//blurOtherNodes(n);
 						_node.markSelected(n);
 						// dispatch mapping event
-						dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));
+						dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));	
+						onMouseOver(n);				
+					}			
+		}
+	
+		/**
+		 * Process 2 click mapping
+		 */	   		
+		private function process2Click(n:NodeSprite):void 
+		{
+			var root:NodeSprite = tree.root as NodeSprite;
+					// 1) if mapped, open a popup, get user input, and apply 
+					if (n.props["mapped"] == Theme.STATUS_MAPPED)
+					{
+						// Not clear what to do when merge is enabled under 2-click condition
+						// So do nothing for now.
+						if (Theme.ENABLE_MERGE == true)
+						{							
+//							super.onMouseDown(n);
+//							//blurOtherNodes(n);
+//							_node.markSelected(n);
+//							// dispatch mapping event
+//							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));
+						}
+						else
+							return;							
 					}
+					// 2) not possible; layout nodes do not have 'unmapped' status.
+					else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
+						return;	
+					// 3) if new, map.
 					else
-						return;							
-				}
-				// 2) not possible; layout nodes do not have 'unmapped' status.
-				else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
-					return;	
-				// 3) if new, map.
-				else
-				{
-					super.onMouseDown(n);
-					//blurOtherNodes(n);
-					_node.markSelected(n);
-					// dispatch mapping event
-					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));					
-				}
-			}
-			else
-			{					
+					{
+						// unselect previously selected node
+						root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+							if (n != nn && nn.props["selected"] == true)	
+							{									
+								_node.unmarkSelected(nn);
+								onMouseOver(n);
+							}			
+						});			
+						// unselect current if selected twice
+						if (n.props["selected"] == true)
+						{							
+							_node.unmarkSelected(n);
+							//_currentSelectedNodeId = -1; 
+							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "unselect_layout"));
+							onMouseOver(n);
+							// dispatch mapping event
+							//dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "remove", Number(n.name)));				
+						}
+						else if (n.props["activated"] == true)
+						{
+							super.onMouseDown(n);
+							//blurOtherNodes(n);
+							_node.markSelected(n);
+							//_currentSelectedNodeId = Number(n.name);
+							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "select_layout", Number(n.name)));
+							// dispatch mapping event
+							//dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
+						}											
+					}				
+		}
+
+	
+		/**
+		 * Process mapping when content node is NOT serially presented (free-selection)
+		 */	   		
+		private function processNotSerialMapping(n:NodeSprite):void 
+		{
+			// 1-click assumed
+			// 2-click needs to be implemented if needed
+			
+				var root:NodeSprite = tree.root as NodeSprite;				
 		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 					if (n != nn && nn.props["selected"] == true)	
 					{	
@@ -574,7 +653,40 @@ package cs448b.fp.tree
 					_node.markSelected(n);
 					// dispatch mapping event
 					dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
-				}	
+				}				
+		}	
+					
+		/**
+		 * Mouse button down handler
+		 */	   		
+		protected override function onMouseDown(n:NodeSprite, isSender:Boolean = true):void 
+		{
+			// no linking effect for mouse click. only mouse-over and out gets linking
+			if (isSender == false)
+				return;
+
+			// Check if the lock is enforced. It is enforced when popup is open.
+			if (NodeActions.lock == true)
+				return;
+				
+			if (Theme.ENABLE_SERIAL == true && isContentTree == true)
+				return;
+				
+			
+			if (Theme.ENABLE_SERIAL == true)
+			{
+				if (Theme.ENABLE_CONTINUE_BUTTON == false)	// 1-click interface
+				{
+					process1Click(n);
+				}
+				else	// continue button (2-click interface)
+				{
+					process2Click(n);			        					
+				}
+			}
+			else
+			{	
+				processNotSerialMapping(n);
 			}			
 
 		}

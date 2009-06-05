@@ -56,7 +56,39 @@ package cs448b.fp.utils
 			_displayManager.addEventListener(ControlsEvent.STATUS_UPDATE, onStatusUpdateEvent);	
 			addChild(_displayManager);
 		}
+		
+		/**
+		 * Get the current selected ID
+		 */							
+		public function get selectedContentID():Number
+		{
+			return _selectedContentID;
+		}
 
+		/**
+		 * Set the current selected ID
+		 */							
+		public function set selectedContentID(id:Number):void
+		{
+			_selectedContentID = id;
+		}
+		
+		/**
+		 * Get the current selected ID
+		 */							
+		public function get selectedLayoutID():Number
+		{
+			return _selectedLayoutID;
+		}
+
+		/**
+		 * Set the current selected ID
+		 */							
+		public function set selectedLayoutID(id:Number):void
+		{
+			_selectedLayoutID = id;
+		}
+				
 		/**
 		 * Start the mapping session by playing a preview 
 		 */							
@@ -105,6 +137,17 @@ package cs448b.fp.utils
 		}
 
 		/**
+		 * Add the mapping that is currently selected
+		 */			
+		public function addCurrentSelection():void
+		{
+			if (_selectedContentID != 0)
+			{
+				processMapping(_selectedLayoutID);
+			}
+		}
+			
+		/**
 		 * Event handler for the layout tree click event
 		 */			
 		private function onLayoutTreeEvent(e:MappingEvent):void
@@ -122,14 +165,6 @@ package cs448b.fp.utils
 //				
 //				// check if the whole tree is done
 //				_contentTree.checkCompleted();
-
-				// post-processing for preview click
-				if (_isPreview == true && _displayManager.currentTutorialStep == 4)
-				{
-					//showNextStep();
-					_displayManager.showTutorialNextStep();	
-				}
-
 			}
 			// remove is not needed anymore since we do not have any undo function for the interface
 			else if (_selectedContentID != 0 && e.name == "remove")
@@ -144,9 +179,22 @@ package cs448b.fp.utils
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "mappings", 0, message) );  				
 				resetSelections();		
 				
+			}		
+			// when two-click mapping is applied
+			// update the layout ID when unselect requested	
+			else if (_selectedContentID != 0 && e.name == "unselect_layout")
+			{
+				trace("unselect");
+				_selectedLayoutID = 0;
 			}
-
-			
+			// when two-click mapping is applied
+			// update the layout ID when select requested
+			else if (_selectedContentID != 0 && e.name == "select_layout")
+			{
+				trace("select: " + e.value);
+				_selectedLayoutID = e.value;
+			}	
+						
 //			if (_selectedContentID == 0)	// layout is selected alone.
 //			{
 //				resetSelections();
@@ -301,6 +349,10 @@ package cs448b.fp.utils
 			// First, update _selectedLayoutID. This is used in all *mapping functions.
 			_selectedLayoutID = layoutID;
 			
+			// if no layout node selected, just return
+			if (_selectedLayoutID == 0)
+				return;
+				
 			// case 1:  content node already has a mapping: remove its old mapping
 			//			cannot happen in the current configuration.
 			if (_mapping.getMappedIndex(_selectedContentID, 1).length > 0)
@@ -326,7 +378,14 @@ package cs448b.fp.utils
 			{
 				addMapping();
 				blinkNode();
-			}		  
+			}		 
+
+			// post-processing for preview click
+			if (_isPreview == true && _displayManager.currentTutorialStep == 4)
+			{
+				//showNextStep();
+				_displayManager.showTutorialNextStep();	
+			}			 
 		}
 
 		/**
@@ -357,6 +416,7 @@ package cs448b.fp.utils
 		 */		
 		private function onEndBlinkingMapped(e:TransitionEvent):void
 		{
+			var oldLayoutID:Number = _selectedLayoutID;
 			var message:String = "Mapping added";
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
 			// Check if the whole content tree is completed.
@@ -368,7 +428,10 @@ package cs448b.fp.utils
 							
 			// Explicitly move to the next step, also called from onUnmapButton in CascadedTree.as
 			if (Theme.ENABLE_SERIAL == true)	
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	        		
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	 
+			
+			// Force mouse over event to prevent mouse out and over again for mouse-over effect
+			_layoutTree.forceOnMouseOver(_layoutTree.getNodeByID(oldLayoutID));    		
 		}
 		
 		/**

@@ -73,6 +73,10 @@ package cs448b.fp.utils
 		 */		 
 		private function showConnectedEffects(n:NodeSprite):void
 		{
+			// no effect for already selected nodes
+			if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
+				return;
+				
 			n.lineColor = Theme.COLOR_CONNECTED;
 			n.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
 			n.lineAlpha = Theme.CONNECTED_ALPHA;
@@ -84,6 +88,9 @@ package cs448b.fp.utils
 		 */		 
 		private function hideConnectedEffects(n:NodeSprite):void
 		{
+			// no effect for already selected nodes
+			if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
+				return;
 			hideLine(n);
 			removeGlow(n);	
 		}
@@ -155,6 +162,8 @@ package cs448b.fp.utils
 				nn.lineWidth = Theme.LINE_WIDTH;
 			else if (_isContentTree == false && Theme.FIREBUG_LTREE == false)
 				nn.lineWidth = Theme.LINE_WIDTH;
+			// 9605 FIREBUG_LTREE == false means showing only activated nodes 
+			// while preserving ancerstor-descendent constraint						
 			else 
 				hideLine(nn);
 		}
@@ -184,7 +193,8 @@ package cs448b.fp.utils
 		{
 			nn.props["selected"] = true;
 			nn.lineColor = Theme.COLOR_SELECTED;
-			showLineWidth(nn);
+			//showLineWidth(nn);
+			nn.lineWidth = Theme.LINE_WIDTH;
 			nn.props["image"].alpha = 1;
 		}
 
