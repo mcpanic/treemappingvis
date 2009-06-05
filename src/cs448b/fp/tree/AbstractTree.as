@@ -195,12 +195,12 @@ package cs448b.fp.tree
 				var dX:Number = sX - prevX;
 				var dY:Number = sY - prevY;
 				
-				if (vis.y + dY > 0)
-				{
+				//if (vis.y + dY > 0)
+				//{
 					vis.x += dX;
 					vis.y += dY;
 
-				}		
+				//}		
 					prevX = sX;
 					prevY = sY;				
 			}

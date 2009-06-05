@@ -17,6 +17,7 @@ package cs448b.fp.tree
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
@@ -71,8 +72,19 @@ package cs448b.fp.tree
 		public override function init():void
 		{	
 			super.init();			
-			bounds = new Rectangle(_x, _y, 1024, 768);
-			vis.bounds = bounds;		
+			//bounds = new Rectangle(_x, _y, 1024, 768);
+			bounds = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT);
+			
+			var panel:Sprite = new Sprite();
+			panel.graphics.beginFill(0x000000);
+			panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+10, Theme.LAYOUT_CANVAS_HEIGHT+10);
+			panel.mouseEnabled = false;
+			addChild(panel);
+			
+			panel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT);
+			vis.bounds = bounds;
+			vis.x = _x;
+			vis.y = _y;
 			vis.update();
 			
 			if (_isPreview == true)
@@ -95,7 +107,8 @@ package cs448b.fp.tree
 			addZoomInButton();
 			addZoomOutButton();
 			addZoomResetButton();								
-			addChild(vis);
+			//addChild(vis);
+			panel.addChild(vis);
 		}
 
 		/**
@@ -469,6 +482,7 @@ package cs448b.fp.tree
 			{
 				//n.lineAlpha = 1;
 				_node.hideLine(n);	
+				_node.removeFilters(n);
 				if (isContentTree == false)
 					_node.hideConnectedNodes(n);				
 			}	
