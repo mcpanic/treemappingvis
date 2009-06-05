@@ -97,7 +97,10 @@ package {
 			else if (isRandom == true)
 			{
 				trace("Assignment ID: " + sessionManager.assignmentId);
-				currentPair = dataList.getDataList(fileList, imageList, false);				
+				if (Theme.ENABLE_DEBUG == true)
+					currentPair = dataList.getDataList(fileList, imageList, false, new Point(1, 1));
+				else
+					currentPair = dataList.getDataList(fileList, imageList, false);				
 			}
 			// load the current pair
 			else

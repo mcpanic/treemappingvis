@@ -18,13 +18,23 @@ package cs448b.fp.data
 		{
 			_pairList = new Array();
 				
-			_contentArray 	= new Array("courseRank_content", "moo_content", "yelp_content", "nymbler_content", 
-			"zopa_content", "allRecipes", "breastCancer_content", "dwell", "flickr", 
-			"google", "kayak", "mint", "nature", "paloAlto_content", "rockTheVote");
+			_contentArray 	= new Array("rockTheVote_content", 
+			"courseRank_content", "moo_content", 
+			"yelp_content", "nymbler_content", 
+			"zopa_content", "allRecipes_content", 
+			"breastCancer_content", "dwell_content", 
+			"flickr_content", "google_content", 
+			"weekendSherpa_content", "mint_content", 
+			"nature_content", "paloAlto_content");
 			
-			_layoutArray 	= new Array("courseRank_layout", "moo_layout", "yelp_layout", "nymbler_layout", 
-			"zopa_layout", "allRecipes", "breastCancer_layout", "dwell", "flickr", 
-			"google", "kayak", "mint", "nature", "paloAlto_layout",  "rockTheVote");											
+			_layoutArray 	= new Array("rockTheVote_layout", 
+			"courseRank_layout", "moo_layout", 
+			"yelp_layout", "nymbler_layout", 
+			"zopa_layout", "allRecipes_layout", 
+			"breastCancer_layout", "dwell_layout", 
+			"flickr_layout", "google_layout", 
+			"weekendSherpa_layout", "mint_layout", 
+			"nature_layout", "paloAlto_layout");											
 		}
 
 		/**
