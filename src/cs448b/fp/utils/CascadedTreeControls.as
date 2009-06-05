@@ -147,13 +147,7 @@ package cs448b.fp.utils
 		{
 			_helpButton = new Button();
 			_helpButton.label = Theme.LABEL_HELP;
-			_helpButton.toggle = true;
-			_helpButton.x = Theme.LAYOUT_HELP_X;
-//			if (_isPreview == true)
-//				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
-//			else
-			_helpButton.y = Theme.LAYOUT_HELP_Y;
-			_helpButton.width = Theme.LAYOUT_HELP_WIDTH;			
+			_helpButton.toggle = true;		
            	_helpButton.addEventListener(MouseEvent.CLICK, onHelpButton);
            	_helpButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_helpButton.enabled = false;
@@ -181,13 +175,7 @@ package cs448b.fp.utils
 		{
 			_restartButton = new Button();
 			_restartButton.label = Theme.LABEL_RESTART;
-			_restartButton.toggle = true;
-			_restartButton.x = Theme.LAYOUT_RESTART_X;
-//			if (_isPreview == true)
-//				_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
-//			else
-				_restartButton.y = Theme.LAYOUT_RESTART_Y;
-			_restartButton.width = Theme.LAYOUT_RESTART_WIDTH;			
+			_restartButton.toggle = true;		
            	_restartButton.addEventListener(MouseEvent.CLICK, onRestartButton);
            	_restartButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_restartButton.enabled = false;
@@ -218,10 +206,29 @@ package cs448b.fp.utils
 			_continueButton.label = Theme.LABEL_CONT1;
 			_continueButton.toggle = true;
            	_continueButton.addEventListener(MouseEvent.CLICK, onContinueButton);
-           	_continueButton.setStyle("textFormat", Theme.FONT_BUTTON);//_textFormat);
-           	addChild(_continueButton);  
+           	_continueButton.setStyle("textFormat", Theme.FONT_BUTTON);//_textFormat);		
+           	_continueButton.enabled = false;
+           	_continueButton.useHandCursor = true;
+           	addChild(_continueButton);  	           	
 		}    
+		      
+        private function onContinueButton( mouseEvent:MouseEvent ):void
+        {
+			//dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "continue") );        			 
+			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "next") );
+        }	
 
+        
+        public function enableContinueButton():void
+        {
+        	_continueButton.enabled = true;
+        }
+     
+        public function disableContinueButton():void
+        {
+        	_continueButton.enabled = false;
+        }
+        
 		private function addFeedback():void
 		{
             _feedback = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
@@ -230,12 +237,8 @@ package cs448b.fp.utils
             _feedback.textMode = TextSprite.DEVICE;
             this.addChild( _feedback );        
         }
-        
-        private function onContinueButton( mouseEvent:MouseEvent ):void
-        {
-			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "continue") );        			 
-        }	
 
+        
         public function displayFeedback(message:String):void
         {
         	_feedback.text = message;
@@ -322,9 +325,22 @@ package cs448b.fp.utils
 			}
 			if (_continueButton)
 			{
-				_continueButton.x = 100;
-				_continueButton.y = y+50;
-			}		
+				_continueButton.x = Theme.LAYOUT_CONTINUE_X;
+				_continueButton.y = Theme.LAYOUT_CONTINUE_Y;
+				_continueButton.width = Theme.LAYOUT_CONTINUE_WIDTH;	
+			}	
+			if (_restartButton)
+			{
+				_restartButton.x = Theme.LAYOUT_RESTART_X;
+				_restartButton.y = Theme.LAYOUT_RESTART_Y;
+				_restartButton.width = Theme.LAYOUT_RESTART_WIDTH;					
+			}
+			if (_helpButton)
+			{
+				_helpButton.x = Theme.LAYOUT_HELP_X;
+				_helpButton.y = Theme.LAYOUT_HELP_Y;
+				_helpButton.width = Theme.LAYOUT_HELP_WIDTH;					
+			}						
 			if (_notice)
 			{
 				_notice.x = Theme.LAYOUT_NOTICE_X; //250;
@@ -339,7 +355,7 @@ package cs448b.fp.utils
 			{
 				_mappings.x = Theme.LAYOUT_MAPPINGS_X; //250;
 				_mappings.y = Theme.LAYOUT_MAPPINGS_Y; //y+110;
-			}
+			}	
 		}
 		
 	}

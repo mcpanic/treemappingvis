@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = false;
+		public static var ENABLE_DEBUG:Boolean = true;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
@@ -28,7 +28,7 @@ package cs448b.fp.utils
 		// Enable / Disable serial node presentation (one content node at a time)
 		public static var ENABLE_SERIAL:Boolean = true;	
 		// Enable / Disable continue button - determined by ENABLE_REL
-		public static var ENABLE_CONTINUE_BUTTON:Boolean = ENABLE_REL;
+		public static var ENABLE_CONTINUE_BUTTON:Boolean = false;	// ENABLE_REL
 		// Enable /Disable blinking effect for mapping actions
 		public static var ENABLE_BLINKING:Boolean = true;
 		
@@ -88,7 +88,10 @@ package cs448b.fp.utils
 		public static var LAYOUT_HELP_WIDTH:Number = 50;	// help button width
 		public static var LAYOUT_RESTART_X:Number = 885;		// restart button x-coordinate
 		public static var LAYOUT_RESTART_Y:Number = 15;		// restart button y-coordinate
-		public static var LAYOUT_RESTART_WIDTH:Number = 70;	// restart button width		
+		public static var LAYOUT_CONTINUE_WIDTH:Number = 70;	// continue button width		
+		public static var LAYOUT_CONTINUE_X:Number = 965;		// continue button x-coordinate
+		public static var LAYOUT_CONTINUE_Y:Number = 15;		// continue button y-coordinate
+		public static var LAYOUT_RESTART_WIDTH:Number = 70;	// restart button width			
 		public static var LAYOUT_FEEDBACK_X:Number = 25;//450;	// notice x-coordinate
 		public static var LAYOUT_FEEDBACK_Y:Number = 17;		// notice y-coordinate
 				
@@ -172,7 +175,7 @@ package cs448b.fp.utils
 										"Click 'help' button for interaction tips.";	
 
 		// Labels: for buttons and sections, used in tree control files
-		public static var LABEL_CONT1:String = "Start";
+		public static var LABEL_CONT1:String = "Continue"; //"Start";
 		public static var LABEL_CONT2:String = "Continue";
 		public static var LABEL_CONT3:String = "Finish";
 		public static var LABEL_CONTENT:String = "Content";

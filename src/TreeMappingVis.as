@@ -209,6 +209,10 @@ package {
 			{	
 				mappingManager.showNextStep();			
 			}
+			else if (event.name == "next")
+			{	
+				mappingManager.addCurrentSelection();			
+			}
 			else if (event.name == "help")
 			{	
 				mappingManager.showHelp();			
@@ -250,7 +254,7 @@ package {
 			else if (event.name == "continue")
 			{	
 				mappingManager.showNextStep();			
-			}	
+			}				
 			else if (event.name == "tutorial_advance")
 			{	
 				mappingManager.showTutorialNextStep();			
@@ -259,6 +263,8 @@ package {
 			{	
 				controls.enableHelpButton();	
 				controls.enableRestartButton();
+				if (Theme.ENABLE_CONTINUE_BUTTON == true)
+					controls.enableContinueButton();
 				cascadedTree1.enableUnmapButton();
 				cascadedTree1.enableZoomButtons();
 				cascadedTree2.enableZoomButtons();	
@@ -267,6 +273,8 @@ package {
 			{	
 				controls.disableHelpButton();		
 				controls.disableRestartButton();	
+				if (Theme.ENABLE_CONTINUE_BUTTON == true)
+					controls.disableContinueButton();	
 				cascadedTree1.disableUnmapButton();
 				cascadedTree1.disableZoomButtons();					
 				cascadedTree2.disableZoomButtons();
