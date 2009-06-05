@@ -86,7 +86,8 @@ package cs448b.fp.data
 //			if (n.name == "1")
 //			{				
 				n.props["image"] = image;
-				n.addChild(image);						
+				n.addChild(image);
+				//n.props["image"].visible = false;						
 //			}
 //			else
 //			{

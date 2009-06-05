@@ -11,7 +11,7 @@ package cs448b.fp.utils
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
-		public static var NUM_SESSIONS:Number = 2;
+		public static var NUM_SESSIONS:Number = 5;
 		// How many pairs are in the database
 		public static var NUM_PAIRS:Number = 15;
 		// How many steps are in the tutorial session
@@ -19,7 +19,7 @@ package cs448b.fp.utils
 				
 		// Node offset options for better parent selection. 0: nothing, 1: cascaded offset, 2: expanded parent
 		public static var ENABLE_CASCADE_OFFSET:uint = 2;
-		public static var CASCADE_OFFSET:uint = 10;
+		public static var CASCADE_OFFSET:uint = 20;
 		
 		// Enable /Disable merge popup (1 to N mapping possible)
 		public static var ENABLE_MERGE:Boolean = false;		
@@ -54,7 +54,7 @@ package cs448b.fp.utils
 		public static var ALPHA_MAPPED:Number = 0.8;		// alpha value for mapped nodes
 		public static var SHOW_MAPPPED:Boolean = true;		// hide content of the mapped nodes
 		public static var CONNECTED_ALPHA:Number = 0.5;		// alpha value for the connected layout nodes on mouseover
-		public static var CONNECTED_LINE_WIDTH:Number = 1;	// dividend for the connected layout nodes on mouseover
+		public static var CONNECTED_LINE_WIDTH:Number = 1.5;	// dividend for the connected layout nodes on mouseover
 		public static var ALPHA_POPUP:Number = 0.5; 		// alpha value for the trees while popup menu is open
 		
 		public static var MAX_ZOOM:Number = 4; 		// alpha value for the trees while popup menu is open

@@ -1,6 +1,7 @@
 package cs448b.fp.tree
 {
-	import cs448b.fp.utils.*;	
+	import cs448b.fp.utils.*;
+	
 	import flare.util.Property;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.*;
@@ -48,6 +49,8 @@ package cs448b.fp.tree
 		
 		private var _x:Number;
 		private var _y:Number;
+		private var _isContentTree:Boolean;
+		
 		/** The property from which to access size values for leaf nodes. */
 		public function get sizeField():String { return _size.name; }
 		public function set sizeField(s:String):void { _size = Property.$(s); }
@@ -60,10 +63,11 @@ package cs448b.fp.tree
 		 * @param sizeField the data property from which to access the size
 		 *  value for leaf nodes. The default is the "size" property.
 		 */
-		public function CascadedTreeLayout(x:Number, y:Number, sizeField:String="size") {
+		public function CascadedTreeLayout(x:Number, y:Number, isContentTree:Boolean, sizeField:String="size") {
 			this.sizeField = sizeField;
 			this._x = x;
 			this._y = y;
+			this._isContentTree = isContentTree;
 		}
 		
 		/** @inheritDoc */
@@ -165,7 +169,7 @@ package cs448b.fp.tree
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
 //	        	if (n.name == "1")
 //	        	{
-				if (Theme.ENABLE_CASCADE_OFFSET == 0)
+				if (_isContentTree == true || Theme.ENABLE_CASCADE_OFFSET == 0)
 				{
 					n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
 					n.props["image"].x = Number(n.props["x"]);
@@ -179,10 +183,10 @@ package cs448b.fp.tree
 					n.props["image"].y = Number(n.props["y"]) + (n.depth - 1) * _cascadeOffset;
 				}
 				else if (Theme.ENABLE_CASCADE_OFFSET == 2)
-				{
-
-					n.props["image"].width = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
-					n.props["image"].height = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
+				{					
+					var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
+					var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
+					n.props["image"].setSize(w, h);
 					n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
 					n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
 				}	     					     
@@ -312,7 +316,7 @@ package cs448b.fp.tree
 //	        		o.v = n.props["image"].y;
 //	        		o.w = n.props["image"].width;
 //	        		o.h = n.props["height"].height;	    
-					if (Theme.ENABLE_CASCADE_OFFSET == 0)
+					if (_isContentTree == true || Theme.ENABLE_CASCADE_OFFSET == 0)
 					{
 						o.u = n.props["x"];
 		        		o.v = n.props["y"];

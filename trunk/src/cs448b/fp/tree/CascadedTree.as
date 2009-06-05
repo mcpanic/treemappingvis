@@ -322,7 +322,7 @@ package cs448b.fp.tree
 				visible: false
 			}
 			
-			_layout = new CascadedTreeLayout(_x, _y);
+			_layout = new CascadedTreeLayout(_x, _y, _isContentTree);
 			
 		}
 		
