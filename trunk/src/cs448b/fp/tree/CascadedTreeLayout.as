@@ -79,7 +79,7 @@ package cs448b.fp.tree
 			_r.y = b.y;
 			_r.width=b.width-1; 
 	        _r.height=b.height-1;
-
+			//trace(b.x + " " + b.y + " " + b.width + " " + b.height);
 
 			_maxDepth = getMaxTreeDepth(root);	        
 	        // process size values

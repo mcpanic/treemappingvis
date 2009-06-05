@@ -92,7 +92,7 @@ package cs448b.fp.utils
 			if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
 				return;
 			hideLine(n);
-			removeGlow(n);	
+			removeFilters(n);	
 		}
 				
 		/** 
@@ -165,7 +165,10 @@ package cs448b.fp.utils
 			// 9605 FIREBUG_LTREE == false means showing only activated nodes 
 			// while preserving ancerstor-descendent constraint						
 			else 
+			{
 				hideLine(nn);
+				removeFilters(nn);	
+			}
 		}
 
 
@@ -183,6 +186,7 @@ package cs448b.fp.utils
 			if (nn.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				hideLine(nn);
+				removeFilters(nn);	
 			}
 		}
 
@@ -250,6 +254,7 @@ package cs448b.fp.utils
 			else
 			{
 				hideLine(nn);
+				removeFilters(nn);	
 //				nn.lineColor = _tree.tree.nodes.lineColor; 
 //				nn.lineWidth = _tree.tree.nodes.lineWidth;				
 			}		
@@ -299,6 +304,7 @@ package cs448b.fp.utils
 						nn.props["mapped"] = Theme.STATUS_MAPPED;	
 						//nn.fillColor = Theme.COLOR_FILL_MAPPED;
 						hideLine(nn);
+						removeFilters(nn);	
 						nn.alpha = Theme.ALPHA_MAPPED;
 						nn.props["image"].visible = Theme.SHOW_MAPPPED;	
 	        		}	 
@@ -307,6 +313,7 @@ package cs448b.fp.utils
 	        			nn.props["mapped"] = Theme.STATUS_UNMAPPED;	
 						//nn.fillColor = Theme.COLOR_FILL_UNMAPPED;
 						hideLine(nn);
+						removeFilters(nn);	
 						nn.alpha = Theme.ALPHA_MAPPED;
 						nn.props["image"].visible = Theme.SHOW_MAPPPED;		        		
 	        		}
@@ -351,6 +358,7 @@ package cs448b.fp.utils
 					 
 					showLineWidth(nn);
 					hideLine(nn);
+					removeFilters(nn);	
 //					nn.lineColor = nodes.lineColor;
 //					nn.fillColor = nodes.fillColor;
 					nn.props["activated"] = false;

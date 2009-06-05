@@ -28,7 +28,7 @@ package cs448b.fp.utils
 		// Enable / Disable serial node presentation (one content node at a time)
 		public static var ENABLE_SERIAL:Boolean = true;	
 		// Enable / Disable continue button - determined by ENABLE_REL
-		public static var ENABLE_CONTINUE_BUTTON:Boolean = false;	// ENABLE_REL
+		public static var ENABLE_CONTINUE_BUTTON:Boolean = true;	// ENABLE_REL
 		// Enable /Disable blinking effect for mapping actions
 		public static var ENABLE_BLINKING:Boolean = true;
 		
