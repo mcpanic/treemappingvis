@@ -432,7 +432,8 @@ package cs448b.fp.utils
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	 
 			
 			// Force mouse over event to prevent mouse out and over again for mouse-over effect
-			_layoutTree.forceOnMouseOver(_layoutTree.getNodeByID(oldLayoutID));    		
+			if (Theme.ENABLE_CONTINUE_BUTTON == true)
+				_layoutTree.forceOnMouseOver(_layoutTree.getNodeByID(oldLayoutID));    		
 		}
 		
 		/**

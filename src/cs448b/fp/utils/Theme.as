@@ -81,7 +81,7 @@ package cs448b.fp.utils
 		public static var LAYOUT_LTREE_Y:uint = 90;			// layout tree y-coordinate
 		
 		public static var LAYOUT_UNMAP_X:Number = 650;//200;	// unmap button x-coordinate
-		public static var LAYOUT_UNMAP_Y:Number = -75;		// unmap button y-coordinate
+		public static var LAYOUT_UNMAP_Y:Number = 15; //-75;		// unmap button y-coordinate
 		public static var LAYOUT_UNMAP_WIDTH:Number = 150;	// unmap button width		
 		public static var LAYOUT_HELP_X:Number = 860;		// help button x-coordinate
 		public static var LAYOUT_HELP_Y:Number = 15;		// help button y-coordinate
@@ -138,16 +138,16 @@ package cs448b.fp.utils
 		public static var MSG_LOADED:String = "Loading...";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";
-		public static var MSG_HELP:String = "Mouse click: add a mapping\n\n" + 
+		public static var MSG_HELP:String = "Mouse click: select a segment\n" + 
 				"Mouse over\n" + 
-				"  * mapped not yet: view current(red) and visually related(purple) segments \n" + 
+				"  * not yet mapped: view current(red) and visually related(purple) segments \n" + 
 				"  * mapped already: blue - there is a mapped segment on the other page. \n" + 
-				"                    red  - you assigned 'no mapping' for this segment.\n\n" + 
+				"                                 red  - you assigned 'no mapping' for this segment.\n" + 
 				"Zoom control \n" + 
-				"  * (+): zoom in \n" + 
-				"  * (-): zoom out \n" + 
-				"  * Reset: back to default scale \n\n" + 
-				"Panning: Control Key + Mousge Drag \n";
+				"  * (+): zoom in button \n" + 
+				"  * (-): zoom out button \n" + 
+				//"  * Reset: back to default scale \n\n" + 
+				"Panning: Control Key + Mouse Drag \n";
 
 		// Tutorial messages: used in tutorial session
 		public static var MSG_TUT1:String = "We want to learn how design elements in a pair of web pages relate to each other, " + 
@@ -177,7 +177,7 @@ package cs448b.fp.utils
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Add mapping"; //"Start";
 		public static var LABEL_CONT2:String = "Add mapping";
-		public static var LABEL_CONT3:String = "Finish";
+		public static var LABEL_CONT3:String = "Add mapping";
 		public static var LABEL_CONTENT:String = "Content";
 		public static var LABEL_LAYOUT:String = "Layout";
 		public static var LABEL_NOMAPPING:String = "Assign no mapping";

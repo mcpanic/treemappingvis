@@ -29,7 +29,6 @@ package cs448b.fp.tree
 		private var _canvasWidth:Number = Theme.LAYOUT_CANVAS_WIDTH;
 		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
 
-		private var _unmapButton:Button;
 		private var _controls:SingleCascadedTreeControls;
 		private var _node:NodeActions;
 		// Order of tree traversal
@@ -77,8 +76,8 @@ package cs448b.fp.tree
 			
 			panel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT+30);
 			vis.bounds = bounds;
-			vis.x = _x;
-			vis.y = _y;
+			vis.x = _x+10;
+			vis.y = _y+10;
 			vis.update();
 			
 			if (_isPreview == true)
@@ -100,51 +99,12 @@ package cs448b.fp.tree
 			_controls = new SingleCascadedTreeControls(_isContentTree);
 			_controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );							
 			addChild(_controls);
-			addUnmapButton();	
 						
 			//addChild(vis);
 			panel.addChild(vis);
 		}
 
-		
-		/**
-		 * Add unmap button for each tree layout
-		 */		
-		private function addUnmapButton():void
-		{
-			if (isContentTree == false)
-				return;			
-			_unmapButton = new Button();
-			_unmapButton.label = Theme.LABEL_NOMAPPING;
-			_unmapButton.toggle = true;
-			if (Theme.ENABLE_CONTINUE_BUTTON == true)
-				_unmapButton.x = Theme.LAYOUT_UNMAP_X + Theme.LAYOUT_CONTINUE_WIDTH + 10;
-			else			
-				_unmapButton.x = Theme.LAYOUT_UNMAP_X;
-			_unmapButton.y = Theme.LAYOUT_UNMAP_Y;
-			_unmapButton.width = Theme.LAYOUT_UNMAP_WIDTH;			
-           	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
-           	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); 
-           	_unmapButton.enabled = false;
-           	_unmapButton.useHandCursor = true;
-           	addChild(_unmapButton);  			
-		}
-		
-		/**
-		 * Enable button controls
-		 */		
-		public function enableUnmapButton():void
-		{
-			_unmapButton.enabled = true;
-		}
 
-		/**
-		 * Disable button controls
-		 */		
-		public function disableUnmapButton():void
-		{
-			_unmapButton.enabled = false;		
-		}
 
 		/**
 		 * Event handler for controls
@@ -185,7 +145,7 @@ package cs448b.fp.tree
 		/**
 		 * Mark the selected node as unmapped
 		 */
-		private function onUnmapButton(event:MouseEvent):void
+		public function onUnmapButton():void
 		{
 			var selectedID:Number = 0;
 			var root:NodeSprite = tree.root as NodeSprite;
@@ -343,15 +303,11 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
 			;
-//			else if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
-//			;
 			// Brushing and linking for mapped nodes
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				n.lineColor = Theme.COLOR_ACTIVATED;
 				n.lineWidth = Theme.LINE_WIDTH;
-				//n.lineAlpha = Theme.ALPHA_MAPPED;	
-				//n.fillColor = Theme.COLOR_FILL_MAPPED;	
 				if (isContentTree == false)
 				{
 					//_node.addDropShadow(n);
@@ -367,8 +323,6 @@ package cs448b.fp.tree
 			{
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;
-				//n.lineAlpha = Theme.ALPHA_MAPPED;			
-				//n.fillColor = Theme.COLOR_FILL_UNMAPPED;
 				if (isContentTree == false)
 					_node.showConnectedNodes(n);
 				pullAllChildrenForward(n);				
@@ -376,8 +330,6 @@ package cs448b.fp.tree
 			// Border change on connected nodes for activated nodes
 			else if (n.props["activated"] == true)	// only when activated
 			{
-				//n.lineColor = 0xffFF0000; 
-				//n.lineWidth = 15;
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;	
 				_node.addDropShadow(n);
@@ -419,8 +371,6 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
 			;
-//			else if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
-//			;
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
 				//n.lineAlpha = 1;

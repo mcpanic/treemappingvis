@@ -217,6 +217,10 @@ package {
 			{	
 				mappingManager.showHelp();			
 			}	
+			else if (event.name == "unmap")
+			{	
+				cascadedTree1.onUnmapButton();			
+			}				
 			else if (event.name == "restart")
 			{
 				trace("restart");
@@ -261,21 +265,13 @@ package {
 			}				
 			else if (event.name == "showbutton")
 			{	
-				controls.enableHelpButton();	
-				controls.enableRestartButton();
-				if (Theme.ENABLE_CONTINUE_BUTTON == true)
-					controls.enableContinueButton();
-				cascadedTree1.enableUnmapButton();
+				controls.enableButtons();
 				cascadedTree1.enableZoomButtons();
 				cascadedTree2.enableZoomButtons();	
 			}
 			else if (event.name == "hidebutton")
 			{	
-				controls.disableHelpButton();		
-				controls.disableRestartButton();	
-				if (Theme.ENABLE_CONTINUE_BUTTON == true)
-					controls.disableContinueButton();	
-				cascadedTree1.disableUnmapButton();
+				controls.disableButtons();
 				cascadedTree1.disableZoomButtons();					
 				cascadedTree2.disableZoomButtons();
 			}			
