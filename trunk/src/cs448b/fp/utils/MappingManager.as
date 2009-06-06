@@ -266,12 +266,13 @@ package cs448b.fp.utils
 		private function showSelectionFeedback(idx:Number):void
 		{
 			var message:String; 
+			message = Theme.MSG_MAPPING_INST;
 			if (_contentTree._traversalOrder == Theme.ORDER_DFS)	// root is not number 1
-				message = "Step " + _contentTree._currentStep;
+				message += " (" + _contentTree._currentStep;
 			else
-				message = "Step " + (_contentTree._currentStep - 1);
+				message += " (" + (_contentTree._currentStep - 1);
 			// -1 for the length since root is automatically mapped.
-			message += " of " + (_contentTree.tree.nodes.length - 1) + ". " + Theme.MSG_MAPPING_INST;
+			message += " of " + (_contentTree.tree.nodes.length - 1) + ")"; 
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "feedback", 0, message) );   			
 			_selectedContentID = idx;	
 		}

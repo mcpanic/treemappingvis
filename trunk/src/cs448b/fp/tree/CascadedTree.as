@@ -9,7 +9,6 @@ package cs448b.fp.tree
 	import flare.animate.TransitionEvent;
 	import flare.animate.Transitioner;
 	import flare.animate.Tween;
-	import flare.display.TextSprite;
 	import flare.util.Shapes;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
@@ -29,11 +28,9 @@ package cs448b.fp.tree
 		private var _isPreview:Boolean;			
 		private var _canvasWidth:Number = Theme.LAYOUT_CANVAS_WIDTH;
 		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
-		private var _title:TextSprite;
+
 		private var _unmapButton:Button;
-		private var _zoomInButton:Button;
-		private var _zoomOutButton:Button;
-		private var _zoomResetButton:Button;
+		private var _controls:SingleCascadedTreeControls;
 		private var _node:NodeActions;
 		// Order of tree traversal
 		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
@@ -52,10 +49,6 @@ package cs448b.fp.tree
 
 //			// initialize the current selected node
 //			_currentSelectedNodeId = -1; 
-						
-//			var _popupManager:PopupManager = new PopupManager();
-//			_popupManager.init();
-//			addChild(_popupManager);
 		}
 
 		/**
@@ -71,17 +64,18 @@ package cs448b.fp.tree
 		 */			
 		public override function init():void
 		{	
-			super.init();			
+			super.init();
+						
 			//bounds = new Rectangle(_x, _y, 1024, 768);
 			bounds = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT);
 			
 			var panel:Sprite = new Sprite();
 			panel.graphics.beginFill(0x000000);
-			panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+10, Theme.LAYOUT_CANVAS_HEIGHT+10);
+			panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT+30);
 			panel.mouseEnabled = false;
 			addChild(panel);
 			
-			panel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT);
+			panel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT+30);
 			vis.bounds = bounds;
 			vis.x = _x;
 			vis.y = _y;
@@ -101,32 +95,17 @@ package cs448b.fp.tree
 			tf.y = Theme.LAYOUT_NODENAME_Y;
 
 			if (Theme.ENABLE_DEBUG == true)
-				addChild(tf);			
-			addLabel();
+				addChild(tf);	
+				
+			_controls = new SingleCascadedTreeControls(_isContentTree);
+			_controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );							
+			addChild(_controls);
 			addUnmapButton();	
-			addZoomInButton();
-			addZoomOutButton();
-			addZoomResetButton();								
+						
 			//addChild(vis);
 			panel.addChild(vis);
 		}
 
-		/**
-		 * Add tree name labels
-		 */				
-		private function addLabel():void
-		{
-            _title = new TextSprite("", Theme.FONT_LABEL); 
-            _title.horizontalAnchor = TextSprite.CENTER;
-            if (_isContentTree == true)
-            	_title.text = Theme.LABEL_CONTENT;
-            else
-            	_title.text = Theme.LABEL_LAYOUT;
-            _title.textMode = TextSprite.DEVICE;	
-            _title.x = Theme.LAYOUT_TREENAME_X;
-            _title.y = Theme.LAYOUT_TREENAME_Y;
-            addChild( _title );			
-		}
 		
 		/**
 		 * Add unmap button for each tree layout
@@ -138,7 +117,10 @@ package cs448b.fp.tree
 			_unmapButton = new Button();
 			_unmapButton.label = Theme.LABEL_NOMAPPING;
 			_unmapButton.toggle = true;
-			_unmapButton.x = Theme.LAYOUT_UNMAP_X;
+			if (Theme.ENABLE_CONTINUE_BUTTON == true)
+				_unmapButton.x = Theme.LAYOUT_UNMAP_X + Theme.LAYOUT_CONTINUE_WIDTH + 10;
+			else			
+				_unmapButton.x = Theme.LAYOUT_UNMAP_X;
 			_unmapButton.y = Theme.LAYOUT_UNMAP_Y;
 			_unmapButton.width = Theme.LAYOUT_UNMAP_WIDTH;			
            	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
@@ -165,13 +147,30 @@ package cs448b.fp.tree
 		}
 
 		/**
+		 * Event handler for controls
+		 */	
+		private function onControlsEvent( event:ControlsEvent ):void
+		{
+			if (event.name == "zoom_in")	
+			{
+				onZoomInButton();
+			}
+			else if (event.name == "zoom_out")	
+			{
+				onZoomOutButton();	
+			}
+			else if (event.name == "zoom_reset")	
+			{
+				onZoomResetButton();	
+			}
+		}	
+		
+		/**
 		 * Enable button controls
 		 */		
 		public function enableZoomButtons():void
 		{
-			_zoomInButton.enabled = true;
-			_zoomOutButton.enabled = true;
-			_zoomResetButton.enabled = true;
+			_controls.enableZoomButtons();
 		}
 
 
@@ -180,9 +179,7 @@ package cs448b.fp.tree
 		 */		
 		public function disableZoomButtons():void
 		{
-			_zoomInButton.enabled = false;
-			_zoomOutButton.enabled = false;
-			_zoomResetButton.enabled = false;			
+			_controls.disableZoomButtons();	
 		}
 				
 		/**
@@ -217,77 +214,23 @@ package cs448b.fp.tree
 				dispatchEvent(new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance") );			
 		}
 
-		
-		/**
-		 * Add zoom-in button for each tree layout
-		 */		
-		private function addZoomInButton():void
-		{		
-			_zoomInButton = new Button();
-			_zoomInButton.label = Theme.LABEL_ZOOM_IN;
-			_zoomInButton.toggle = true;
-			_zoomInButton.x = Theme.LAYOUT_ZOOM_X;
-			_zoomInButton.y = Theme.LAYOUT_ZOOM_Y;
-			_zoomInButton.width = Theme.LAYOUT_ZOOM_WIDTH;			
-           	_zoomInButton.addEventListener(MouseEvent.CLICK, onZoomInButton);
-           	_zoomInButton.setStyle("textFormat", Theme.FONT_BUTTON); 
-           	_zoomInButton.enabled = false;
-           	_zoomInButton.useHandCursor = true;
-           	addChild(_zoomInButton);  			
-		}
-
-		/**
-		 * Add zoom-out button for each tree layout
-		 */		
-		private function addZoomOutButton():void
-		{		
-			_zoomOutButton = new Button();
-			_zoomOutButton.label = Theme.LABEL_ZOOM_OUT;
-			_zoomOutButton.toggle = true;
-			_zoomOutButton.x = Theme.LAYOUT_ZOOM_X + Theme.LAYOUT_ZOOM_WIDTH + 10 + Theme.LAYOUT_ZOOM_RESET_WIDTH + 10;
-			_zoomOutButton.y = Theme.LAYOUT_ZOOM_Y;
-			_zoomOutButton.width = Theme.LAYOUT_ZOOM_WIDTH;			
-           	_zoomOutButton.addEventListener(MouseEvent.CLICK, onZoomOutButton);
-           	_zoomOutButton.setStyle("textFormat", Theme.FONT_BUTTON); 
-           	_zoomOutButton.enabled = false;
-           	_zoomOutButton.useHandCursor = true;
-           	addChild(_zoomOutButton);  			
-		}
-
-		/**
-		 * Add zoom-reset button for each tree layout
-		 */		
-		private function addZoomResetButton():void
-		{		
-			_zoomResetButton = new Button();
-			_zoomResetButton.label = Theme.LABEL_ZOOM_RESET;
-			_zoomResetButton.toggle = true;
-			_zoomResetButton.x = Theme.LAYOUT_ZOOM_X + Theme.LAYOUT_ZOOM_WIDTH + 10;
-			_zoomResetButton.y = Theme.LAYOUT_ZOOM_Y;
-			_zoomResetButton.width = Theme.LAYOUT_ZOOM_RESET_WIDTH;			
-           	_zoomResetButton.addEventListener(MouseEvent.CLICK, onZoomResetButton);
-           	_zoomResetButton.setStyle("textFormat", Theme.FONT_BUTTON); 
-           	_zoomResetButton.enabled = false;
-           	_zoomResetButton.useHandCursor = true;
-           	addChild(_zoomResetButton);  			
-		}
 
 		/**
 		 * Zoom in
 		 */
-		private function onZoomInButton(event:MouseEvent):void
+		private function onZoomInButton():void
 		{
 			if(vis.scaleX < Theme.MAX_ZOOM)
 			{
 				vis.scaleX *= 1.1;
 				vis.scaleY *= 1.1;
-			}		
+			}
 		}
 
 		/**
 		 * Zoom out
 		 */
-		private function onZoomOutButton(event:MouseEvent):void
+		private function onZoomOutButton():void
 		{
 			if(vis.scaleX > Theme.MIN_ZOOM)
 			{
@@ -299,7 +242,7 @@ package cs448b.fp.tree
 		/**
 		 * Zoom reset
 		 */
-		private function onZoomResetButton(event:MouseEvent):void
+		private function onZoomResetButton():void
 		{
 			vis.scaleX = getScale();
 			vis.scaleY = getScale();		
@@ -610,11 +553,13 @@ package cs448b.fp.tree
 						});			
 						// unselect current if selected twice
 						if (n.props["selected"] == true)
-						{							
-							_node.unmarkSelected(n);
-							//_currentSelectedNodeId = -1; 
-							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "unselect_layout"));
-							onMouseOver(n);
+						{	
+							// uncomment the following three lines to enable 'unselect'						
+							//_node.unmarkSelected(n);						
+							//dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "unselect_layout"));
+							//onMouseOver(n);
+							
+							
 							// dispatch mapping event
 							//dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "remove", Number(n.name)));				
 						}
