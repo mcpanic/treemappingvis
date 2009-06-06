@@ -183,12 +183,16 @@ package cs448b.fp.tree
 					n.props["image"].y = Number(n.props["y"]) + (n.depth - 1) * _cascadeOffset;
 				}
 				else if (Theme.ENABLE_CASCADE_OFFSET == 2)
-				{					
-					var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
-					var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
-					n.props["image"].setSize(w, h);
-					n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-					n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+				{	
+					n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
+					n.props["image"].x = Number(n.props["x"]);
+					n.props["image"].y = Number(n.props["y"]);
+									
+//					var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
+//					var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
+//					n.props["image"].setSize(w, h);
+//					n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+//					n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
 				}	     					     
 //		  		}
 	        });

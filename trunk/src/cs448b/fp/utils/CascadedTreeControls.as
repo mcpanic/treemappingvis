@@ -23,6 +23,7 @@ package cs448b.fp.utils
 		private var _continueButton:Button;
 		private var _helpButton:Button;
 		private var _restartButton:Button;
+		private var _unmapButton:Button;		
 		private var _notice:TextSprite;
 		private var _feedback:TextSprite;
 		private var _mappings:TextSprite;
@@ -45,6 +46,7 @@ package cs448b.fp.utils
 			addFeedback();
 			addMappings();
 			addNotice();
+			addUnmap();
 			addHelp();
 			addRestart();
 			if (Theme.ENABLE_CONTINUE_BUTTON == true)
@@ -142,12 +144,49 @@ package cs448b.fp.utils
 				_restartButton.y = Theme.LAYOUT_RESTART_Y;
 			}				
 		}
+
 		
+		/**
+		 * Add unmap button for each tree layout
+		 */		
+		private function addUnmap():void
+		{		
+			_unmapButton = new Button();
+			_unmapButton.label = Theme.LABEL_NOMAPPING;
+			_unmapButton.toggle = false;		
+           	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
+           	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); 
+           	_unmapButton.enabled = false;
+           	_unmapButton.useHandCursor = true;
+           	addChild(_unmapButton);  			
+		}
+		
+        private function onUnmapButton( mouseEvent:MouseEvent ):void
+        {
+			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "unmap") );        			 
+        }
+        		
+		/**
+		 * Enable button controls
+		 */		
+		public function enableUnmapButton():void
+		{
+			_unmapButton.enabled = true;
+		}
+
+		/**
+		 * Disable button controls
+		 */		
+		public function disableUnmapButton():void
+		{
+			_unmapButton.enabled = false;		
+		}
+				
 		private function addHelp():void
 		{
 			_helpButton = new Button();
 			_helpButton.label = Theme.LABEL_HELP;
-			_helpButton.toggle = true;		
+			_helpButton.toggle = false;		
            	_helpButton.addEventListener(MouseEvent.CLICK, onHelpButton);
            	_helpButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_helpButton.enabled = false;
@@ -175,7 +214,7 @@ package cs448b.fp.utils
 		{
 			_restartButton = new Button();
 			_restartButton.label = Theme.LABEL_RESTART;
-			_restartButton.toggle = true;		
+			_restartButton.toggle = false;		
            	_restartButton.addEventListener(MouseEvent.CLICK, onRestartButton);
            	_restartButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_restartButton.enabled = false;
@@ -204,7 +243,7 @@ package cs448b.fp.utils
 		{	   
 			_continueButton = new Button();
 			_continueButton.label = Theme.LABEL_CONT1;
-			_continueButton.toggle = true;
+			_continueButton.toggle = false;
            	_continueButton.addEventListener(MouseEvent.CLICK, onContinueButton);
            	_continueButton.setStyle("textFormat", Theme.FONT_BUTTON);//_textFormat);		
            	_continueButton.enabled = false;
@@ -289,6 +328,24 @@ package cs448b.fp.utils
         	_mappings.text = Theme.MSG_MAPPING + message;
         }	                 
 
+		public function enableButtons():void
+		{
+			enableHelpButton();	
+			enableRestartButton();
+			if (Theme.ENABLE_CONTINUE_BUTTON == true)
+				enableContinueButton();
+			enableUnmapButton();			
+		}
+		
+		public function disableButtons():void
+		{
+			disableHelpButton();		
+			disableRestartButton();	
+			if (Theme.ENABLE_CONTINUE_BUTTON == true)
+				disableContinueButton();	
+			disableUnmapButton();			
+		}
+		
 		public function layout():void
 		{
 
@@ -329,6 +386,15 @@ package cs448b.fp.utils
 				_continueButton.y = Theme.LAYOUT_CONTINUE_Y;
 				_continueButton.width = Theme.LAYOUT_CONTINUE_WIDTH;	
 			}	
+			if (_unmapButton)
+			{
+				if (Theme.ENABLE_CONTINUE_BUTTON == true)
+					_unmapButton.x = Theme.LAYOUT_UNMAP_X + Theme.LAYOUT_CONTINUE_WIDTH + 30;
+				else			
+					_unmapButton.x = Theme.LAYOUT_UNMAP_X;
+				_unmapButton.y = Theme.LAYOUT_UNMAP_Y;
+				_unmapButton.width = Theme.LAYOUT_UNMAP_WIDTH;					
+			}
 			if (_restartButton)
 			{
 				if (Theme.ENABLE_CONTINUE_BUTTON == true)
