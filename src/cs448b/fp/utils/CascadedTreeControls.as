@@ -331,13 +331,19 @@ package cs448b.fp.utils
 			}	
 			if (_restartButton)
 			{
-				_restartButton.x = Theme.LAYOUT_RESTART_X;
+				if (Theme.ENABLE_CONTINUE_BUTTON == true)
+					_restartButton.x = Theme.LAYOUT_RESTART_X + Theme.LAYOUT_CONTINUE_WIDTH + 10;
+				else				
+					_restartButton.x = Theme.LAYOUT_RESTART_X;
 				_restartButton.y = Theme.LAYOUT_RESTART_Y;
 				_restartButton.width = Theme.LAYOUT_RESTART_WIDTH;					
 			}
 			if (_helpButton)
 			{
-				_helpButton.x = Theme.LAYOUT_HELP_X;
+				if (Theme.ENABLE_CONTINUE_BUTTON == true)
+					_helpButton.x = Theme.LAYOUT_HELP_X + Theme.LAYOUT_CONTINUE_WIDTH + 10;
+				else
+					_helpButton.x = Theme.LAYOUT_HELP_X;
 				_helpButton.y = Theme.LAYOUT_HELP_Y;
 				_helpButton.width = Theme.LAYOUT_HELP_WIDTH;					
 			}						

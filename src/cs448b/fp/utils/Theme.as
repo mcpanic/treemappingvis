@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = true;
+		public static var ENABLE_DEBUG:Boolean = false;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
@@ -76,22 +76,22 @@ package cs448b.fp.utils
 		public static var LAYOUT_CANVAS_WIDTH:uint = 550;	// single tree canvas width
 		public static var LAYOUT_CANVAS_HEIGHT:uint = 600;	// single tree canvas height
 		public static var LAYOUT_CTREE_X:uint = 25;			// content tree x-coordinate
-		public static var LAYOUT_CTREE_Y:uint = 85;			// content tree y-coordinate
-		public static var LAYOUT_LTREE_X:uint = 600;		// layout tree x-coordinate
-		public static var LAYOUT_LTREE_Y:uint = 85;			// layout tree y-coordinate
+		public static var LAYOUT_CTREE_Y:uint = 90;			// content tree y-coordinate
+		public static var LAYOUT_LTREE_X:uint = 620;		// layout tree x-coordinate
+		public static var LAYOUT_LTREE_Y:uint = 90;			// layout tree y-coordinate
 		
 		public static var LAYOUT_UNMAP_X:Number = 650;//200;	// unmap button x-coordinate
-		public static var LAYOUT_UNMAP_Y:Number = -70;		// unmap button y-coordinate
+		public static var LAYOUT_UNMAP_Y:Number = -75;		// unmap button y-coordinate
 		public static var LAYOUT_UNMAP_WIDTH:Number = 150;	// unmap button width		
-		public static var LAYOUT_HELP_X:Number = 830;		// help button x-coordinate
+		public static var LAYOUT_HELP_X:Number = 860;		// help button x-coordinate
 		public static var LAYOUT_HELP_Y:Number = 15;		// help button y-coordinate
 		public static var LAYOUT_HELP_WIDTH:Number = 50;	// help button width
-		public static var LAYOUT_RESTART_X:Number = 885;		// restart button x-coordinate
+		public static var LAYOUT_RESTART_X:Number = 915;		// restart button x-coordinate
 		public static var LAYOUT_RESTART_Y:Number = 15;		// restart button y-coordinate
-		public static var LAYOUT_CONTINUE_WIDTH:Number = 70;	// continue button width		
-		public static var LAYOUT_CONTINUE_X:Number = 965;		// continue button x-coordinate
-		public static var LAYOUT_CONTINUE_Y:Number = 15;		// continue button y-coordinate
 		public static var LAYOUT_RESTART_WIDTH:Number = 70;	// restart button width			
+		public static var LAYOUT_CONTINUE_X:Number = 650;		// continue button x-coordinate
+		public static var LAYOUT_CONTINUE_Y:Number = 15;		// continue button y-coordinate
+		public static var LAYOUT_CONTINUE_WIDTH:Number = 150;	// continue button width				
 		public static var LAYOUT_FEEDBACK_X:Number = 25;//450;	// notice x-coordinate
 		public static var LAYOUT_FEEDBACK_Y:Number = 17;		// notice y-coordinate
 				
@@ -99,8 +99,8 @@ package cs448b.fp.utils
 		public static var LAYOUT_NODENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin		
 		public static var LAYOUT_TREENAME_X:Number = 270;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_TREENAME_Y:Number = -35;	// tree name label y-coordinate, relative to the canvas origin
-		public static var LAYOUT_ZOOM_X:Number = 40;		// zoom button x-coordinate
-		public static var LAYOUT_ZOOM_Y:Number = -35;		// zoom button y-coordinate
+		public static var LAYOUT_ZOOM_X:Number = 50;		// zoom button x-coordinate
+		public static var LAYOUT_ZOOM_Y:Number = -40;		// zoom button y-coordinate
 		public static var LAYOUT_ZOOM_WIDTH:Number = 30;	// zoom button width	
 		public static var LAYOUT_ZOOM_RESET_WIDTH:Number = 50;	// zoom reset button width	
 		public static var LAYOUT_NOTICE_X:Number = 0;		// notice x-coordinate
@@ -175,8 +175,8 @@ package cs448b.fp.utils
 										"Click 'help' button for interaction tips.";	
 
 		// Labels: for buttons and sections, used in tree control files
-		public static var LABEL_CONT1:String = "Continue"; //"Start";
-		public static var LABEL_CONT2:String = "Continue";
+		public static var LABEL_CONT1:String = "Add mapping"; //"Start";
+		public static var LABEL_CONT2:String = "Add mapping";
 		public static var LABEL_CONT3:String = "Finish";
 		public static var LABEL_CONTENT:String = "Content";
 		public static var LABEL_LAYOUT:String = "Layout";
