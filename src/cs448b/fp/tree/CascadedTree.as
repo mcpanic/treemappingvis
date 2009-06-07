@@ -332,8 +332,8 @@ package cs448b.fp.tree
 			{
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;	
-				_node.addDropShadow(n);
-				_node.addGlow(n);			
+				//_node.addDropShadow(n);
+				//_node.addGlow(n);			
 				
 				_node.showConnectedNodes(n);
 				//pullNodeForward(n);	
@@ -384,13 +384,14 @@ package cs448b.fp.tree
 				// do not remove selected effects for selected nodes in the 2-click interface
 				if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
 				{
-					trace("mouse over - selected");
+					//trace("mouse over - selected");
 					_node.markSelected(n);
 				}
 				else
 				{
 					n.lineColor = Theme.COLOR_ACTIVATED;
-					_node.showLineWidth(n);
+					//_node.showLineWidth(n);
+					_node.hideLine(n);
 					_node.hideConnectedNodes(n);
 					_node.removeFilters(n);
 				}
@@ -570,6 +571,11 @@ package cs448b.fp.tree
 		 */	   		
 		protected override function onMouseDown(n:NodeSprite, isSender:Boolean = true):void 
 		{
+			trace(n.x + " " + n.y + " " + n.width + " " + n.height);
+			trace(n.u + " " + n.v + " " + n.w + " " + n.h);
+			trace(n.props["x"] + " " + n.props["y"] + " " + n.props["width"] + " " + n.props["height"]);
+			trace(n.props["image"].x + " " + n.props["image"].y + " " + n.props["image"].width + " " + n.props["image"].height);
+			trace(n.getChildAt(0).x + " " + n.getChildAt(0).y + " " + n.getChildAt(0).width + " " + n.getChildAt(0).height);
 			// no linking effect for mouse click. only mouse-over and out gets linking
 			if (isSender == false)
 				return;
