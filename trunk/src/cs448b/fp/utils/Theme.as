@@ -9,7 +9,7 @@ package cs448b.fp.utils
 	{	
 		public static var ENABLE_DEBUG:Boolean = true;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
-		
+				
 		// How many sessions are we having for each task?
 		public static var NUM_SESSIONS:Number = 5;
 		// How many pairs are in the database
@@ -19,8 +19,10 @@ package cs448b.fp.utils
 				
 		// Node offset options for better parent selection. 0: nothing, 1: cascaded offset, 2: expanded parent
 		public static var ENABLE_CASCADE_OFFSET:uint = 2;
-		public static var CASCADE_OFFSET:uint = 20;
+		public static var CASCADE_OFFSET:uint = 16;
 		
+		// Load or not image segments. If true, only root image is loaded. If false, all segments are loaded, causing more overhead.
+		public static var ENABLE_IMAGE_SEGMENT:Boolean = false;
 		// Enable /Disable merge popup (1 to N mapping possible)
 		public static var ENABLE_MERGE:Boolean = false;		
 		// Enable / Disable ancestor-descendent constraint
@@ -46,12 +48,12 @@ package cs448b.fp.utils
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
 		public static var COLOR_SELECTED:uint = 0xffff0000; 	
 		public static var COLOR_CONNECTED:uint = 0xff0000ff;//0xffbbbbbb;	
-		public static var LINE_WIDTH:uint = 15;
+		public static var LINE_WIDTH:uint = 12;
 		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
 		public static var COLOR_FILL_MAPPED:Number = 0x00000000; //0xffFFAAAAFF;
 		public static var COLOR_FILL_UNMAPPED:Number = 0x00000000; //0xffFFFFAAAA;
-		public static var ALPHA_MAPPED:Number = 0.8;		// alpha value for mapped nodes
+		public static var ALPHA_MAPPED:Number = 1; //0.8;		// alpha value for mapped nodes
 		public static var SHOW_MAPPPED:Boolean = true;		// hide content of the mapped nodes
 		public static var CONNECTED_ALPHA:Number = 0.5;		// alpha value for the connected layout nodes on mouseover
 		public static var CONNECTED_LINE_WIDTH:Number = 1.5;	// dividend for the connected layout nodes on mouseover

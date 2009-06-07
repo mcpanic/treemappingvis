@@ -432,7 +432,8 @@ package cs448b.fp.utils
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  	 
 			
 			// Force mouse over event to prevent mouse out and over again for mouse-over effect
-			if (Theme.ENABLE_CONTINUE_BUTTON == true)
+			// only reasonable in 1-click interface
+			if (Theme.ENABLE_CONTINUE_BUTTON == false)
 				_layoutTree.forceOnMouseOver(_layoutTree.getNodeByID(oldLayoutID));    		
 		}
 		
@@ -500,7 +501,9 @@ package cs448b.fp.utils
 		 */			
 		private function showActivatedContent(n:NodeSprite):void
 		{	
-			_cNode.blurOtherNodes(n);		
+			// blur only when image segments are loaded. When only background is loaded, it should not be blurred.
+			if (Theme.ENABLE_IMAGE_SEGMENT == true)			
+				_cNode.blurOtherNodes(n);		
 			
 			if (Theme.ENABLE_SERIAL == false)
 			{
@@ -522,7 +525,7 @@ package cs448b.fp.utils
 						// to change the color effect
 						_cNode.markSelected(nn);
 						showSelectionFeedback(Number(nn.name));
-						_contentTree.pullNodeForward(nn);
+						_cNode.pullNodeForward(nn);
 						 
 						_cNode.addDropShadow(nn);
 						_cNode.addGlow(nn);
@@ -531,7 +534,7 @@ package cs448b.fp.utils
 					{	
 						nn.props["selected"] = false;
 						_cNode.unmarkActivated(nn);
-						_cNode.removeDropShadow(nn);
+						_cNode.removeFilters(nn);
 					}
 				});
 				
@@ -543,7 +546,9 @@ package cs448b.fp.utils
 		 */			
 		private function showActivatedLayout(n:NodeSprite):void
 		{	
-			_lNode.blurOtherNodes(n);	
+			// blur only when image segments are loaded. When only background is loaded, it should not be blurred.
+			if (Theme.ENABLE_IMAGE_SEGMENT == true)
+				_lNode.blurOtherNodes(n);	
     			
 			for(var i:uint=0; i<n.childDegree; i++)
 			{

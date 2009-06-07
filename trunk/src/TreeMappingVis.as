@@ -141,12 +141,12 @@ package {
 			addChild(cascadedTree1);
 			addChild(cascadedTree2);
 			
-			var maxDepth:uint = 0;
-			maxDepth = (cascadedTree1.getMaxTreeDepth() > cascadedTree2.getMaxTreeDepth())? cascadedTree1.getMaxTreeDepth(): cascadedTree2.getMaxTreeDepth();
-
-			controls.setSliderDepth(maxDepth);
-			controls.setSliderValue(maxDepth);
-			
+//			var maxDepth:uint = 0;
+//			maxDepth = (cascadedTree1.getMaxTreeDepth() > cascadedTree2.getMaxTreeDepth())? cascadedTree1.getMaxTreeDepth(): cascadedTree2.getMaxTreeDepth();
+//
+//			controls.setSliderDepth(maxDepth);
+//			controls.setSliderValue(maxDepth);
+		
 			tes.addTree(cascadedTree1);
 			tes.addTree(cascadedTree2);
 		}
@@ -165,7 +165,7 @@ package {
 		/**
 		 * Upon data load complete, display the tree
 		 */		
-		private function handleLoaded(event:Event):void
+		private function handleLoaded():void
 		{		
 			displayTree();	
 			
