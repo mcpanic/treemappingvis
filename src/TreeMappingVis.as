@@ -98,7 +98,7 @@ package {
 			{
 				trace("Assignment ID: " + sessionManager.assignmentId);
 				if (Theme.ENABLE_DEBUG == true)
-					currentPair = dataList.getDataList(fileList, imageList, false, new Point(4, 4));
+					currentPair = dataList.getDataList(fileList, imageList, false, new Point(2, 2));
 				else
 					currentPair = dataList.getDataList(fileList, imageList, false);				
 			}

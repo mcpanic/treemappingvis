@@ -29,7 +29,7 @@ package cs448b.fp.utils
 		 */ 
 		public function addDropShadow(n:NodeSprite):void
 		{
-			//return;
+			return;
 			var filter:BitmapFilter = Theme.getDropShadowFilter();
 			var myFilters:Array = new Array();
 			myFilters.push(filter);
@@ -55,9 +55,9 @@ package cs448b.fp.utils
 		/**
 		 * Add glow effect to the node
 		 */ 
-		public function addGlow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 7, blurY:Number = 7):void
+		public function addGlow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
 		{
-			return;
+//			return;
 			var filter:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
 			var myFilters:Array = new Array();
 			myFilters.push(filter);
@@ -89,7 +89,7 @@ package cs448b.fp.utils
 			//trace(n.lineWidth);
 			n.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
 			n.lineAlpha = Theme.CONNECTED_ALPHA;
-			addGlow(n, Theme.CONNECTED_ALPHA, 5, 5);
+			//addGlow(n, Theme.CONNECTED_ALPHA, 5, 5);
 		}
 
 		/** 
