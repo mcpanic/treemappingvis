@@ -94,6 +94,9 @@ package cs448b.fp.utils
 		 */							
 		public function startSession():void
 		{
+			// Disable all buttons
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) ); 
+			
 			// Set the traversal order
 			_contentTree.setTraversalOrder(_isPreview);
 			

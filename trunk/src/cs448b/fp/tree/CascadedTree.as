@@ -72,10 +72,10 @@ package cs448b.fp.tree
 			panel.mouseEnabled = false;
 			addChild(panel);
 			
-			panel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT+30);
+			panel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+40, Theme.LAYOUT_CANVAS_HEIGHT+40);
 			vis.bounds = bounds;
-			vis.x = _x+10;
-			vis.y = _y+10;
+			vis.x = _x+20;
+			vis.y = _y+20;
 			vis.update();
 			
 			if (_isPreview == true)
@@ -102,7 +102,66 @@ package cs448b.fp.tree
 			panel.addChild(vis);
 		}
 
+		/**
+		 * Initialize nodes, edges, and layout
+		 */					
+		protected override function initComponents():void
+		{
+			// init values		
+			nodes = {
+				shape: Shapes.BLOCK, // needed for treemap sqaures
+				//fillColor: 0x88D5D5ff, 
+				fillColor:0xffffffff,
+				fillAlpha:0,
+				lineColor: 0x00000000,
+				lineWidth: 0
+			}
+			trace(_isContentTree + " fillAlpha: " + nodes.fillAlpha + " fillHue: " + nodes.fillHue + " fillColor: " + nodes.fillColor.toString(16) + " fillSat: " + nodes.fillSaturation + " fillVal: " + nodes.fillValue);						
+			edges = {
+				visible: false
+			}
+			
+			_layout = new CascadedTreeLayout(_x, _y, _isContentTree);
+			
+		}
+		
+		/**
+		 * Initialize node property
+		 */					
+		protected override function initNode(n:NodeSprite, i:Number):void
+		{
+			n.fillColor = 0xffffffff;
+			n.fillAlpha = 1/100;
+			//trace(_isContentTree + " fillAlpha: " + n.fillAlpha + " fillHue: " + n.fillHue + " fillColor: " + n.fillColor.toString(16) + " fillSat: " + n.fillSaturation + " fillVal: " + n.fillValue);			
+			n.lineAlpha = 0;//1/25;	
+		}
 
+		/**
+		 * Mouse event handler main
+		 */					
+		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event, isSender:Boolean):void
+		{
+			if(evt.type == MouseEvent.MOUSE_OVER)
+			{
+				onMouseOver(n);
+			} 
+			else if(evt.type == MouseEvent.MOUSE_OUT)
+			{
+				onMouseOut(n);
+			}
+			else if(evt.type == MouseEvent.MOUSE_UP)
+			{
+				onMouseUp(n);
+			}
+			else if(evt.type == MouseEvent.MOUSE_DOWN)
+			{
+				onMouseDown(n, isSender);
+			}
+			else if(evt.type == MouseEvent.MOUSE_MOVE)
+			{
+				onMouseMove(n);
+			}
+		}
 
 		/**
 		 * Event handler for controls
@@ -220,75 +279,7 @@ package cs448b.fp.tree
 			zoomScale = (wScale > hScale) ? hScale : wScale;
 			return zoomScale;
 		}
-
-		/**
-		 * Initialize nodes, edges, and layout
-		 */					
-		protected override function initComponents():void
-		{
-			// init values		
-			nodes = {
-				shape: Shapes.BLOCK, // needed for treemap sqaures
-				//fillColor: 0x88D5D5ff, 
-				//fillColor:0x00000000,
-				lineColor: 0x00000000,
-				lineWidth: 0
-			}
-			
-			edges = {
-				visible: false
-			}
-			
-			_layout = new CascadedTreeLayout(_x, _y, _isContentTree);
-			
-		}
 		
-		/**
-		 * Initialize node property
-		 */					
-		protected override function initNode(n:NodeSprite, i:Number):void
-		{
-			n.fillColor = 0xffffff;
-			n.fillAlpha = 1/25;
-			n.lineAlpha = 0;//1/25;	
-		}
-
-		/**
-		 * Mouse event handler main
-		 */					
-		protected override function handleSyncNodeEvent(n:NodeSprite, evt:Event, isSender:Boolean):void
-		{
-			if(evt.type == MouseEvent.MOUSE_OVER)
-			{
-				onMouseOver(n);
-			} 
-			else if(evt.type == MouseEvent.MOUSE_OUT)
-			{
-				onMouseOut(n);
-			}
-			else if(evt.type == MouseEvent.MOUSE_UP)
-			{
-				onMouseUp(n);
-			}
-			else if(evt.type == MouseEvent.MOUSE_DOWN)
-			{
-				onMouseDown(n, isSender);
-			}
-			else if(evt.type == MouseEvent.MOUSE_MOVE)
-			{
-				onMouseMove(n);
-			}
-		}
-		
-		private var oldNode:NodeSprite = null;
-
-		/**
-		 * Mouse cursor move handler
-		 */	
-//		protected function onMouseMove(n:NodeSprite):void 
-//		{
-//			Rectangle.contains( Point )	
-//		}		
 		/**
 		 * Mouse cursor over handler
 		 */						
@@ -298,7 +289,7 @@ package cs448b.fp.tree
 			if (NodeActions.lock == true)
 				return;
 							
-			if(n == null || n == tree.root)// || oldNode == n) 
+			if(n == null || n == tree.root) 
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
 			;
@@ -343,8 +334,6 @@ package cs448b.fp.tree
 				//_node.pullAllChildrenForward(n);
 				_node.pullAllConnectedForward(n);
 			}
-
-			//oldNode = n;
 		}
 
 		/**
@@ -723,7 +712,7 @@ package cs448b.fp.tree
 //			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
 		    
 		    previewSeq.add(new Parallel(t1, t3, g1)); 
-		    previewSeq.add(new Parallel(t2, t4, g2));      
+		    previewSeq.add(new Parallel(t2, t4, g2));       
 		}
 		
 		/**

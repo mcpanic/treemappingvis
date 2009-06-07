@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = true;
+		public static var ENABLE_DEBUG:Boolean = false;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 				
 		// How many sessions are we having for each task?
@@ -251,7 +251,7 @@ package cs448b.fp.utils
             var alpha:Number = a;
             var blurX:Number = bx;
             var blurY:Number = by;
-            var strength:Number = 3;
+            var strength:Number = 2;
             var quality:Number = BitmapFilterQuality.HIGH;
             var inner:Boolean = false;
             var knockout:Boolean = false;
