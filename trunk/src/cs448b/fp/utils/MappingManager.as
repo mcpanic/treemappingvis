@@ -530,8 +530,9 @@ package cs448b.fp.utils
 						showSelectionFeedback(Number(nn.name));
 						_cNode.pullNodeForward(nn);
 						 
-						_cNode.addDropShadow(nn);
-						_cNode.addGlow(nn);
+						//_cNode.addDropShadow(nn);
+						//_cNode.addGlow(nn);
+						_cNode.addGlowShadow(nn);
 					}
 					else
 					{	

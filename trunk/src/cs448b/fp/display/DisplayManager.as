@@ -179,6 +179,7 @@ package cs448b.fp.display
 			}	
 			else if (event.name == "tutorial_click")
 			{
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) ); 
 				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_click") ); 		
 			}	
 			else if (event.name == "tutorial_unmap")

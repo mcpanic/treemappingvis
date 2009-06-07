@@ -300,7 +300,7 @@ package cs448b.fp.tree
 				n.lineWidth = Theme.LINE_WIDTH;
 				if (isContentTree == false)
 				{
-					_node.addDropShadow(n);
+					//_node.addDropShadow(n);
 					_node.addGlow(n);	
 					_node.showConnectedNodes(n);	
 				}	
@@ -313,7 +313,7 @@ package cs448b.fp.tree
 				n.lineWidth = Theme.LINE_WIDTH;
 				if (isContentTree == false)
 				{
-					_node.addDropShadow(n);
+					//_node.addDropShadow(n);
 					_node.addGlow(n);	
 					_node.showConnectedNodes(n);	
 				}	
@@ -327,7 +327,7 @@ package cs448b.fp.tree
 				n.lineWidth = Theme.LINE_WIDTH;	
 				if (isContentTree == false)
 				{
-					_node.addDropShadow(n);
+					//_node.addDropShadow(n);
 					_node.addGlow(n);	
 					_node.showConnectedNodes(n);	
 				}	
