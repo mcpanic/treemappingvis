@@ -32,15 +32,9 @@ package cs448b.fp.utils
 									
 		public function CascadedTreeControls()
 		{
-
-//			_titleFormat = new TextFormat("Verdana,Tahoma,Arial",16,0,true);
-//			_sectionFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,true);
-//			_legendFormat = new TextFormat("Verdana,Tahoma,Arial",11,0,true);
-//			_textFormat = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
-//			_textFormat.color = "0xFFFFFF";
-
 			//addDepthControl();
-			//addVisualToggle();
+			if (Theme.ENABLE_DEBUG == true)
+				addVisualToggle();
 			//addFitToScreen();
 
 			addFeedback();

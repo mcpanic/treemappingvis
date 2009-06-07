@@ -4,6 +4,8 @@ package cs448b.fp.utils
 	
 	import flare.vis.data.NodeSprite;
 	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.filters.BitmapFilter;
 	
 	/**
@@ -55,12 +57,12 @@ package cs448b.fp.utils
 		 */ 
 		public function addGlow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 7, blurY:Number = 7):void
 		{
-			//return;
+			return;
 			var filter:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
 			var myFilters:Array = new Array();
 			myFilters.push(filter);
 			n.filters = myFilters;
-			trace("addGlow for " + n.name);
+			//trace("addGlow for " + n.name);
 		}
 		
 		/**
@@ -69,7 +71,7 @@ package cs448b.fp.utils
 		public function removeGlow(n:NodeSprite):void
 		{
 			removeFilters(n);
-			trace("removeGlow for " + n.name);
+		//	trace("removeGlow for " + n.name);
 		}	
 		
 		/** 
@@ -83,6 +85,8 @@ package cs448b.fp.utils
 				return;
 				
 			n.lineColor = Theme.COLOR_CONNECTED;
+			//n.lineWidth = 5;
+			//trace(n.lineWidth);
 			n.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
 			n.lineAlpha = Theme.CONNECTED_ALPHA;
 			addGlow(n, Theme.CONNECTED_ALPHA, 5, 5);
@@ -149,6 +153,52 @@ package cs448b.fp.utils
 		}		
 
 
+		/** 
+		 * Recursively pull forward all the connected nodes
+		 */		 
+		public function pullAllConnectedForward(n:NodeSprite):void
+		{
+			// parent and sibling
+			if (n.parentNode != null && n.parentNode != _tree.tree.root)
+			{				
+				pullAllChildrenForward(n.parentNode);
+			}
+			// me and children
+			pullAllChildrenForward(n);		
+		}
+		
+		/**
+		 * Recursively pull forward all children nodes
+		 */		 
+		public function pullAllChildrenForward(n:NodeSprite):void
+		{
+			pullNodeForward(n);	
+			for (var i:uint=0; i<n.childDegree; i++)
+				pullAllChildrenForward(n.getChildNode(i));			
+		}
+		
+		/**
+		 * Pull up the node display (higher on the cascaded stack)
+		 */		
+		public function pullNodeForward(n:DisplayObject):Number
+		{
+			var index:Number;
+			var p:DisplayObjectContainer = n.parent;
+			index = p.getChildIndex(n);
+			
+			p.setChildIndex(n, p.numChildren-1);
+			return index;
+		}
+
+		/**
+		 * Push back the node display (lower on the cascaded stack)
+		 */		
+		public function pushNodeBack(n:DisplayObject, index:Number):void
+		{
+			n.parent.setChildIndex(n, index);
+		}	
+
+
 		/**
 		 * Hide line display, called when cancelling any line change effect
 		 */			
@@ -188,9 +238,9 @@ package cs448b.fp.utils
 			nn.props["activated"] = true;
 			nn.lineColor = Theme.COLOR_ACTIVATED;
 			showLineWidth(nn);
-			nn.props["image"].alpha = 1;
-			//nn.props["image"].visible = true;
-			//nn.props["image"].visible = false;
+			if (nn.props["image"] != null)
+				nn.props["image"].alpha = 1;
+
 			if (nn.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				hideLine(nn);
@@ -207,7 +257,8 @@ package cs448b.fp.utils
 			nn.lineColor = Theme.COLOR_SELECTED;
 			//showLineWidth(nn);
 			nn.lineWidth = Theme.LINE_WIDTH;
-			nn.props["image"].alpha = 1;
+			if (nn.props["image"] != null)
+				nn.props["image"].alpha = 1;
 		}
 
 		/**
@@ -314,7 +365,8 @@ package cs448b.fp.utils
 						hideLine(nn);
 						removeFilters(nn);	
 						nn.alpha = Theme.ALPHA_MAPPED;
-						nn.props["image"].visible = Theme.SHOW_MAPPPED;	
+						if (nn.props["image"] != null)
+							nn.props["image"].visible = Theme.SHOW_MAPPPED;	
 	        		}	 
 	        		else if (action == Theme.STATUS_UNMAPPED)
 	        		{
@@ -323,13 +375,15 @@ package cs448b.fp.utils
 						hideLine(nn);
 						removeFilters(nn);	
 						nn.alpha = Theme.ALPHA_MAPPED;
-						nn.props["image"].visible = Theme.SHOW_MAPPPED;		        		
+						if (nn.props["image"] != null)
+							nn.props["image"].visible = Theme.SHOW_MAPPPED;		        		
 	        		}
 	        		else
 	        		{
 	        			nn.props["mapped"] = Theme.STATUS_DEFAULT;	
 						nn.alpha = 1;
-						nn.props["image"].visible = true;	        	
+						if (nn.props["image"] != null)
+							nn.props["image"].visible = true;	        	
 
 	        		}       			        		       		
 	        	}
@@ -347,7 +401,8 @@ package cs448b.fp.utils
 				if (n != nn && nn.props["activated"] == false)
 				{
 					//nn.fillAlpha = 0.5;
-					nn.props["image"].alpha = 0.5;
+					if (nn.props["image"] != null)
+						nn.props["image"].alpha = 0.5;
 				}
 			});
 	 	}
@@ -360,8 +415,11 @@ package cs448b.fp.utils
 			
 			var root:NodeSprite = _tree.tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-					nn.props["image"].visible = true;
-					nn.props["image"].alpha = 1;
+					if (nn.props["image"] != null)
+					{
+						nn.props["image"].visible = true;
+						nn.props["image"].alpha = 1;
+					}
 					nn.visible = true;
 					 
 					showLineWidth(nn);
@@ -382,7 +440,8 @@ package cs448b.fp.utils
 			for(var i:uint=0; i<n.childDegree; i++)
 			{
 				n.getChildNode(i).visible = false;
-				n.getChildNode(i).props["image"].visible = false;
+				if (n.getChildNode(i).props["image"] != null)
+					n.getChildNode(i).props["image"].visible = false;
 				hideAllDescendants(n.getChildNode(i));
 			}			
 		}

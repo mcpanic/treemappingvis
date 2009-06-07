@@ -167,40 +167,40 @@ package cs448b.fp.tree
 			
 	        // apply offsets
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
-//	        	if (n.name == "1")
-//	        	{
-				if (_isContentTree == true || Theme.ENABLE_CASCADE_OFFSET == 0)
+				if (n.props["image"] != null)
 				{
-					n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
-					n.props["image"].x = Number(n.props["x"]);
-					n.props["image"].y = Number(n.props["y"]);
-				}
-				else if (Theme.ENABLE_CASCADE_OFFSET == 1)
-				{
-					n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
-					// (depth - 1) since we want the root to be not cascaded (it's not selectable)
-					n.props["image"].x = Number(n.props["x"]) + (n.depth - 1) * _cascadeOffset;
-					n.props["image"].y = Number(n.props["y"]) + (n.depth - 1) * _cascadeOffset;
-				}
-				else if (Theme.ENABLE_CASCADE_OFFSET == 2)
-				{	
-					// for leaf nodes, no expansion
-//					if (n.childDegree == 0)
-//					{
+					if (_isContentTree == true || Theme.ENABLE_CASCADE_OFFSET == 0)
+					{
 						n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
 						n.props["image"].x = Number(n.props["x"]);
 						n.props["image"].y = Number(n.props["y"]);
-//					}
-//					else
-//					{				
-//						var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
-//						var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
-//						n.props["image"].setSize(w, h);
-//						n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-//						n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-//					}
-				}	     					     
-//		  		}
+					}
+					else if (Theme.ENABLE_CASCADE_OFFSET == 1)
+					{
+						n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
+						// (depth - 1) since we want the root to be not cascaded (it's not selectable)
+						n.props["image"].x = Number(n.props["x"]) + (n.depth - 1) * _cascadeOffset;
+						n.props["image"].y = Number(n.props["y"]) + (n.depth - 1) * _cascadeOffset;
+					}
+					else if (Theme.ENABLE_CASCADE_OFFSET == 2)
+					{	
+						// for leaf nodes, no expansion
+	//					if (n.childDegree == 0)
+	//					{
+							n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
+							n.props["image"].x = Number(n.props["x"]);
+							n.props["image"].y = Number(n.props["y"]);
+	//					}
+	//					else
+	//					{				
+	//						var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
+	//						var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
+	//						n.props["image"].setSize(w, h);
+	//						n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+	//						n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+	//					}
+					}	    
+				} 					     				
 	        });
         
         
@@ -320,12 +320,7 @@ package cs448b.fp.tree
 	        	var p:NodeSprite = n.parentNode;
 	        	var nw:Number = n.props[AREA]/hh;
 	        	
-	        	var o:Object = _t.$(n);
-//					trace(n.name + " " + n.props["height"]);
-//	        		o.u = n.props["image"].x;
-//	        		o.v = n.props["image"].y;
-//	        		o.w = n.props["image"].width;
-//	        		o.h = n.props["height"].height;	    
+	        	var o:Object = _t.$(n); 
 					if (_isContentTree == true || Theme.ENABLE_CASCADE_OFFSET == 0)
 					{
 						o.u = n.props["x"];

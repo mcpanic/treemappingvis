@@ -2,8 +2,6 @@ package cs448b.fp.tree
 {
 	import cs448b.fp.utils.*;
 	
-	import fl.controls.Button;
-	
 	import flare.animate.Parallel;
 	import flare.animate.Sequence;
 	import flare.animate.TransitionEvent;
@@ -250,7 +248,8 @@ package cs448b.fp.tree
 		 */					
 		protected override function initNode(n:NodeSprite, i:Number):void
 		{
-			n.fillAlpha = 0;//1/25;
+			n.fillColor = 0xffffff;
+			n.fillAlpha = 1/25;
 			n.lineAlpha = 0;//1/25;	
 		}
 
@@ -310,41 +309,39 @@ package cs448b.fp.tree
 				n.lineWidth = Theme.LINE_WIDTH;
 				if (isContentTree == false)
 				{
-					//_node.addDropShadow(n);
-					//_node.addGlow(n);	
+					_node.addDropShadow(n);
+					_node.addGlow(n);	
 					_node.showConnectedNodes(n);	
 				}	
-				pullAllChildrenForward(n);
-//				pullNodeForward(n);	
-//					for (var i:uint=0; i<n.childDegree; i++)
-//						pullNodeForward(n.getChildNode(i));					
+				//_node.pullAllChildrenForward(n);
+				_node.pullAllConnectedForward(n);			
 			}
 			else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;
 				if (isContentTree == false)
-					_node.showConnectedNodes(n);
-				pullAllChildrenForward(n);				
+				{
+					_node.addDropShadow(n);
+					_node.addGlow(n);	
+					_node.showConnectedNodes(n);	
+				}	
+				//_node.pullAllChildrenForward(n);
+				_node.pullAllConnectedForward(n);				
 			}
 			// Border change on connected nodes for activated nodes
 			else if (n.props["activated"] == true)	// only when activated
 			{
 				n.lineColor = Theme.COLOR_SELECTED;
 				n.lineWidth = Theme.LINE_WIDTH;	
-				//_node.addDropShadow(n);
-				//_node.addGlow(n);			
-				
-				_node.showConnectedNodes(n);
-				//pullNodeForward(n);	
-				pullAllChildrenForward(n);
-////				if (nodePulled == false)
-////				{
-//					pullNodeForward(n);	
-//					for (i=0; i<n.childDegree; i++)
-//						pullNodeForward(n.getChildNode(i));
-////					nodePulled = true;
-////				}
+				if (isContentTree == false)
+				{
+					_node.addDropShadow(n);
+					_node.addGlow(n);	
+					_node.showConnectedNodes(n);	
+				}	
+				//_node.pullAllChildrenForward(n);
+				_node.pullAllConnectedForward(n);
 			}
 
 			//oldNode = n;
@@ -385,11 +382,13 @@ package cs448b.fp.tree
 				if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
 				{
 					//trace("mouse over - selected");
-					_node.markSelected(n);
+					//_node.markSelected(n);
+					//_node.hideLine(n);
+					_node.hideConnectedNodes(n);					
 				}
 				else
 				{
-					n.lineColor = Theme.COLOR_ACTIVATED;
+					//n.lineColor = Theme.COLOR_ACTIVATED;
 					//_node.showLineWidth(n);
 					_node.hideLine(n);
 					_node.hideConnectedNodes(n);
@@ -499,7 +498,7 @@ package cs448b.fp.tree
 							if (n != nn && nn.props["selected"] == true)	
 							{									
 								_node.unmarkSelected(nn);
-								onMouseOver(n);
+								//onMouseOver(n);
 							}			
 						});			
 						// unselect current if selected twice
@@ -574,8 +573,10 @@ package cs448b.fp.tree
 			trace(n.x + " " + n.y + " " + n.width + " " + n.height);
 			trace(n.u + " " + n.v + " " + n.w + " " + n.h);
 			trace(n.props["x"] + " " + n.props["y"] + " " + n.props["width"] + " " + n.props["height"]);
-			trace(n.props["image"].x + " " + n.props["image"].y + " " + n.props["image"].width + " " + n.props["image"].height);
-			trace(n.getChildAt(0).x + " " + n.getChildAt(0).y + " " + n.getChildAt(0).width + " " + n.getChildAt(0).height);
+			if (n.props["image"] != null)
+				trace(n.props["image"].x + " " + n.props["image"].y + " " + n.props["image"].width + " " + n.props["image"].height);
+//			if (n.getChildAt(0) != null)
+//				trace(n.getChildAt(0).x + " " + n.getChildAt(0).y + " " + n.getChildAt(0).width + " " + n.getChildAt(0).height);
 			// no linking effect for mouse click. only mouse-over and out gets linking
 			if (isSender == false)
 				return;
@@ -605,41 +606,6 @@ package cs448b.fp.tree
 			}			
 
 		}
-		
-		private var _idx:Number;
-				
-//		private var nodePulled:Boolean = false;
-
-		/**
-		 * Recursively pull forward the nodes
-		 */		 
-		private function pullAllChildrenForward(n:NodeSprite):void
-		{
-			pullNodeForward(n);	
-			for (var i:uint=0; i<n.childDegree; i++)
-				pullAllChildrenForward(n.getChildNode(i));			
-		}
-		
-		/**
-		 * Pull up the node display (higher on the cascaded stack)
-		 */		
-		public function pullNodeForward(n:DisplayObject):void
-		{
-			var p:DisplayObjectContainer = n.parent;
-			_idx = p.getChildIndex(n);
-			
-			p.setChildIndex(n, p.numChildren-1);
-		}
-
-		/**
-		 * Push back the node display (lower on the cascaded stack)
-		 */		
-		public function pushNodeBack(n:DisplayObject):void
-		{
-			n.parent.setChildIndex(n, _idx);
-		}	
-
-
 		
 		/**
 		 * Check if the whole content tree mapping is completed.
@@ -753,27 +719,11 @@ package cs448b.fp.tree
 			var t2:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:0x00000000});
 			var t3:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:Theme.LINE_WIDTH});
 			var t4:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineWidth:0});			
-			var t5:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
-			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
+//			var t5:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:Theme.COLOR_FILL_MAPPED});
+//			var t6:Tween = new Tween(node, Theme.DURATION_PREVIEW, {fillColor:0x00000000});
 		    
-//		    previewSeq.add(test(node, new Transitioner(0.1)));
 		    previewSeq.add(new Parallel(t1, t3, g1)); 
 		    previewSeq.add(new Parallel(t2, t4, g2));      
-		}
-		
-		private function test(n:NodeSprite, t:Transitioner):Transitioner
-		{
-//			pullNodeForward(n);
-//			for (var i:int=0; i<s.numChildren; ++i) {
-//				var b:DisplayObject = s.getChildAt(i);
-//				t.$(b).x = (w+a) * (xb + points[2*i]);
-//				t.$(b).y = (h+a) * (yb + points[2*i+1]);
-//			}
-
-			var p:DisplayObjectContainer = n.parent;
-			_idx = p.getChildIndex(n);
-			t.$(p).setChildIndex(n, p.numChildren-1);		
-			return t;
 		}
 		
 		/**
@@ -794,7 +744,7 @@ package cs448b.fp.tree
 
 	        // turn off visibility so that borders do not overlap
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
-				if (nn != root)
+				if (nn != root && nn.props["image"] != null)
 					nn.props["image"].visible = false;
 	        });			
 	        
@@ -846,14 +796,14 @@ package cs448b.fp.tree
 			else			// unmapped
 				t1 = new Tween(node, Theme.DURATION_BLINKING, {lineColor:Theme.COLOR_SELECTED});
 			var t2:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineColor:0x00000000});
-			var t3:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:0});
-			var t4:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:1});			
-			var t5:Tween;
-			if (type == 1)	// mapped
-				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_MAPPED});
-			else 			// unmapped
-				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_UNMAPPED});
-			var t6:Tween = new Tween(node, Theme.DURATION_BLINKING, {fillColor:0x00000000});
+//			var t3:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:0});
+//			var t4:Tween = new Tween(node, Theme.DURATION_BLINKING, {alpha:1});			
+//			var t5:Tween;
+//			if (type == 1)	// mapped
+//				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_MAPPED});
+//			else 			// unmapped
+//				t5 = new Tween(node, Theme.DURATION_BLINKING, {fillColor:Theme.COLOR_FILL_UNMAPPED});
+//			var t6:Tween = new Tween(node, Theme.DURATION_BLINKING, {fillColor:0x00000000});
 			var t7:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineWidth:Theme.LINE_WIDTH});
 			var t8:Tween = new Tween(node, Theme.DURATION_BLINKING, {lineWidth:0});
 		    var seq:Sequence = new Sequence(
@@ -1033,8 +983,8 @@ package cs448b.fp.tree
 			
 			tree.visit(function(n:NodeSprite):void
 			{
-				n.props["image"].visible = _visualToggle;
-				//n.props["image"].alpha = 0.5;					
+				if (n.props["image"] != null)
+					n.props["image"].visible = _visualToggle;				
 			}, Data.NODES);
 		
 			vis.update(1, "nodes").play();

@@ -1,8 +1,9 @@
 package cs448b.fp.data
 {
+	import cs448b.fp.utils.Theme;
+	
 	import fl.containers.UILoader;
 	
-	import flare.vis.data.DataSprite;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
@@ -81,26 +82,17 @@ package cs448b.fp.data
 		 */			
 		private function addImageNode(n:NodeSprite, xml:XML):void
 		{
+			// original
+//			var image:DisplayObject = addImage(n, xml);
+//			n.props["image"] = image;
+//			n.addChild(image);
+										
 			var image:DisplayObject = addImage(n, xml);
-
-//			if (n.name == "1")
-//			{				
+			if (_tree.root == n)
+			{				
 				n.props["image"] = image;
-//				if (n.name == "1")
 				n.addChild(image);
-
-				//n.props["image"].visible = false;						
-//			}
-//			else
-//			{
-//	            var shape:Shape = new Shape();
-//	            //shape.graphics.beginFill(0x101010);
-//				shape.graphics.lineStyle(3, 0xbbbbbb);
-//				shape.graphics.drawRoundRect(n.props["x"], n.props["y"], n.props["width"], n.props["height"], 20);
-//				//shape.graphics.endFill();
-//				n.props["image"] = shape;				
-//				n.addChild(shape);				
-//			}
+			}
 		}
 
 		/**
@@ -108,25 +100,55 @@ package cs448b.fp.data
 		 */			
 		private function addImage(n:NodeSprite, xml:XML):DisplayObject
 		{
-			var ldr:UILoader = new UILoader();
-
-			var url:String = _imageLocation + xml.label + ".png";
-			//var url:String = xml.url;
- 			var urlReq:URLRequest = new URLRequest(url);
-			ldr.load(urlReq);
-			ldr.name = xml.label.toString();
-			ldr.addEventListener(Event.COMPLETE,
-				function(evt:Event):void
-				{	
-					_numNodesLoaded++;
-					if(_numNodes == _numNodesLoaded && _cb != null) 
-						_cb( evt );
-											
-				});
-						
-			return ldr;
+			var ldr:UILoader;
+			var url:String;
+			var urlReq:URLRequest;
+			// load only the root image
+			if (Theme.ENABLE_IMAGE_SEGMENT == false)
+			{			
+				if (n == _tree.root)
+				{
+					ldr = new UILoader();		
+					url = _imageLocation + xml.label + ".png";
+		 			urlReq = new URLRequest(url);
+					ldr.load(urlReq);
+					ldr.name = xml.label.toString();
+					ldr.addEventListener(Event.COMPLETE,
+						function(evt:Event):void
+						{	
+//							_numNodesLoaded++;
+//							if(_numNodes == _numNodesLoaded && _cb != null)
+							(_cb != null) 
+								_cb();
+													
+						});
+					return ldr;
+				}
+				else
+				{					
+					return null;	
+				}			
+			}
+			// load every image
+			else
+			{
+					ldr = new UILoader();
+					url = _imageLocation + xml.label + ".png";
+		 			urlReq = new URLRequest(url);
+					ldr.load(urlReq);
+					ldr.name = xml.label.toString();
+					ldr.addEventListener(Event.COMPLETE,
+						function(evt:Event):void
+						{	
+							_numNodesLoaded++;
+							if(_numNodes == _numNodesLoaded && _cb != null) 
+								_cb();
+													
+						});
+					return ldr;				
+			}		
 		}
-		
+				
 		/**
 		 * Attach node data to the sprite
 		 */	

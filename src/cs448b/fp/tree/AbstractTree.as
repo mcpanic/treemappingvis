@@ -291,6 +291,11 @@ package cs448b.fp.tree
 				tf.text = node.name;
 			}
 			
+//			if (evt.type == MouseEvent.MOUSE_OVER)
+//			{
+//				trace("Mouse over: " + node.name);
+//			}
+			
 			for(var o:Object in listeners)
 			{				
 				var l:TreeEventListener = listeners[o] as TreeEventListener;

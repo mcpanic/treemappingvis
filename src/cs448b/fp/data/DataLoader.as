@@ -73,11 +73,11 @@ package cs448b.fp.data
 		/**
 		 * Handles the loaded event for all trees
 		 */
-		public function handleLoaded( evt:Event ):void
+		public function handleLoaded():void
 		{
 			_numFilesLoaded++;
 			if (_numFiles == _numFilesLoaded && _cb != null)
-				_cb( evt );					
+				_cb();					
 		}
 
        /**
