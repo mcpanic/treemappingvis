@@ -29,13 +29,35 @@ package cs448b.fp.utils
 		 */ 
 		public function addDropShadow(n:NodeSprite):void
 		{
-			return;
+			//return;
 			var filter:BitmapFilter = Theme.getDropShadowFilter();
-			var myFilters:Array = new Array();
-			myFilters.push(filter);
+			var myFilters:Array = new Array(filter);
 			n.filters = myFilters;
 		}
 		
+		/**
+		 * Add glow effect to the node
+		 */ 
+		public function addGlow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
+		{
+//			return;
+			var filter:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
+			var myFilters:Array = new Array(filter);
+			n.filters = myFilters;
+		}
+
+		/**
+		 * Add glow and shadow effect to the node
+		 */ 
+		public function addGlowShadow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
+		{
+//			return;
+			var glow:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
+			var shadow:BitmapFilter = Theme.getDropShadowFilter();
+			var myFilters:Array = new Array(glow, shadow);
+			n.filters = myFilters;
+		}
+				
 		/**
 		 * Wrapper for removeFilters
 		 */ 
@@ -49,22 +71,9 @@ package cs448b.fp.utils
 		 */ 
 		public function removeFilters(n:NodeSprite):void
 		{
-			n.filters = null;
+			n.filters = null;			
 		}
-		
-		/**
-		 * Add glow effect to the node
-		 */ 
-		public function addGlow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
-		{
-//			return;
-			var filter:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
-			var myFilters:Array = new Array();
-			myFilters.push(filter);
-			n.filters = myFilters;
-			//trace("addGlow for " + n.name);
-		}
-		
+				
 		/**
 		 * Wrapper for removeFilters
 		 */ 

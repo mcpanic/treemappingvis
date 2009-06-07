@@ -8,7 +8,7 @@ package cs448b.fp.utils
 	public class Theme
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
 				
 		// How many sessions are we having for each task?
 		public static var NUM_SESSIONS:Number = 5;
@@ -225,8 +225,8 @@ package cs448b.fp.utils
             var alpha:Number = 0.8;
             var blurX:Number = 8;
             var blurY:Number = 8;
-            var distance:Number = 15;
-            var strength:Number = 0.65;
+            var distance:Number = 10;
+            var strength:Number = 0.8;//0.65;
             var inner:Boolean = false;
             var knockout:Boolean = false;
             var quality:Number = BitmapFilterQuality.HIGH;
