@@ -2,11 +2,11 @@ package cs448b.fp.data
 {
 	import fl.containers.UILoader;
 	
+	import flare.vis.data.DataSprite;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
 	import flash.display.DisplayObject;
-	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -86,7 +86,9 @@ package cs448b.fp.data
 //			if (n.name == "1")
 //			{				
 				n.props["image"] = image;
+//				if (n.name == "1")
 				n.addChild(image);
+
 				//n.props["image"].visible = false;						
 //			}
 //			else

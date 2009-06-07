@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = false;
+		public static var ENABLE_DEBUG:Boolean = true;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// How many sessions are we having for each task?
@@ -97,7 +97,7 @@ package cs448b.fp.utils
 				
 		public static var LAYOUT_NODENAME_X:Number = 20;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_NODENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin		
-		public static var LAYOUT_TREENAME_X:Number = 270;	// tree name label x-coordinate, relative to the canvas origin
+		public static var LAYOUT_TREENAME_X:Number = 270+20;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_TREENAME_Y:Number = -35;	// tree name label y-coordinate, relative to the canvas origin
 		public static var LAYOUT_ZOOM_X:Number = 50;		// zoom button x-coordinate
 		public static var LAYOUT_ZOOM_Y:Number = -40;		// zoom button y-coordinate

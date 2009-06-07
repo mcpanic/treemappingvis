@@ -184,15 +184,21 @@ package cs448b.fp.tree
 				}
 				else if (Theme.ENABLE_CASCADE_OFFSET == 2)
 				{	
-					n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
-					n.props["image"].x = Number(n.props["x"]);
-					n.props["image"].y = Number(n.props["y"]);
-									
-//					var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
-//					var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
-//					n.props["image"].setSize(w, h);
-//					n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-//					n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+					// for leaf nodes, no expansion
+//					if (n.childDegree == 0)
+//					{
+						n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
+						n.props["image"].x = Number(n.props["x"]);
+						n.props["image"].y = Number(n.props["y"]);
+//					}
+//					else
+//					{				
+//						var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
+//						var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
+//						n.props["image"].setSize(w, h);
+//						n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+//						n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+//					}
 				}	     					     
 //		  		}
 	        });
@@ -337,10 +343,28 @@ package cs448b.fp.tree
 					}
 					else if (Theme.ENABLE_CASCADE_OFFSET == 2)
 					{
-						o.u = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-		        		o.v = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-		        		o.w = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
-		        		o.h = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;	
+						//trace(n.props["x"] + " " + n.props["y"] + " " + n.props["width"] + " " + n.props["height"]);
+						// for leaf nodes, no expansion
+						if (n.childDegree == 0)
+						{
+							o.u = n.props["x"];
+			        		o.v = n.props["y"];
+			        		o.w = n.props["width"];
+			        		o.h = n.props["height"];
+						}
+						else
+						{
+							o.u = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+			        		o.v = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
+			        		o.w = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
+			        		o.h = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;	
+		    			}
+		        		// added for test
+//		        		n.props["width"] = o.w;
+//		        		n.props["height"] = o.h;
+//		        		n.props["x"] = o.u;
+//		        		n.props["y"] = o.v;
+//		        		trace(n.props["x"] + " " + n.props["y"] + " " + n.props["width"] + " " + n.props["height"]);
 					}	   
 	        		
 

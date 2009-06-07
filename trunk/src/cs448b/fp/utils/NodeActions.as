@@ -27,6 +27,7 @@ package cs448b.fp.utils
 		 */ 
 		public function addDropShadow(n:NodeSprite):void
 		{
+			//return;
 			var filter:BitmapFilter = Theme.getDropShadowFilter();
 			var myFilters:Array = new Array();
 			myFilters.push(filter);
@@ -54,10 +55,12 @@ package cs448b.fp.utils
 		 */ 
 		public function addGlow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 7, blurY:Number = 7):void
 		{
+			//return;
 			var filter:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
 			var myFilters:Array = new Array();
 			myFilters.push(filter);
 			n.filters = myFilters;
+			trace("addGlow for " + n.name);
 		}
 		
 		/**
@@ -66,6 +69,7 @@ package cs448b.fp.utils
 		public function removeGlow(n:NodeSprite):void
 		{
 			removeFilters(n);
+			trace("removeGlow for " + n.name);
 		}	
 		
 		/** 
@@ -73,6 +77,7 @@ package cs448b.fp.utils
 		 */		 
 		private function showConnectedEffects(n:NodeSprite):void
 		{
+			//return;
 			// no effect for already selected nodes
 			if (Theme.ENABLE_CONTINUE_BUTTON == true && n.props["selected"] == true)
 				return;
@@ -178,11 +183,14 @@ package cs448b.fp.utils
 		public function markActivated(nn:NodeSprite):void
 		{
 			nn.visible = true;
+			//nn.getChildAt(0).visible = false;
+			//nn.visible = false;
 			nn.props["activated"] = true;
 			nn.lineColor = Theme.COLOR_ACTIVATED;
 			showLineWidth(nn);
 			nn.props["image"].alpha = 1;
-			nn.props["image"].visible = true;
+			//nn.props["image"].visible = true;
+			//nn.props["image"].visible = false;
 			if (nn.props["mapped"] == Theme.STATUS_MAPPED)
 			{
 				hideLine(nn);

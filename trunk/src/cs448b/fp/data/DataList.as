@@ -25,8 +25,7 @@ package cs448b.fp.data
 			"breastCancer_content", "dwell_content", 
 			"flickr_content", "google_content", 
 			"weekendSherpa_content", "mint_content", 
-			//"nature_content", "paloAlto_content");
-			"paloAlto_content", "paloAlto_content");
+			"nature_content", "paloAlto_content");
 			
 			_layoutArray 	= new Array("rockTheVote_layout", 
 			"courseRank_layout", "moo_layout", 
@@ -35,8 +34,7 @@ package cs448b.fp.data
 			"breastCancer_layout", "dwell_layout", 
 			"flickr_layout", "google_layout", 
 			"weekendSherpa_layout", "mint_layout", 
-			//"nature_layout", "paloAlto_layout");											
-			"paloAlto_layout", "paloAlto_layout");
+			"nature_layout", "paloAlto_layout");											
 		}
 
 		/**
