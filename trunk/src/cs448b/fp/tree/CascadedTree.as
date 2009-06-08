@@ -298,16 +298,33 @@ package cs448b.fp.tree
 			// Brushing and linking for mapped nodes
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
-				n.lineColor = Theme.COLOR_MAPPED;
-				n.lineWidth = Theme.LINE_WIDTH;
-				if (isContentTree == false)
+				if (Theme.ENABLE_MERGE == true && n.props["selected"] == true)
 				{
-					//_node.addDropShadow(n);
-					_node.addGlow(n);	
-					_node.showConnectedNodes(n);	
-				}	
-				//_node.pullAllChildrenForward(n);
-				_node.pullAllConnectedForward(n);			
+					n.lineColor = Theme.COLOR_SELECTED;
+					n.lineWidth = Theme.LINE_WIDTH;
+					if (isContentTree == false)
+					{
+						//_node.addDropShadow(n);
+						_node.addGlow(n, Theme.COLOR_SELECTED);	
+						_node.showConnectedNodes(n);	
+					}	
+					//_node.pullAllChildrenForward(n);
+					_node.pullAllConnectedForward(n);						
+				}
+				else
+				{
+					n.lineColor = Theme.COLOR_MAPPED;
+					n.lineWidth = Theme.LINE_WIDTH;
+					if (isContentTree == false)
+					{
+						//_node.addDropShadow(n);
+						_node.addGlow(n, Theme.COLOR_MAPPED);	
+						_node.showConnectedNodes(n);	
+					}	
+					//_node.pullAllChildrenForward(n);
+					_node.pullAllConnectedForward(n);						
+				}			
+			
 			}
 			else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
@@ -316,7 +333,7 @@ package cs448b.fp.tree
 				if (isContentTree == false)
 				{
 					//_node.addDropShadow(n);
-					_node.addGlow(n);	
+					_node.addGlow(n, Theme.COLOR_UNMAPPED);	
 					_node.showConnectedNodes(n);	
 				}	
 				//_node.pullAllChildrenForward(n);
@@ -330,7 +347,7 @@ package cs448b.fp.tree
 				if (isContentTree == false)
 				{
 					//_node.addDropShadow(n);
-					_node.addGlow(n);	
+					_node.addGlow(n, Theme.COLOR_SELECTED);	
 					_node.showConnectedNodes(n);	
 				}	
 				//_node.pullAllChildrenForward(n);
@@ -479,11 +496,20 @@ package cs448b.fp.tree
 					// 1) if mapped, open a popup, get user input, and apply 
 					if (n.props["mapped"] == Theme.STATUS_MAPPED)
 					{
+						// unselect previously selected node
+						root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+							if (n != nn && nn.props["selected"] == true)	
+							{									
+								_node.unmarkSelected(nn);
+								//onMouseOver(n);
+							}			
+						});									
 						// Under 2-click condition, we allow merge without popups
 						if (Theme.ENABLE_MERGE == true)
 						{							
 							super.onMouseDown(n);
 							//blurOtherNodes(n);
+							_node.addGlow(n, Theme.COLOR_SELECTED);
 							_node.markSelected(n);
 							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "select_layout", Number(n.name)));
 							// dispatch mapping event
@@ -723,8 +749,8 @@ package cs448b.fp.tree
 			if (node == null || node == tree.root)	// do not play the root node
 				return;	
 			
-			node.filters = [new GlowFilter(0xff0000, 0.8, 0, 0)];
-			var g1:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":15,"filters[0].blurY":15});
+			node.filters = [new GlowFilter(Theme.COLOR_SELECTED, 0.8, 0, 0)];
+			var g1:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":10,"filters[0].blurY":10});
 			var g2:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":0,"filters[0].blurY":0});
 				
 			var t1:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:Theme.COLOR_SELECTED});
