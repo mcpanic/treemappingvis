@@ -319,7 +319,7 @@ package cs448b.fp.display
 		}
 						
 		/**
-		 * Merge a mapping based on the current user selection: Add another
+		 * Merge a mapping based on the current user selection: with popup / add another
 		 */					
 		public function mergeMapping():void
 		{
@@ -329,7 +329,18 @@ package cs448b.fp.display
 			//blinkNode();
 			dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "blink") ); 
 		}
-		
+
+		/**
+		 * Merge a mapping based on the current user selection: without popup / add another
+		 */					
+		public function mergeMappingWithoutPopup():void
+		{			
+			//addMapping();
+			dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "add") );  	
+			//blinkNode();
+			dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "blink") ); 
+		}
+				
 		/**
 		 * Replace a mapping based on the current user selection: Remove and Add
 		 */					

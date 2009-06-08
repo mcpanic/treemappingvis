@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = false;
+		public static var ENABLE_DEBUG:Boolean = true;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 				
 		// How many sessions are we having for each task?
@@ -23,8 +23,10 @@ package cs448b.fp.utils
 		
 		// Load or not image segments. If true, only root image is loaded. If false, all segments are loaded, causing more overhead.
 		public static var ENABLE_IMAGE_SEGMENT:Boolean = false;
+		// Enable /Disable merge operation (1 to N mapping possible)
+		public static var ENABLE_MERGE:Boolean = true;		
 		// Enable /Disable merge popup (1 to N mapping possible)
-		public static var ENABLE_MERGE:Boolean = false;		
+		public static var ENABLE_MERGE_POPUP:Boolean = false;		
 		// Enable / Disable ancestor-descendent constraint
 		public static var ENABLE_REL:Boolean = false;
 		// Enable / Disable serial node presentation (one content node at a time)
@@ -49,6 +51,8 @@ package cs448b.fp.utils
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
 		public static var COLOR_SELECTED:uint = 0xffff0000; 	
 		public static var COLOR_CONNECTED:uint = 0xff0000ff;//0xffbbbbbb;	
+		public static var COLOR_MAPPED:uint = 0xff93B02A;//458764;//87BF76;//96A84A;
+		public static var COLOR_UNMAPPED:uint = 0xffff0000;
 		public static var LINE_WIDTH:uint = 12;
 		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style

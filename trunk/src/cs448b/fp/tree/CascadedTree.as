@@ -298,7 +298,7 @@ package cs448b.fp.tree
 			// Brushing and linking for mapped nodes
 			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
 			{
-				n.lineColor = Theme.COLOR_ACTIVATED;
+				n.lineColor = Theme.COLOR_MAPPED;
 				n.lineWidth = Theme.LINE_WIDTH;
 				if (isContentTree == false)
 				{
@@ -311,7 +311,7 @@ package cs448b.fp.tree
 			}
 			else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
-				n.lineColor = Theme.COLOR_SELECTED;
+				n.lineColor = Theme.COLOR_UNMAPPED;
 				n.lineWidth = Theme.LINE_WIDTH;
 				if (isContentTree == false)
 				{
@@ -359,14 +359,28 @@ package cs448b.fp.tree
 				return;
 			if (n.props["selected"] == true && isContentTree == true)
 			;
-			else if (n.props["mapped"] == Theme.STATUS_MAPPED || n.props["mapped"] == Theme.STATUS_UNMAPPED)
+			else if (n.props["mapped"] == Theme.STATUS_MAPPED)
+			{
+				// apply the same code as the 'activated' case
+				if (Theme.ENABLE_MERGE == true && n.props["selected"] == true)
+					_node.hideConnectedNodes(n);
+				else
+				{
+					//n.lineAlpha = 1;
+					_node.hideLine(n);	
+					_node.removeFilters(n);
+					if (isContentTree == false)
+						_node.hideConnectedNodes(n);
+				}				
+			}	
+			else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
 			{
 				//n.lineAlpha = 1;
 				_node.hideLine(n);	
 				_node.removeFilters(n);
 				if (isContentTree == false)
 					_node.hideConnectedNodes(n);				
-			}	
+			}
 			else if (n.props["activated"] == true)
 			{
 				// do not remove selected effects for selected nodes in the 2-click interface
@@ -430,7 +444,7 @@ package cs448b.fp.tree
 			// 1) if mapped, open a popup, get user input, and apply 
 					if (n.props["mapped"] == Theme.STATUS_MAPPED)
 					{
-						if (Theme.ENABLE_MERGE == true)
+						if (Theme.ENABLE_MERGE_POPUP == true)
 						{
 							super.onMouseDown(n);
 							//blurOtherNodes(n);
@@ -465,18 +479,26 @@ package cs448b.fp.tree
 					// 1) if mapped, open a popup, get user input, and apply 
 					if (n.props["mapped"] == Theme.STATUS_MAPPED)
 					{
-						// Not clear what to do when merge is enabled under 2-click condition
-						// So do nothing for now.
+						// Under 2-click condition, we allow merge without popups
 						if (Theme.ENABLE_MERGE == true)
 						{							
+							super.onMouseDown(n);
+							//blurOtherNodes(n);
+							_node.markSelected(n);
+							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "select_layout", Number(n.name)));
+							// dispatch mapping event
+							//dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));																		
+						}
+//						if (Theme.ENABLE_MERGE_POPUP == true)
+//						{							
 //							super.onMouseDown(n);
 //							//blurOtherNodes(n);
 //							_node.markSelected(n);
 //							// dispatch mapping event
 //							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));
-						}
-						else
-							return;							
+//						}
+//						else
+//							return;							
 					}
 					// 2) not possible; layout nodes do not have 'unmapped' status.
 					else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
@@ -509,7 +531,6 @@ package cs448b.fp.tree
 							super.onMouseDown(n);
 							//blurOtherNodes(n);
 							_node.markSelected(n);
-							//_currentSelectedNodeId = Number(n.name);
 							dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "select_layout", Number(n.name)));
 							// dispatch mapping event
 							//dispatchEvent(new MappingEvent(MappingEvent.MOUSE_DOWN, "add", Number(n.name)));						
