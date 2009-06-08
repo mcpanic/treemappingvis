@@ -39,6 +39,7 @@ package cs448b.fp.utils
 		public static var ORDER_PREORDER:Number = 1;
 		public static var ORDER_BFS:Number = 2;
 		public static var ORDER_DFS:Number = 3;
+		public static var ORDER_PREORDER_RANDOM:Number = 4;
 		
 		// Animation duration
 		public static var DURATION_PREVIEW:Number = 0.3;
@@ -95,7 +96,7 @@ package cs448b.fp.utils
 		public static var LAYOUT_CONTINUE_Y:Number = 15;		// continue button y-coordinate
 		public static var LAYOUT_CONTINUE_WIDTH:Number = 150;	// continue button width				
 		public static var LAYOUT_FEEDBACK_X:Number = 25;//450;	// notice x-coordinate
-		public static var LAYOUT_FEEDBACK_Y:Number = 17;		// notice y-coordinate
+		public static var LAYOUT_FEEDBACK_Y:Number = 10;		// notice y-coordinate
 				
 		public static var LAYOUT_NODENAME_X:Number = 20;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_NODENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin		
@@ -126,9 +127,13 @@ package cs448b.fp.utils
 		public static var LAYOUT_TUTORIAL_X:Number = 20;		// popup x-coordinate
 		public static var LAYOUT_TUTORIAL_Y:Number = 10;		// popup y-coordinate
 		public static var LAYOUT_TUTORIAL_WIDTH:Number = 620;		// popup width
-		public static var LAYOUT_TUTORIAL_HEIGHT:Number = 120;		// popup height
-		public static var LAYOUT_TUTORIAL_OFFSET:Number = 90;		// pixel offset 
+		public static var LAYOUT_TUTORIAL_HEIGHT:Number = 95;//120;		// popup height
+		public static var LAYOUT_TUTORIAL_OFFSET:Number = 65;//90;		// pixel offset 
 		public static var LAYOUT_TUTORIAL_BUTTON_WIDTH:Number = 80;	// button width
+		public static var LAYOUT_TUTORIAL_STEP_X:Number = 15;	// step display x-coordinate
+		public static var LAYOUT_TUTORIAL_STEP_Y:Number = 10;	// step display y-coordinate
+		public static var LAYOUT_TUTORIAL_MSG_X:Number = 15;//25	// message display x-coordinate
+		public static var LAYOUT_TUTORIAL_MSG_Y:Number = 15;//35	// message display x-coordinate
 		
 		// Messages: used in tree control files
 		public static var MSG_STAGE1:String = "Stage: Initialization";
@@ -137,7 +142,7 @@ package cs448b.fp.utils
 		public static var MSG_STAGE4:String = "Stage: Task Complete";
 		public static var MSG_MAPPING_NONE:String = "Mappings: None";
 		public static var MSG_MAPPING:String = "Mappings: ";
-		public static var MSG_MAPPING_INST:String = "For the highlighted segment on the left-hand page, find the best corresponding segment on the right-hand page.";
+		public static var MSG_MAPPING_INST:String = "For the highlighted segment on the left-hand page, \nfind the best corresponding segment on the right-hand page.";
 		public static var MSG_LOADED:String = "Loading...";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";	
@@ -157,11 +162,11 @@ package cs448b.fp.utils
 				//"  * Reset: back to default scale \n\n" + 
 				"Panning: Control Key + Mouse Drag \n";
 
-		public static var MSG_TUT1:String = "Your goal in this task is to match regions between two web pages.\n" + 
+		public static var MSG_TUT1:String = "\nYour goal in this task is to match regions between two web pages.\n" + 
 				"This tutorial will give you an overview of the task."; 
 		//<click 'Start'>
 		
-		public static var MSG_TUT2:String = "When the task starts, you are first shown an animated preview \n" + 
+		public static var MSG_TUT2:String = "\nWhen the task starts, you are first shown an animated preview \n" + 
 				"of the page segments you will have to match (left-hand page)."; 
 		// <automatically advance after preview is over>
 		
@@ -184,37 +189,11 @@ package cs448b.fp.utils
 				"afterwards, it is disabled and cannot be used in subsequent matchings!";  
 		// <when task is successfully completed, automatically advance>
 		
-		public static var MSG_TUT6:String = "Well done! " + 
+		public static var MSG_TUT6:String = "\nWell done! " + 
 				"You are now ready to start the actual HIT. \n" + 
 				"Be sure to check out 'Help' to learn a few additional interaction tips. \n" + 
 				"Click 'Restart' to see this tutorial again.";
 
-/*
-		// Tutorial messages: used in tutorial session
-		public static var MSG_TUT1:String = "We want to learn how design elements in a pair of web pages relate to each other, " + 
-										"for our research project to build a better web design tool. \n" + 
-										"This tutorial will guide you through the mapping interface.";
-		public static var MSG_TUT2:String = "When the task starts, it first shows an animated preview of \n" + 
-										"page segments you will find mappings for.";
-		public static var MSG_TUT3:String = "For each highlighted segment on the left (content) page, \n" + 
-										"your task is to find a segment on the right (layout) page \n" + 
-										"that you think corresponds to the highlighted segment.";		
-		//public static var MSG_TUT4:String = "Explore the layout page by moving the mouse cursor around. \nPlace your cursor on top of a segment, which is highlighted in red. \nVisually related segments are also highlighted in purple.";	
-		//public static var MSG_TUT5:String = "Note that there are larger segments containing multiple small segments. \nKeep in mind they can be mapped as well.";			
-		public static var MSG_TUT4:String = "For the header, the header on the Layout page seems like a nice match.\n" + 
-										"Locate the header by moving the cursor over, and click the highlighted header.";	
-		public static var MSG_TUT5:String = "For this dog image, there doesn't seem to be any \n" + 
-										"corresponding segment on the Layout page.\n" + 
-										"In this case, click 'Assign no mapping' button.";			
-		//public static var MSG_TUT8:String = "If you think more than one segments map to a segment on the right (layout) page, \nyou can 'merge' mappings by clicking on the mapped node again. \nWhen a popup menu opens, choose 'Merge'."; 
-		//public static var MSG_TUT9:String = "Select 'Replace' if you want to remove existing mappings and \napply the new mapping. \nSelect 'Cancel' if you do not want to change anything.";			
-		public static var MSG_TUT6:String = "Complete the task by mapping three remaining menu segments to the corresponding segments on the Layout page. \n" +
-										"Careful: Once a node is mapped, it cannot be mapped to any other segments. \n" + 										 
-										"When the task is complete, a popup window opens.";
-		public static var MSG_TUT7:String = "Congratulations! Click 'Restart' to see this tutorial again, or \n" + 
-										"start the actual HIT by accepting it if you are ready. \n" + 
-										"Click 'help' button for interaction tips.";	
-*/
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Match"; //"Start";
 		public static var LABEL_CONT2:String = "Match";

@@ -355,6 +355,13 @@ package cs448b.fp.utils
 			// if no layout node selected, just return
 			if (_selectedLayoutID == 0)
 				return;
+			
+			// (in the tutorial session) If a node other than the header is selected, return
+			if (_isPreview == true && _displayManager.currentTutorialStep == 3 && _selectedContentID == 16)
+			{
+				if (_selectedLayoutID != 121)
+					return;
+			}
 				
 			// case 1:  content node already has a mapping: remove its old mapping
 			//			cannot happen in the current configuration.

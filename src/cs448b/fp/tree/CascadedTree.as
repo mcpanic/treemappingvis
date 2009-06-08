@@ -32,7 +32,6 @@ package cs448b.fp.tree
 		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
 		
 		public var _currentStep:Number = 0;
-//		private var _currentSelectedNodeId:Number;
 			
 		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean, bPreview:Boolean)
 		{
@@ -874,13 +873,47 @@ package cs448b.fp.tree
 		        });		 
 		        preorder(tree.root);		
 		 	}
-	        				
+		 	else if (_traversalOrder == Theme.ORDER_PREORDER_RANDOM)
+		 	{
+		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
+		        	nn.props["traversed"] = false;
+		        });		 
+		        preorderRandom(tree.root);		
+		 	}	        				
 		}
 
+
+		/**
+		 * Preorder traversal algorithm with child selection in order
+		 */		
+		private function preorder(nn:NodeSprite):void
+		{
+			var nextNode:NodeSprite = null;
+			nn.props["order"] = _nodeCount;
+			nn.props["traversed"] = true;
+			 
+			// if any child is not traversed, randomly pick one and recursively call preorder
+			while (1)
+			{
+				// if all children are traversed, then return
+				if (isAllChildrenTraversed(nn) == true)
+					break;
+				for (var i:uint = 0; i < nn.childDegree; i++)
+				{				
+					nextNode = nn.getChildNode(i);
+					if (nextNode.props["traversed"] == false)	// if not traversed, break. Otherwise, get another one.
+					{
+						_nodeCount++;
+						preorder(nextNode);
+					}
+				}					
+			}			
+		}
+		
 		/**
 		 * Preorder traversal algorithm with random child selection
 		 */		
-		private function preorder(nn:NodeSprite):void
+		private function preorderRandom(nn:NodeSprite):void
 		{
 			var randomNode:NodeSprite = null;
 			nn.props["order"] = _nodeCount;
@@ -896,7 +929,7 @@ package cs448b.fp.tree
 				if (randomNode.props["traversed"] == false)	// if not traversed, break. Otherwise, get another one.
 				{
 					_nodeCount++;
-					preorder(randomNode);
+					preorderRandom(randomNode);
 				}	
 				
 			}
