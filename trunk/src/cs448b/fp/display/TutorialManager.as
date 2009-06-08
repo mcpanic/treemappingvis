@@ -40,7 +40,7 @@ package cs448b.fp.display
 			_curStep = 1;
 			//addPrevButton();
 			addNextButton();	
-			addStep();
+			//addStep();
 			addMessage();
 		}
 
@@ -126,8 +126,8 @@ package cs448b.fp.display
             //addChild( _message );
             
             _output = new TextField();
-            _output.x = 25;
-            _output.y = 35;
+            _output.x = Theme.LAYOUT_TUTORIAL_MSG_X;
+            _output.y = Theme.LAYOUT_TUTORIAL_MSG_Y;
             _output.textColor = 0xffffff;
             _output.defaultTextFormat = Theme.FONT_TUTORIAL;
             _output.width = Theme.LAYOUT_TUTORIAL_WIDTH - 130;
@@ -147,8 +147,8 @@ package cs448b.fp.display
             _step = new TextSprite("", Theme.FONT_TUTORIAL_STEP);//_textFormat);
             _step.textMode = TextSprite.DEVICE;
             _step.horizontalAnchor = TextSprite.LEFT;           	
-            _step.x = 15;
-            _step.y = 10;        
+            _step.x = Theme.LAYOUT_TUTORIAL_STEP_X;
+            _step.y = Theme.LAYOUT_TUTORIAL_STEP_Y;        
             showStep();
             addChild( _step );        
         }    
@@ -189,9 +189,8 @@ package cs448b.fp.display
         public function showNext():void
         {
         	_curStep++;
-//        	if (_curStep == 2)
-//        		_prevButton.enabled = true;
-        	showStep();
+
+        	//showStep();
         	showMessage(Theme["MSG_TUT" + _curStep]);
         	
         	if (_curStep == 2)	// play preview
