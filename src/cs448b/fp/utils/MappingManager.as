@@ -546,7 +546,7 @@ package cs448b.fp.utils
 						 
 						//_cNode.addDropShadow(nn);
 						//_cNode.addGlow(nn);
-						_cNode.addGlowShadow(nn);
+						_cNode.addGlowShadow(nn, Theme.COLOR_SELECTED);
 						_cNode.showConnectedNodes(nn);
 						
 					}

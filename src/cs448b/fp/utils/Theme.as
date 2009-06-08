@@ -7,7 +7,7 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = true;
+		public static var ENABLE_DEBUG:Boolean = false;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 				
 		// How many sessions are we having for each task?
@@ -49,11 +49,11 @@ package cs448b.fp.utils
 		
 		// Tree visualization options: used in tree files		
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
-		public static var COLOR_SELECTED:uint = 0xffff0000; 	
+		public static var COLOR_SELECTED:uint = 0xff7CFC00;//7FFF00;//ff0000; 	
 		public static var COLOR_CONNECTED:uint = 0xff0000ff;//0xffbbbbbb;	
-		public static var COLOR_MAPPED:uint = 0xff93B02A;//458764;//87BF76;//96A84A;
+		public static var COLOR_MAPPED:uint = 0xffff0000;//93B02A;//458764;//87BF76;//96A84A;
 		public static var COLOR_UNMAPPED:uint = 0xffff0000;
-		public static var LINE_WIDTH:uint = 12;
+		public static var LINE_WIDTH:uint = 10;//12;
 		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
 		public static var COLOR_FILL_MAPPED:Number = 0x00000000; //0xffFFAAAAFF;
@@ -61,7 +61,7 @@ package cs448b.fp.utils
 		public static var ALPHA_MAPPED:Number = 1; //0.8;		// alpha value for mapped nodes
 		public static var SHOW_MAPPPED:Boolean = true;		// hide content of the mapped nodes
 		public static var CONNECTED_ALPHA:Number = 0.5;		// alpha value for the connected layout nodes on mouseover
-		public static var CONNECTED_LINE_WIDTH:Number = 1.5;	// dividend for the connected layout nodes on mouseover
+		public static var CONNECTED_LINE_WIDTH:Number = 7;	// dividend for the connected layout nodes on mouseover
 		public static var ALPHA_POPUP:Number = 0.5; 		// alpha value for the trees while popup menu is open
 		
 		public static var MAX_ZOOM:Number = 4; 		// alpha value for the trees while popup menu is open
@@ -245,10 +245,10 @@ package cs448b.fp.utils
             var color:Number = 0x000000;
             var angle:Number = 45;
             var alpha:Number = 0.8;
-            var blurX:Number = 8;
-            var blurY:Number = 8;
-            var distance:Number = 10;
-            var strength:Number = 0.8;//0.65;
+            var blurX:Number = 5;//8;
+            var blurY:Number = 5;//8;
+            var distance:Number = 8;//10;
+            var strength:Number = 0.5;//0.65;
             var inner:Boolean = false;
             var knockout:Boolean = false;
             var quality:Number = BitmapFilterQuality.HIGH;
@@ -267,9 +267,9 @@ package cs448b.fp.utils
 	    /**
     	 * Drop shadow filter for the nodes
 	     */
- 		public static function getGlowFilter(a:Number, bx:Number, by:Number):BitmapFilter 
+ 		public static function getGlowFilter(c:Number, a:Number, bx:Number, by:Number):BitmapFilter 
  		{
-            var color:Number = 0xff0000;
+            var color:Number = c;
             var alpha:Number = a;
             var blurX:Number = bx;
             var blurY:Number = by;

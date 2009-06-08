@@ -38,10 +38,10 @@ package cs448b.fp.utils
 		/**
 		 * Add glow effect to the node
 		 */ 
-		public function addGlow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
+		public function addGlow(n:NodeSprite, color:Number, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
 		{
 //			return;
-			var filter:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
+			var filter:BitmapFilter = Theme.getGlowFilter(color, alpha, blurX, blurY);
 			var myFilters:Array = new Array(filter);
 			n.filters = myFilters;
 		}
@@ -49,10 +49,10 @@ package cs448b.fp.utils
 		/**
 		 * Add glow and shadow effect to the node
 		 */ 
-		public function addGlowShadow(n:NodeSprite, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
+		public function addGlowShadow(n:NodeSprite, color:Number, alpha:Number = 0.8, blurX:Number = 3, blurY:Number = 3):void
 		{
 //			return;
-			var glow:BitmapFilter = Theme.getGlowFilter(alpha, blurX, blurY);
+			var glow:BitmapFilter = Theme.getGlowFilter(color, alpha, blurX, blurY);
 			var shadow:BitmapFilter = Theme.getDropShadowFilter();
 			var myFilters:Array = new Array(glow, shadow);
 			n.filters = myFilters;
@@ -96,7 +96,7 @@ package cs448b.fp.utils
 			n.lineColor = Theme.COLOR_CONNECTED;
 			//n.lineWidth = 5;
 			//trace(n.lineWidth);
-			n.lineWidth = Theme.LINE_WIDTH / Theme.CONNECTED_LINE_WIDTH;
+			n.lineWidth = Theme.CONNECTED_LINE_WIDTH;
 			n.lineAlpha = Theme.CONNECTED_ALPHA;
 			//addGlow(n, Theme.CONNECTED_ALPHA, 5, 5);
 		}
