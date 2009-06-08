@@ -88,7 +88,15 @@ package cs448b.fp.utils
 		{
 			_selectedLayoutID = id;
 		}
-				
+
+		/**
+		 * Get the current tutorial step
+		 */	
+		public function get currentTutorialStep():Number
+		{			
+			return _displayManager.currentTutorialStep;
+		}
+						
 		/**
 		 * Start the mapping session by playing a preview 
 		 */							
@@ -197,18 +205,7 @@ package cs448b.fp.utils
 				trace("select: " + e.value);
 				_selectedLayoutID = e.value;
 			}	
-						
-//			if (_selectedContentID == 0)	// layout is selected alone.
-//			{
-//				resetSelections();
-//			}
-//			else	// Reset selections
-//			{
-//			
-//				_selectedLayoutID = e.value;
-				
 
-//			}
 		}
 
 		/**
@@ -235,10 +232,11 @@ package cs448b.fp.utils
 			// tutorial related
 			else if (e.name == "tutorial_preview")
 				startSession();	
-			else if (e.name == "tutorial_highlight")
-				showNextStep();
+//			else if (e.name == "tutorial_highlight")
+//				showNextStep();
 			else if (e.name == "tutorial_click")
 			{
+				showNextStep();
 				NodeActions.lock = false;
 			}	
 			else if (e.name == "tutorial_unmap")
@@ -269,7 +267,8 @@ package cs448b.fp.utils
 		private function showSelectionFeedback(idx:Number):void
 		{
 			var message:String; 
-			message = Theme.MSG_MAPPING_INST;
+			if (_isPreview == false)				
+				message = Theme.MSG_MAPPING_INST;
 			if (_contentTree._traversalOrder == Theme.ORDER_DFS)	// root is not number 1
 				message += " (" + _contentTree._currentStep;
 			else
@@ -385,7 +384,7 @@ package cs448b.fp.utils
 			}		 
 
 			// post-processing for preview click
-			if (_isPreview == true && _displayManager.currentTutorialStep == 4)
+			if (_isPreview == true && _displayManager.currentTutorialStep == 3)
 			{
 				//showNextStep();
 				_displayManager.showTutorialNextStep();	

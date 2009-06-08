@@ -15,7 +15,7 @@ package cs448b.fp.utils
 		// How many pairs are in the database
 		public static var NUM_PAIRS:Number = 15;
 		// How many steps are in the tutorial session
-		public static var NUM_TUTORIAL_STEPS:Number = 7;
+		public static var NUM_TUTORIAL_STEPS:Number = 6;
 				
 		// Node offset options for better parent selection. 0: nothing, 1: cascaded offset, 2: expanded parent
 		public static var ENABLE_CASCADE_OFFSET:uint = 2;
@@ -125,10 +125,11 @@ package cs448b.fp.utils
 		
 		public static var LAYOUT_TUTORIAL_X:Number = 20;		// popup x-coordinate
 		public static var LAYOUT_TUTORIAL_Y:Number = 10;		// popup y-coordinate
-		public static var LAYOUT_TUTORIAL_WIDTH:Number = 640;		// popup width
-		public static var LAYOUT_TUTORIAL_HEIGHT:Number = 100;		// popup height
-		public static var LAYOUT_TUTORIAL_OFFSET:Number = 70;		// pixel offset 
-						
+		public static var LAYOUT_TUTORIAL_WIDTH:Number = 620;		// popup width
+		public static var LAYOUT_TUTORIAL_HEIGHT:Number = 120;		// popup height
+		public static var LAYOUT_TUTORIAL_OFFSET:Number = 90;		// pixel offset 
+		public static var LAYOUT_TUTORIAL_BUTTON_WIDTH:Number = 80;	// button width
+		
 		// Messages: used in tree control files
 		public static var MSG_STAGE1:String = "Stage: Initialization";
 		public static var MSG_STAGE2:String = "Stage: Hierarchical Matching";
@@ -136,10 +137,15 @@ package cs448b.fp.utils
 		public static var MSG_STAGE4:String = "Stage: Task Complete";
 		public static var MSG_MAPPING_NONE:String = "Mappings: None";
 		public static var MSG_MAPPING:String = "Mappings: ";
-		public static var MSG_MAPPING_INST:String = "Select a corresponding segment on the Layout page for the highlighted segment.";
+		public static var MSG_MAPPING_INST:String = "For the highlighted segment on the left-hand page, find the best corresponding segment on the right-hand page.";
 		public static var MSG_LOADED:String = "Loading...";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
-		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";
+		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";	
+		public static var MSG_RESULT_SENDING:String = "Sending results to Mechanical Turk server.\n"
+		public static var MSG_RESULT_TUTORIAL:String = "Practice task 1 of 1 complete. Click 'Continue' to finish the tutorial."
+		public static var MSG_RESULT_CONTINUE:String = "Click on the 'Continue' button to start the next task."
+		public static var MSG_RESULT_FINISH:String = "Click on the 'Continue' button to submit the result and finish this HIT."
+		
 		public static var MSG_HELP:String = "Mouse click: select a segment\n" + 
 				"Mouse over\n" + 
 				"  * not yet mapped: view current(red) and visually related(purple) segments \n" + 
@@ -151,6 +157,39 @@ package cs448b.fp.utils
 				//"  * Reset: back to default scale \n\n" + 
 				"Panning: Control Key + Mouse Drag \n";
 
+		public static var MSG_TUT1:String = "Your goal in this task is to match regions between two web pages.\n" + 
+				"This tutorial will give you an overview of the task."; 
+		//<click 'Start'>
+		
+		public static var MSG_TUT2:String = "When the task starts, you are first shown an animated preview \n" + 
+				"of the page segments you will have to match (left-hand page)."; 
+		// <automatically advance after preview is over>
+		
+		public static var MSG_TUT3:String = "For each highlighted segment on the left-hand page, " + 
+				"your goal is to find the best corresponding segment on the right-hand page. \n" + 
+				"Currently, the header of the left-hand page is highlighted. " + 
+				"For practice, click on the header of the right-hand page and then click \"Match\" to match the two headers. ";
+		// <when task is successfully completed, automatically advance>
+		
+		public static var MSG_TUT4:String = "Good job! \n" + 
+				"Sometimes, there will not be a good match for a highlighted segment. \n" + 
+				"Currently, the image of the dog is highlighted. " + 
+				"Click \"No match\" to indicate that there isn't a corresponding region on the right-hand page."; 
+		// <when task is successfully completed, automatically advance>
+		
+		public static var MSG_TUT5:String = "Great job! \n" + 
+				"Now complete the task by mapping the three remaining menu segments on the left-hand page " + 
+				"to their corresponding regions on the right-hand page. \n" + 
+				"Careful: a region on the right-hand side can only be matched once; " + 
+				"afterwards, it is disabled and cannot be used in subsequent matchings!";  
+		// <when task is successfully completed, automatically advance>
+		
+		public static var MSG_TUT6:String = "Well done! " + 
+				"You are now ready to start the actual HIT. \n" + 
+				"Be sure to check out 'Help' to learn a few additional interaction tips. \n" + 
+				"Click 'Restart' to see this tutorial again.";
+
+/*
 		// Tutorial messages: used in tutorial session
 		public static var MSG_TUT1:String = "We want to learn how design elements in a pair of web pages relate to each other, " + 
 										"for our research project to build a better web design tool. \n" + 
@@ -175,14 +214,14 @@ package cs448b.fp.utils
 		public static var MSG_TUT7:String = "Congratulations! Click 'Restart' to see this tutorial again, or \n" + 
 										"start the actual HIT by accepting it if you are ready. \n" + 
 										"Click 'help' button for interaction tips.";	
-
+*/
 		// Labels: for buttons and sections, used in tree control files
-		public static var LABEL_CONT1:String = "Add mapping"; //"Start";
-		public static var LABEL_CONT2:String = "Add mapping";
-		public static var LABEL_CONT3:String = "Add mapping";
+		public static var LABEL_CONT1:String = "Match"; //"Start";
+		public static var LABEL_CONT2:String = "Match";
+		public static var LABEL_CONT3:String = "Match";
 		public static var LABEL_CONTENT:String = "Content";
 		public static var LABEL_LAYOUT:String = "Layout";
-		public static var LABEL_NOMAPPING:String = "Assign no mapping";
+		public static var LABEL_NOMAPPING:String = "No match";
 		public static var LABEL_HELP:String = "Help";
 		public static var LABEL_RESTART:String = "Restart";
 		public static var LABEL_ZOOM_IN:String = "+";

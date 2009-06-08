@@ -97,7 +97,7 @@ package cs448b.fp.display
 //			loader.addEventListener(Event.COMPLETE, onSendComplete);
 
             trace("send: " + request.url + "?" + request.data);
-            _output.appendText("Sending results to Mechanical Turk server.\n");
+            _output.appendText(Theme.MSG_RESULT_SENDING);
             //_output.appendText("send: " + request.url + "?" + request.data + "\n");			
 			try
 			{
@@ -214,18 +214,18 @@ package cs448b.fp.display
         public function addResults(results:String):void
         {
         	if (_sessionManager.isPreview() == true)
-        		showMessage("Practice task 1 of 1 complete. Click 'Confirm' to submit your results.");
+        		showMessage(Theme.MSG_RESULT_TUTORIAL);
         	else
         	{
 	        	showMessage("Task " + _sessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
 	        	// Task not over yet
 	        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
 	        	{
-	        		showMessage("Click on the 'Continue' button to start the next task.");
+	        		showMessage(Theme.MSG_RESULT_CONTINUE);
 	        	}
 	        	else
 	        	{
-	        		showMessage("Click on the 'Continue' button to submit the result and finish this HIT.");
+	        		showMessage(Theme.MSG_RESULT_CONTINUE);
 	        	}
 	        	_sessionManager.addResult(results);
         	}

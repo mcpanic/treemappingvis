@@ -38,7 +38,7 @@ package cs448b.fp.display
 		public function init():void
 		{
 			_curStep = 1;
-			addPrevButton();
+			//addPrevButton();
 			addNextButton();	
 			addStep();
 			addMessage();
@@ -76,11 +76,11 @@ package cs448b.fp.display
 		private function addNextButton():void
 		{	   
 			_nextButton = new Button();
-			_nextButton.label = "Next";
-			_nextButton.toggle = true;
-			_nextButton.x = Theme.LAYOUT_TUTORIAL_WIDTH - 60;
-			_nextButton.y = Theme.LAYOUT_TUTORIAL_HEIGHT - 60;
-			_nextButton.width = 50;
+			_nextButton.label = "Start";
+			_nextButton.toggle = false;
+			_nextButton.x = Theme.LAYOUT_TUTORIAL_WIDTH - Theme.LAYOUT_TUTORIAL_BUTTON_WIDTH - 10;
+			_nextButton.y = Theme.LAYOUT_TUTORIAL_Y + Theme.LAYOUT_TUTORIAL_HEIGHT/2 - 20;
+			_nextButton.width = Theme.LAYOUT_TUTORIAL_BUTTON_WIDTH;
            	_nextButton.addEventListener(MouseEvent.CLICK, onNextButton);
            	_nextButton.setStyle("textFormat", Theme.FONT_BUTTON);
            	_nextButton.useHandCursor = true;
@@ -101,7 +101,7 @@ package cs448b.fp.display
         private function onNextButton( mouseEvent:MouseEvent ):void
         {			      
         	if (_curStep == _numStep)
-        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "close") );
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "restart") );
         	else
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "next") );        	 			  			 
         }	
@@ -189,33 +189,36 @@ package cs448b.fp.display
         public function showNext():void
         {
         	_curStep++;
-        	if (_curStep == 2)
-        		_prevButton.enabled = true;
+//        	if (_curStep == 2)
+//        		_prevButton.enabled = true;
         	showStep();
         	showMessage(Theme["MSG_TUT" + _curStep]);
         	
         	if (_curStep == 2)	// play preview
-        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_preview") );
-        	else if (_curStep == 3)	// highlight the first node
-        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_highlight") );
-        	else if (_curStep == 4)	// enable clicking the first node
         	{
-        		_nextButton.enabled = false;
+        		_nextButton.visible = false;
+        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_preview") );
+        	}
+//        	else if (_curStep == 3)	// highlight the first node
+//        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_highlight") );
+        	else if (_curStep == 3)	// enable clicking the first node
+        	{
+        		//_nextButton.enabled = false;
         		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_click") );
         	}
-        	else if (_curStep == 5)	// assign no mapping practice
+        	else if (_curStep == 4)	// assign no mapping practice
         	{        		
         		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_unmap") );
         	}	   
-        	else if (_curStep == 6)	// submitting results after a session completes
+        	else if (_curStep == 5)	// submitting results after a session completes
         	{
-        		_nextButton.enabled = false;
+        		//_nextButton.enabled = false;
         		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_result") );
         	}	
-        	else if (_curStep == 7)	// final step
+        	else if (_curStep == 6)	// final step
         	{
-        		_nextButton.enabled = true;
-        		_nextButton.label = "Finish";
+        		_nextButton.visible = true;
+        		_nextButton.label = "Restart";
         	}		         		         		           		        		
         }                               	
 	}

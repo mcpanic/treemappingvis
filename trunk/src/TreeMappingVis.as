@@ -98,7 +98,7 @@ package {
 			{
 				trace("Assignment ID: " + sessionManager.assignmentId);
 				if (Theme.ENABLE_DEBUG == true)
-					currentPair = dataList.getDataList(fileList, imageList, false, new Point(2, 2));
+					currentPair = dataList.getDataList(fileList, imageList, false, new Point(12, 12));
 				else
 					currentPair = dataList.getDataList(fileList, imageList, false);				
 			}
@@ -223,7 +223,7 @@ package {
 			}				
 			else if (event.name == "restart")
 			{
-				trace("restart");
+				//trace("restart");
 				cleanup();
 				loadPair(false);
 			}						
@@ -261,7 +261,9 @@ package {
 			}				
 			else if (event.name == "tutorial_advance")
 			{	
-				mappingManager.showTutorialNextStep();			
+				// for step 5, only way to advance is through completion of the task
+				if (sessionManager.isPreview() == true && mappingManager.currentTutorialStep != 5)
+					mappingManager.showTutorialNextStep();			
 			}				
 			else if (event.name == "showbutton")
 			{	
@@ -274,7 +276,23 @@ package {
 				controls.disableButtons();
 				cascadedTree1.disableZoomButtons();					
 				cascadedTree2.disableZoomButtons();
-			}			
+			}	
+			else if (event.name == "show_unmap")
+			{	
+				controls.enableUnmapButton();	
+			}		
+			else if (event.name == "hide_unmap")
+			{	
+				controls.disableUnmapButton();	
+			}	
+			else if (event.name == "show_map")
+			{					
+				controls.enableContinueButton();	
+			}		
+			else if (event.name == "hide_map")
+			{	
+				controls.disableContinueButton();	
+			}										
 			else if (event.name == "finish")
 			{
 				if (sessionManager.curSession == Theme.NUM_SESSIONS)
@@ -286,7 +304,13 @@ package {
 					cleanup();
 					loadPair(true);
 				}
-			}			
+			}	
+			else if (event.name == "restart")
+			{
+				//trace("restart");
+				cleanup();
+				loadPair(false);
+			}							
 		}
 		
 		/**

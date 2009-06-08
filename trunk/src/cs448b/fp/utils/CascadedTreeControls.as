@@ -130,7 +130,8 @@ package cs448b.fp.utils
 			if (_isPreview == true)
 			{
 				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
-				_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+				_restartButton.visible = false;
+				//_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
 				_unmapButton.y = Theme.LAYOUT_UNMAP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
 				_continueButton.y = Theme.LAYOUT_CONTINUE_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
 			}

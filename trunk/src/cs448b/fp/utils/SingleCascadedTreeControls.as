@@ -27,7 +27,7 @@ package cs448b.fp.utils
 			_isContentTree = isContentTree;
 			_loader1 = new Loader();
 			_loader2 = new Loader();			
-			addLabel();
+			//addLabel();
 			addZoomInButton();
 			addZoomOutButton();
 			
