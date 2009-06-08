@@ -169,7 +169,7 @@ package cs448b.fp.tree
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
 				if (n.props["image"] != null)
 				{
-					if (_isContentTree == true || Theme.ENABLE_CASCADE_OFFSET == 0)
+					if (Theme.ENABLE_CASCADE_OFFSET == 0)	// _isContentTree == true || 
 					{
 						n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
 						n.props["image"].x = Number(n.props["x"]);
@@ -321,7 +321,7 @@ package cs448b.fp.tree
 	        	var nw:Number = n.props[AREA]/hh;
 	        	
 	        	var o:Object = _t.$(n); 
-					if (_isContentTree == true || Theme.ENABLE_CASCADE_OFFSET == 0)
+					if (Theme.ENABLE_CASCADE_OFFSET == 0)	// _isContentTree == true || 
 					{
 						o.u = n.props["x"];
 		        		o.v = n.props["y"];

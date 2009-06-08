@@ -8,7 +8,7 @@ package cs448b.fp.utils
 	public class Theme
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 				
 		// How many sessions are we having for each task?
 		public static var NUM_SESSIONS:Number = 5;
