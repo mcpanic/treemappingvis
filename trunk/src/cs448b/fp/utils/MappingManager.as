@@ -523,7 +523,11 @@ package cs448b.fp.utils
 				}
 			}
 			else
-			{
+			{	
+				for(i=0; i<n.childDegree; i++)
+				{
+    				_lNode.activateAllDescendants(n.getChildNode(i));
+				}				
 				// Automatically mark the current node as selected & other nodes as unselected
 				var root:NodeSprite = _contentTree.tree.root as NodeSprite;		
 				root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
@@ -539,11 +543,13 @@ package cs448b.fp.utils
 						//_cNode.addDropShadow(nn);
 						//_cNode.addGlow(nn);
 						_cNode.addGlowShadow(nn);
+						_cNode.showConnectedNodes(nn);
+						
 					}
 					else
 					{	
 						nn.props["selected"] = false;
-						_cNode.unmarkActivated(nn);
+						//_cNode.unmarkActivated(nn);
 						_cNode.removeFilters(nn);
 					}
 				});
