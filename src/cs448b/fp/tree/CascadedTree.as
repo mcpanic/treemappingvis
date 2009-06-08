@@ -3,6 +3,7 @@ package cs448b.fp.tree
 	import cs448b.fp.utils.*;
 	
 	import flare.animate.Parallel;
+	import flare.animate.Pause;
 	import flare.animate.Sequence;
 	import flare.animate.TransitionEvent;
 	import flare.animate.Transitioner;
@@ -12,8 +13,6 @@ package cs448b.fp.tree
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -68,7 +67,11 @@ package cs448b.fp.tree
 			
 			var panel:Sprite = new Sprite();
 			panel.graphics.beginFill(0x000000);
-			panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT+30);
+			// smaller pane for tutorial session
+		    if (_isPreview == true)
+		    	panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT/2+30);
+		    else
+				panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT+30);
 			panel.mouseEnabled = false;
 			addChild(panel);
 			
@@ -748,8 +751,14 @@ package cs448b.fp.tree
 		        });
 	  		}
 	        //trace("COUNT:" + nodeCount);
-	        previewSeq.delay = 1;
-		    previewSeq.play();  
+	        // longer delay for users to read instructions
+	        if (_isPreview == true)
+	        	previewSeq.delay = 2;
+	        else
+	        	previewSeq.delay = 1;
+	        
+		    previewSeq.play(); 
+		    		    
 		    previewSeq.addEventListener(TransitionEvent.END, onEndPreview);	
 		}
 
@@ -758,6 +767,10 @@ package cs448b.fp.tree
 		 */		
 		private function onEndPreview(e:TransitionEvent):void
 		{
+			// pause before automatically advancing a step
+		    if (_isPreview == true)
+		    	new Pause(2);
+		    	
 			// remove all filters
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
@@ -770,6 +783,8 @@ package cs448b.fp.tree
 			
 			if (_isPreview == false)  		
 	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
+	     	else
+	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );
 		}
 		
 		/**

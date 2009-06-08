@@ -169,27 +169,33 @@ package cs448b.fp.display
 			{
 				hideTutorial();			
 			}	
+			else if (event.name == "restart")
+			{
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "restart") ); 	
+			}				
 			else if (event.name == "tutorial_preview")
 			{
 				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_preview") ); 		
 			}	
-			else if (event.name == "tutorial_highlight")
-			{
-				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_highlight") ); 		
-			}	
+//			else if (event.name == "tutorial_highlight")
+//			{
+//				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_highlight") ); 		
+//			}	
 			else if (event.name == "tutorial_click")
 			{
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) ); 
-				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_click") ); 		
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_click") ); 	
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hide_unmap", 0) ); 	
 			}	
 			else if (event.name == "tutorial_unmap")
 			{
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) ); 
-				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_unmap") ); 		
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_unmap", 0) ); 
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_unmap") ); 
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hide_map", 0) ); 		
 			}		
 			else if (event.name == "tutorial_result")
 			{
-				//showResults("");	
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_map", 0) ); 			
 			}																
 		}
 		
@@ -200,12 +206,7 @@ package cs448b.fp.display
 		{
 			_contentTree.alpha = 1;
 			_layoutTree.alpha = 1;			
-			
-			// Enable the unmap button
-//			_contentTree.enableUnmapButton();
-//			_contentTree.enableZoomButtons();
-//			_layoutTree.enableZoomButtons();
-			
+
 			// Enable all buttons
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  				
 			// Disable the lock so that interactionis enabled again
@@ -219,11 +220,6 @@ package cs448b.fp.display
 		{
 			_contentTree.alpha = Theme.ALPHA_POPUP;
 			_layoutTree.alpha = Theme.ALPHA_POPUP; 		
-			
-			// Disable the unmap button
-//			_contentTree.disableUnmapButton();
-//			_contentTree.disableZoomButtons();
-//			_layoutTree.disableZoomButtons();
 			
 			// Disable all buttons
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) );  							
