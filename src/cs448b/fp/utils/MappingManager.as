@@ -24,7 +24,7 @@ package cs448b.fp.utils
 		private var _isRootMapped:Boolean = false;
 		private var _cNode:NodeActions;
 		private var _lNode:NodeActions;
-		private var _isPreview:Boolean;
+		private var _isTutorial:Boolean;
 //		private var _assignmentId:String;
 		private var _displayManager:DisplayManager;
 		
@@ -41,19 +41,20 @@ package cs448b.fp.utils
 			_nextStepLock = true;
 		}
 
-		public function init(isPreview:Boolean):void
+		public function init(isTutorial:Boolean):void
 		{
 			
-			_isPreview = isPreview;
+			_isTutorial = isTutorial;
 			// Tutorial session
-			if (_isPreview == true)			
+			if (_isTutorial == true)			
 				_displayManager.showTutorial();						
 			else
 				startSession();
 				
-			_displayManager.init();	
 			_displayManager.addEventListener(DisplayEvent.DISPLAY_UPDATE, onDisplayUpdateEvent);	
-			_displayManager.addEventListener(ControlsEvent.STATUS_UPDATE, onStatusUpdateEvent);	
+			_displayManager.addEventListener(ControlsEvent.STATUS_UPDATE, onStatusUpdateEvent);					
+			_displayManager.init(_isTutorial);	
+
 			addChild(_displayManager);
 		}
 		
@@ -103,13 +104,17 @@ package cs448b.fp.utils
 		public function startSession():void
 		{
 			// Disable all buttons
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) ); 
+			if (Theme.ENABLE_FULL_PREVIEW == false)
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) ); 
 			
 			// Set the traversal order
-			_contentTree.setTraversalOrder(_isPreview);
+			_contentTree.setTraversalOrder(_isTutorial);
 			
 			// Play the review of web page segments to be mapped, in the traversal order specified.
-			_contentTree.playPreview();	
+			if (Theme.ENABLE_FULL_PREVIEW == true)
+				;//_contentTree.playFullPreview();
+			else
+				_contentTree.playPreview();	
 			
 		}
 
@@ -242,7 +247,28 @@ package cs448b.fp.utils
 			else if (e.name == "tutorial_unmap")
 			{
 				
-			}												
+			}		
+			else if (e.name == "preview_complete")	
+			{
+				// content tree takes care of both trees, so only need to call one
+				_contentTree.onEndFullPreview();	
+			}	
+			else if (e.name == "preview_show_content")	
+			{
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_preview", Theme.ID_PREVIEW_CONTENT) );
+				//_contentTree.updateScale(Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT);	
+				//_displayManager.displayPage(_contentTree.getVis());	
+			}							
+			else if (e.name == "preview_show_layout")	
+			{
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_preview", Theme.ID_PREVIEW_LAYOUT) );
+				//_layoutTree.updateScale(Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT);
+				//_displayManager.displayPage(_layoutTree.getVis());	
+			}	
+			else if (e.name == "preview_invisible_button")	
+			{
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "invisible_button") );
+			}																	
 		}		
 
 		/**
@@ -267,7 +293,7 @@ package cs448b.fp.utils
 		private function showSelectionFeedback(idx:Number):void
 		{
 			var message:String; 
-			if (_isPreview == false)				
+			if (_isTutorial == false)				
 				message = Theme.MSG_MAPPING_INST;
 			if (_contentTree._traversalOrder == Theme.ORDER_DFS)	// root is not number 1
 				message += " (" + _contentTree._currentStep;
@@ -357,7 +383,7 @@ package cs448b.fp.utils
 				return;
 			
 			// (in the tutorial session) If a node other than the header is selected, return
-			if (_isPreview == true && _displayManager.currentTutorialStep == 3 && _selectedContentID == 16)
+			if (_isTutorial == true && _displayManager.currentTutorialStep == 3 && _selectedContentID == 16)
 			{
 				if (_selectedLayoutID != 121)
 					return;
@@ -395,7 +421,7 @@ package cs448b.fp.utils
 			}		 
 
 			// post-processing for preview click
-			if (_isPreview == true && _displayManager.currentTutorialStep == 3)
+			if (_isTutorial == true && _displayManager.currentTutorialStep == 3)
 			{
 				//showNextStep();
 				_displayManager.showTutorialNextStep();	
@@ -717,7 +743,7 @@ package cs448b.fp.utils
         	}
         	else		// Single phase, no ancestor-descendent relationship enforced
         	{
-        		if (_isPreview == true && _nextStepLock == true)
+        		if (_isTutorial == true && _nextStepLock == true)
         			_nextStepLock = false;
         		else
         		{

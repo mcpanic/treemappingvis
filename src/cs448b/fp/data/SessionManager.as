@@ -35,9 +35,9 @@ package cs448b.fp.data
 		}
 		
 		/**
-		 * Is this a preview session?
+		 * Is this a tutorial session?
 		 */
-		public function isPreview():Boolean
+		public function isTutorial():Boolean
 		{
 			var ret:Boolean;
 			if (Theme.ENABLE_MANUAL_PREVIEW == 0)

@@ -25,6 +25,8 @@ package {
 		private var dataLoader:DataLoader;
 		private var cascadedTree1:CascadedTree;
 		private var cascadedTree2:CascadedTree;
+		private var cascadedTree3:CascadedTree;
+		private var cascadedTree4:CascadedTree;		
 		private var fileList:Array;
 		private var imageList:Array;
 		private var controls:CascadedTreeControls;
@@ -88,7 +90,7 @@ package {
 		{
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);			
-			if (sessionManager.isPreview() == true)
+			if (sessionManager.isTutorial() == true)
 			{
 				trace("Assignment ID: " + sessionManager.assignmentId);
 				dataList.getDataList(fileList, imageList, true);
@@ -111,7 +113,10 @@ package {
 			sessionManager.addPairName(dataList.cName, dataList.lName);
 														
 			dataLoader = new DataLoader(2, fileList, null, imageList);
-			dataLoader.addLoadEventListener(handleLoaded);			
+//			if (Theme.ENABLE_FULL_PREVIEW == true)
+//				dataLoader.addLoadEventListener(handlePreviewLoaded);
+//			else
+				dataLoader.addLoadEventListener(handleLoaded);			
 			dataLoader.loadData();
 			
 			tes.setDataLoader(dataLoader);
@@ -119,21 +124,41 @@ package {
 		}
 
 		/**
+		 * Display the preview tree
+		 */
+		private function displayPreviewTree():void
+		{
+				cascadedTree3 = new CascadedTree(Theme.ID_PREVIEW_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT, true, sessionManager.isTutorial());
+				cascadedTree4 = new CascadedTree(Theme.ID_PREVIEW_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT, false, sessionManager.isTutorial());
+				addChild(cascadedTree3);
+				addChild(cascadedTree4);
+				cascadedTree3.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
+				cascadedTree4.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);					
+
+				cascadedTree3.visible = false;
+				cascadedTree4.visible = false;
+		}
+		
+		/**
 		 * Display the tree
 		 */
 		private function displayTree():void
 		{
 			// adjust the layout for the tutorial window
-			controls.setIsPreview(sessionManager.isPreview());
-			if (sessionManager.isPreview() == true)
+			controls.setIsTutorial(sessionManager.isTutorial());
+			
+			if (Theme.ENABLE_FULL_PREVIEW == true)
+				displayPreviewTree();
+			
+			if (sessionManager.isTutorial() == true)
 			{				
-				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, true, sessionManager.isPreview());
-				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, false, sessionManager.isPreview());
+				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, true, sessionManager.isTutorial());
+				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, false, sessionManager.isTutorial());
 			}
 			else
-			{
-				cascadedTree1 = new CascadedTree(0, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, true, sessionManager.isPreview());
-				cascadedTree2 = new CascadedTree(1, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, false, sessionManager.isPreview());
+			{						
+				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, true, sessionManager.isTutorial());
+				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, false, sessionManager.isTutorial());								
 			}		
 			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
 			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
@@ -141,6 +166,11 @@ package {
 			addChild(cascadedTree1);
 			addChild(cascadedTree2);
 			
+			if (Theme.ENABLE_FULL_PREVIEW == true)
+			{
+				cascadedTree1.visible = false;
+				cascadedTree2.visible = false;
+			}
 //			var maxDepth:uint = 0;
 //			maxDepth = (cascadedTree1.getMaxTreeDepth() > cascadedTree2.getMaxTreeDepth())? cascadedTree1.getMaxTreeDepth(): cascadedTree2.getMaxTreeDepth();
 //
@@ -175,15 +205,38 @@ package {
 			tes.setMappingManager(mappingManager);
 			
 			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
-			mappingManager.init(sessionManager.isPreview());	// add root-root mapping
+			mappingManager.init(sessionManager.isTutorial());	// add root-root mapping
 			mappingManager.setSessionManager(sessionManager);
 			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
 			printTree(cascadedTree1.tree.root, 0);
 			//mappingManager.showNextStep();	// for the first time	
-			
+
 			addChild(mappingManager);
 		}
 
+
+		/**
+		 * Upon data load complete, display the tree
+		 */		
+		private function handlePreviewLoaded():void
+		{		
+			displayPreviewTree();
+			
+			mappingManager = new MappingManager();	
+			mappingManager.setContentTree(cascadedTree3);
+			mappingManager.setLayoutTree(cascadedTree4);	
+			//tes.setMappingManager(mappingManager);
+			
+			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
+			mappingManager.init(sessionManager.isTutorial());	// add root-root mapping
+			//mappingManager.setSessionManager(sessionManager);
+			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
+			printTree(cascadedTree3.tree.root, 0);
+			//mappingManager.showNextStep();	// for the first time	
+
+			addChild(mappingManager);
+		}
+		
 		/**
 		 * Event handler for controls
 		 */	
@@ -262,9 +315,72 @@ package {
 			else if (event.name == "tutorial_advance")
 			{	
 				// for step 5, only way to advance is through completion of the task
-				if (sessionManager.isPreview() == true && mappingManager.currentTutorialStep != 5)
+				if (sessionManager.isTutorial() == true && mappingManager.currentTutorialStep != 5)
 					mappingManager.showTutorialNextStep();			
-			}				
+			}
+			// Show the tree for mapping
+			else if (event.name == "show_tree")
+			{	
+				controls.visibleButtons();	
+				cascadedTree3.visible = false;
+				cascadedTree4.visible = false;
+//				removeChild(mappingManager);
+//				handleLoaded();	
+//				if (Theme.ENABLE_FULL_PREVIEW == true)
+//				{		
+//					if (this.contains(cascadedTree3))
+//						removeChild(cascadedTree3);
+//					if (this.contains(cascadedTree4))
+//						removeChild(cascadedTree4);	
+//				}	
+////				addChild(cascadedTree1);
+////				addChild(cascadedTree2);	
+//				
+//				trace("main " + this.numChildren);
+//				trace("tree1 " + this.getChildIndex(cascadedTree1));
+//				trace("tree2 " + this.getChildIndex(cascadedTree2));
+//				trace("control " + this.getChildIndex(controls));
+//				trace("mm " + this.getChildIndex(mappingManager));
+				cascadedTree1.visible = true;
+				cascadedTree2.visible = true;
+//				cascadedTree1.displayTree();
+//				cascadedTree2.displayTree();
+				
+			}		
+			// Show the tree for mapping
+			else if (event.name == "show_preview")
+			{	
+//				return;
+//				if (this.contains(cascadedTree3))
+//					removeChild(cascadedTree3);
+//				if (this.contains(cascadedTree4))
+//					removeChild(cascadedTree4);	
+				
+				
+				if (event.value == Theme.ID_PREVIEW_CONTENT)	// content					
+				{
+//					cascadedTree2.visible = false;
+//					cascadedTree1.visible = true;				
+//					cascadedTree1.displayTree();
+//					cascadedTree1.enableZoomButtons();					
+					cascadedTree4.visible = false;
+					cascadedTree3.visible = true;
+					cascadedTree3.displayTree();
+					cascadedTree3.enableZoomButtons();
+				}	
+				else if (event.value == Theme.ID_PREVIEW_LAYOUT)
+				{	
+//					cascadedTree1.visible = false;
+//					cascadedTree2.visible = true;				
+//					cascadedTree2.displayTree();
+//					cascadedTree2.enableZoomButtons();
+						
+					cascadedTree3.visible = false;
+					cascadedTree4.visible = true;				
+					cascadedTree4.displayTree();
+					cascadedTree4.enableZoomButtons();
+				}	
+			}											
 			else if (event.name == "showbutton")
 			{	
 				controls.enableButtons();
@@ -277,21 +393,33 @@ package {
 				cascadedTree1.disableZoomButtons();					
 				cascadedTree2.disableZoomButtons();
 			}	
+			else if (event.name == "visible_button")
+			{	
+				controls.visibleButtons();				
+				cascadedTree1.visibleZoomButtons();					
+				cascadedTree2.visibleZoomButtons();
+			}
+			else if (event.name == "invisible_button")
+			{	
+				controls.invisibleButtons();
+//				cascadedTree1.invisibleZoomButtons();					
+//				cascadedTree2.invisibleZoomButtons();
+			}				
 			else if (event.name == "show_unmap")
 			{	
-				controls.enableUnmapButton();	
+				controls.enableButton(Theme.ID_BUTTON_UNMAP);	
 			}		
 			else if (event.name == "hide_unmap")
 			{	
-				controls.disableUnmapButton();	
+				controls.disableButton(Theme.ID_BUTTON_UNMAP);	
 			}	
 			else if (event.name == "show_map")
 			{					
-				controls.enableContinueButton();	
+				controls.enableButton(Theme.ID_BUTTON_CONTINUE);	
 			}		
 			else if (event.name == "hide_map")
 			{	
-				controls.disableContinueButton();	
+				controls.disableButton(Theme.ID_BUTTON_CONTINUE);	
 			}										
 			else if (event.name == "finish")
 			{

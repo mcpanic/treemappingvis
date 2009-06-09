@@ -9,6 +9,11 @@ package cs448b.fp.utils
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
+		
+		// Enable / Disable use of full-screen preview session
+		public static var ENABLE_FULL_PREVIEW:Boolean = false;		
+		// Enable / Disable use of scrollbar
+		public static var ENABLE_SCROLLBAR:Boolean = true;
 				
 		// How many sessions are we having for each task?
 		public static var NUM_SESSIONS:Number = 5;
@@ -42,7 +47,19 @@ package cs448b.fp.utils
 		public static var ORDER_BFS:Number = 2;
 		public static var ORDER_DFS:Number = 3;
 		public static var ORDER_PREORDER_RANDOM:Number = 4;
+
+		// Tree ID
+		public static var ID_CONTENT:Number = 0;
+		public static var ID_LAYOUT:Number = 2;
+		public static var ID_PREVIEW_CONTENT:Number = 2;
+		public static var ID_PREVIEW_LAYOUT:Number = 3;
 		
+		// Button ID
+		public static var ID_BUTTON_UNMAP:Number = 0;
+		public static var ID_BUTTON_CONTINUE:Number = 1;
+		public static var ID_BUTTON_RESTART:Number = 2;
+		public static var ID_BUTTON_HELP:Number = 3;
+				
 		// Animation duration
 		public static var DURATION_PREVIEW:Number = 0.3;
 		public static var DURATION_BLINKING:Number = 0.5;
@@ -51,9 +68,9 @@ package cs448b.fp.utils
 		public static var COLOR_ACTIVATED:uint = 0xff0000ff;
 		public static var COLOR_SELECTED:uint = 0xff7CFC00;//7FFF00;//ff0000; 	
 		public static var COLOR_CONNECTED:uint = 0xff0000ff;//0xffbbbbbb;	
-		public static var COLOR_MAPPED:uint = 0xffff0000;//93B02A;//458764;//87BF76;//96A84A;
+		public static var COLOR_MAPPED:uint = 0xffFF8C00;//ff0000;//93B02A;//458764;//87BF76;//96A84A;
 		public static var COLOR_UNMAPPED:uint = 0xffff0000;
-		public static var LINE_WIDTH:uint = 10;//12;
+		public static var LINE_WIDTH:uint = 8;//10;//12;
 		public static var FIREBUG_CTREE:Boolean = false;	// node fillcolor true-original, false-firebug style
 		public static var FIREBUG_LTREE:Boolean = true;		// node fillcolor true-original, false-firebug style
 		public static var COLOR_FILL_MAPPED:Number = 0x00000000; //0xffFFAAAAFF;
@@ -81,7 +98,7 @@ package cs448b.fp.utils
 		public static var USE_DROPSHADOW:Boolean = false;
 		
 		public static var LAYOUT_CANVAS_WIDTH:uint = 550;	// single tree canvas width
-		public static var LAYOUT_CANVAS_HEIGHT:uint = 600;	// single tree canvas height
+		public static var LAYOUT_CANVAS_HEIGHT:uint = 600;	// single tree canvas height	
 		public static var LAYOUT_CTREE_X:uint = 25;			// content tree x-coordinate
 		public static var LAYOUT_CTREE_Y:uint = 90;			// content tree y-coordinate
 		public static var LAYOUT_LTREE_X:uint = 620;		// layout tree x-coordinate
@@ -127,7 +144,17 @@ package cs448b.fp.utils
 		public static var LAYOUT_POPUP_DIAGRAM_ACTIVE_COLOR:Number = 0xffffff;	// popup diagram's active node color
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_COLOR:Number = 0xFFD700;	// popup diagram's line color
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_ALPHA:Number = 0.2;			// popup diagram's line alpha for inactive links 
-		
+
+		public static var LAYOUT_FULL_PREVIEW_WIDTH:uint = 1024;		// full page preview canvas width
+		public static var LAYOUT_FULL_PREVIEW_HEIGHT:uint = 600;	// full page preview canvas height			
+		public static var LAYOUT_PREVIEW_X:Number = 20;		// popup x-coordinate
+		public static var LAYOUT_PREVIEW_Y:Number = 10;		// popup y-coordinate
+		public static var LAYOUT_PREVIEW_WIDTH:Number = 620;		// popup width
+		public static var LAYOUT_PREVIEW_HEIGHT:Number = 33;//120;		// popup height
+		public static var LAYOUT_PREVIEW_MSG_X:Number = 15;//25	// message display x-coordinate
+		public static var LAYOUT_PREVIEW_MSG_Y:Number = 8;//35	// message display x-coordinate
+		//public static var LAYOUT_TUTORIAL_OFFSET:Number = 65;//90;		// pixel offset 
+				
 		public static var LAYOUT_TUTORIAL_X:Number = 20;		// popup x-coordinate
 		public static var LAYOUT_TUTORIAL_Y:Number = 10;		// popup y-coordinate
 		public static var LAYOUT_TUTORIAL_WIDTH:Number = 620;		// popup width
@@ -148,6 +175,8 @@ package cs448b.fp.utils
 		public static var MSG_MAPPING:String = "Mappings: ";
 		public static var MSG_MAPPING_INST:String = "For the highlighted segment on the left-hand page, \nfind the best corresponding segment on the right-hand page.";
 		public static var MSG_LOADED:String = "Loading...";
+		public static var MSG_PREVIEW1:String = "Please take a few minutes and read through the first page.";
+		public static var MSG_PREVIEW2:String = "Please take a few minutes and read through the second page.";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";	
 		public static var MSG_RESULT_SENDING:String = "Sending results to Mechanical Turk server.\n"
@@ -210,6 +239,8 @@ package cs448b.fp.utils
 		public static var LABEL_ZOOM_IN:String = "+";
 		public static var LABEL_ZOOM_OUT:String = "-";
 		public static var LABEL_ZOOM_RESET:String = "Reset";
+		public static var LABEL_PREVIEW_NEXT:String = "Next";
+		//public static var LABEL_PREVIEW_FINISH:String = "Finish";
 		
 		// Text formats: font styles for controls
 		public static var FONT_LABEL:TextFormat;

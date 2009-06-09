@@ -144,7 +144,7 @@ package cs448b.fp.display
 		 */	
         private function onConfirmButton( mouseEvent:MouseEvent ):void
         {  	
-        	if (_sessionManager.isPreview() == true)
+        	if (_sessionManager.isTutorial() == true)
         	{
         		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_submit") );     
         	}
@@ -213,7 +213,7 @@ package cs448b.fp.display
          
         public function addResults(results:String):void
         {
-        	if (_sessionManager.isPreview() == true)
+        	if (_sessionManager.isTutorial() == true)
         		showMessage(Theme.MSG_RESULT_TUTORIAL);
         	else
         	{

@@ -9,6 +9,7 @@ package cs448b.fp.tree
 	import flare.animate.Transitioner;
 	import flare.animate.Tween;
 	import flare.util.Shapes;
+	import flare.vis.Visualization;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
@@ -22,28 +23,31 @@ package cs448b.fp.tree
 	public class CascadedTree extends AbstractTree
 	{		
 		private var _isContentTree:Boolean;		
-		private var _isPreview:Boolean;			
-		private var _canvasWidth:Number = Theme.LAYOUT_CANVAS_WIDTH;
-		private var _canvasHeight:Number = Theme.LAYOUT_CANVAS_HEIGHT;
+		private var _isTutorial:Boolean;			
+		private var _canvasWidth:Number;
+		private var _canvasHeight:Number;
 
 		private var _controls:SingleCascadedTreeControls;
 		private var _node:NodeActions;
+		private var _panel:Sprite;
+//		private var _previewManager:PreviewManager;
 		// Order of tree traversal
-		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
+		public var _traversalOrder:Number = Theme.ORDER_PREORDER_RANDOM;
 		
 		public var _currentStep:Number = 0;
 			
-		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, bContentTree:Boolean, bPreview:Boolean)
+		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, canvasWidth:Number, canvasHeight:Number, bContentTree:Boolean, bTutorial:Boolean)
 		{
 			this._isContentTree = bContentTree;			
-			this._isPreview = bPreview;
-			super(i, tree, x, y);
+			this._isTutorial = bTutorial;
+
 			this.x = x;
 			this.y = y;
+			this._canvasWidth = canvasWidth;
+			this._canvasHeight = canvasHeight;
 			_node = new NodeActions(this, bContentTree);
-
-//			// initialize the current selected node
-//			_currentSelectedNodeId = -1; 
+			_controls = new SingleCascadedTreeControls(_isContentTree);
+			super(i, tree, x, y);				
 		}
 
 		/**
@@ -55,6 +59,14 @@ package cs448b.fp.tree
 		}
 
 		/**
+		 * is this content or layout tree?
+		 */			
+		public function get isTutorial():Boolean
+		{
+			return _isTutorial;
+		}
+		
+		/**
 		 * Vis and tree-specific controls initialization - general controls are in CascadedTreeControls.as
 		 */			
 		public override function init():void
@@ -62,48 +74,79 @@ package cs448b.fp.tree
 			super.init();
 						
 			//bounds = new Rectangle(_x, _y, 1024, 768);
-			bounds = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT);
+			bounds = new Rectangle(_x, _y, _canvasWidth, _canvasHeight);
 			
-			var panel:Sprite = new Sprite();
-			panel.graphics.beginFill(0x000000);
+			_panel = new Sprite();
+			_panel.graphics.beginFill(0x000000);
 			// smaller pane for tutorial session
-		    if (_isPreview == true)
-		    	panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT/2+30);
+		    if (_isTutorial == true)
+		    	_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
 		    else
-				panel.graphics.drawRect(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+30, Theme.LAYOUT_CANVAS_HEIGHT+30);
-			panel.mouseEnabled = false;
-			addChild(panel);
+				_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight+30);
+			_panel.mouseEnabled = false;
 			
-			panel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_CANVAS_WIDTH+40, Theme.LAYOUT_CANVAS_HEIGHT+40);
+//			if (Theme.ENABLE_FULL_PREVIEW == false)
+				addChild(_panel);			
+			_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+40, _canvasHeight+40);
+			
 			vis.bounds = bounds;
 			vis.x = _x+20;
 			vis.y = _y+20;
 			vis.update();
 			
-			if (_isPreview == true)
+			if (_isTutorial == true)
 			{
 				vis.scaleX = 0.7;
 				vis.scaleY = 0.7;
 			}
 			else
 			{
-				vis.scaleX = getScale();
-				vis.scaleY = getScale();          						
+				updateScale(_canvasWidth, _canvasHeight);					          						
 			}
-			tf.x = Theme.LAYOUT_NODENAME_X;
-			tf.y = Theme.LAYOUT_NODENAME_Y;
+
 
 			if (Theme.ENABLE_DEBUG == true)
-				addChild(tf);	
-				
-			_controls = new SingleCascadedTreeControls(_isContentTree);
+			{
+				tf.x = Theme.LAYOUT_NODENAME_X;
+				tf.y = Theme.LAYOUT_NODENAME_Y;
+				addChild(tf);					
+			}
 			_controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );							
-			addChild(_controls);
-						
-			//addChild(vis);
-			panel.addChild(vis);
+//			if (Theme.ENABLE_FULL_PREVIEW == false)
+//			{
+				addChild(_controls);						
+//				addChild(vis);				
+//			}
+			_panel.addChild(vis);
 		}
 
+		/**
+		 * Add all display objects
+		 */					
+		public function displayTree():void
+		{
+//			trace(_panel.numChildren + " " +  _panel.getChildIndex(vis));
+//			trace("children " + this.numChildren);
+//			trace("panel " + this.getChildIndex(_panel));
+//			trace("control " + this.getChildIndex(_controls));
+//			addChild(_panel);
+//			vis.x = 200;
+//			vis.y = 200;
+//			vis.update();
+trace(_panel.x + "," + _panel.y);
+trace(vis.x + "," + vis.y);
+//			vis.visible = true;
+//			_node.pullNodeForward(vis);
+//			vis.scaleX = 1;
+//			vis.scaleY = 1;
+//			updateScale(_canvasWidth, _canvasHeight);	
+//			addChild(_controls);
+//			_panel.addChild(vis);			
+
+						
+
+		}
+		
 		/**
 		 * Initialize nodes, edges, and layout
 		 */					
@@ -118,7 +161,7 @@ package cs448b.fp.tree
 				lineColor: 0x00000000,
 				lineWidth: 0
 			}
-			trace(_isContentTree + " fillAlpha: " + nodes.fillAlpha + " fillHue: " + nodes.fillHue + " fillColor: " + nodes.fillColor.toString(16) + " fillSat: " + nodes.fillSaturation + " fillVal: " + nodes.fillValue);						
+			//trace(_isContentTree + " fillAlpha: " + nodes.fillAlpha + " fillHue: " + nodes.fillHue + " fillColor: " + nodes.fillColor.toString(16) + " fillSat: " + nodes.fillSaturation + " fillVal: " + nodes.fillValue);						
 			edges = {
 				visible: false
 			}
@@ -181,7 +224,7 @@ package cs448b.fp.tree
 			else if (event.name == "zoom_reset")	
 			{
 				onZoomResetButton();	
-			}
+			}				
 		}	
 		
 		/**
@@ -200,7 +243,23 @@ package cs448b.fp.tree
 		{
 			_controls.disableZoomButtons();	
 		}
-				
+
+		/**
+		 * Enable button controls
+		 */		
+		public function visibleZoomButtons():void
+		{
+			_controls.visibleZoomButtons();
+		}
+
+		/**
+		 * Enable button controls
+		 */		
+		public function invisibleZoomButtons():void
+		{
+			_controls.invisibleZoomButtons();
+		}
+								
 		/**
 		 * Mark the selected node as unmapped
 		 */
@@ -229,7 +288,7 @@ package cs448b.fp.tree
 
 			blinkNode(getNodeByID(selectedID), onEndBlinkingUnmapped, 2);	
 			
-			if (_isPreview == true)
+			if (_isTutorial == true)
 				dispatchEvent(new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance") );			
 		}
 
@@ -263,23 +322,31 @@ package cs448b.fp.tree
 		 */
 		private function onZoomResetButton():void
 		{
-			vis.scaleX = getScale();
-			vis.scaleY = getScale();		
+			updateScale(_canvasWidth, _canvasHeight);	
 		}
 				
 		/**
-		 * Adjust the tree size based on the scale of canvas size and actual page size
+		 * Get an appropriate scale for the tree size based on the inserted width and height
 		 */		 	
-		private function getScale():Number
+		public function getScale(canvasWidth:Number, canvasHeight:Number):Number
 		{
 			var zoomScale:Number;			
 			// compute the scale of the original web page vs. canvas
-			var wScale:Number = _canvasWidth / tree.root.width;
-			var hScale:Number = _canvasHeight / tree.root.height;
+			var wScale:Number =  canvasWidth / tree.root.width;
+			var hScale:Number = canvasHeight / tree.root.height;
 
 			// choose the smaller scale and apply
 			zoomScale = (wScale > hScale) ? hScale : wScale;
 			return zoomScale;
+		}
+
+		/**
+		 * Update the vis scale based on the inserted width and height
+		 */			
+		public function updateScale(canvasWidth:Number, canvasHeight:Number):void
+		{
+			vis.scaleX = getScale(canvasWidth, canvasHeight);
+			vis.scaleY = getScale(canvasWidth, canvasHeight);
 		}
 		
 		/**
@@ -383,11 +450,14 @@ package cs448b.fp.tree
 					_node.hideConnectedNodes(n);
 				else
 				{
-					//n.lineAlpha = 1;
+					//n.lineAlpha = 1;					
 					_node.hideLine(n);	
 					_node.removeFilters(n);
 					if (isContentTree == false)
 						_node.hideConnectedNodes(n);
+					// do not hide if the node is connected to the current selected content node
+					if (isContentTree == true)
+						_node.showConnectedNodes(getCurrentProcessingNode());	
 				}				
 			}	
 			else if (n.props["mapped"] == Theme.STATUS_UNMAPPED)
@@ -694,8 +764,7 @@ package cs448b.fp.tree
 		{
 			vis.x = 0;
 			vis.y = 0;
-			vis.scaleX = getScale();
-			vis.scaleY = getScale();			
+			updateScale(_canvasWidth, _canvasHeight);		
 			return vis.update(t, operators);
 		}		
 				
@@ -750,7 +819,7 @@ package cs448b.fp.tree
 				return;	
 			
 			node.filters = [new GlowFilter(Theme.COLOR_SELECTED, 0.8, 0, 0)];
-			var g1:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":10,"filters[0].blurY":10});
+			var g1:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":5,"filters[0].blurY":5});
 			var g2:Tween = new Tween(node,Theme.DURATION_PREVIEW,{"filters[0].blurX":0,"filters[0].blurY":0});
 				
 			var t1:Tween = new Tween(node, Theme.DURATION_PREVIEW, {lineColor:Theme.COLOR_SELECTED});
@@ -763,7 +832,7 @@ package cs448b.fp.tree
 		    previewSeq.add(new Parallel(t1, t3, g1)); 
 		    previewSeq.add(new Parallel(t2, t4, g2));       
 		}
-		
+				
 		/**
 		 * Preview: play an animation with the current traversal order, 
 		 * to give users an overview of the segments they will find correspondences for
@@ -772,8 +841,7 @@ package cs448b.fp.tree
 		{
 			if (!_isContentTree)	// nothing if layout tree
 				return;
-			
-			
+						
 			var root:NodeSprite = tree.root as NodeSprite;
 			var nodeCount:Number = 1;
 			var node:NodeSprite = null;	
@@ -798,7 +866,7 @@ package cs448b.fp.tree
 	  		}
 	        //trace("COUNT:" + nodeCount);
 	        // longer delay for users to read instructions
-	        if (_isPreview == true)
+	        if (_isTutorial == true)
 	        	previewSeq.delay = 2;
 	        else
 	        	previewSeq.delay = 1;
@@ -814,7 +882,7 @@ package cs448b.fp.tree
 		private function onEndPreview(e:TransitionEvent):void
 		{
 			// pause before automatically advancing a step
-		    if (_isPreview == true)
+		    if (_isTutorial == true)
 		    	new Pause(2);
 		    	
 			// remove all filters
@@ -823,16 +891,64 @@ package cs448b.fp.tree
 				_node.removeGlow(nn);
 	        });
 				
+			//dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_tree", 0) );
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "visible_button") );  
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
 			
-			if (_isPreview == false)  		
+			if (_isTutorial == false)  		
 	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
 	     	else
 	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );
 		}
+
+		/**
+		 * return the current vis. 
+		 * used in preview display
+		 */
+		public function getVis():Visualization
+		{
+			return vis;
+		}
 		
+		/**
+		 * When full page preview is over
+		 */
+		public function onEndFullPreview():void
+		{		
+			if (!_isContentTree)
+				return;			
+			// now make the panel and controls visible
+//			addChild(_panel);	
+//			addChild(_controls);
+//			vis.x = _x + 20;
+//			vis.y = _y + 20;
+//			_panel.addChild(vis);
+			// pause before automatically advancing a step
+		    if (_isTutorial == true)
+		    	new Pause(2);
+		    	
+//			// remove all filters
+//			var root:NodeSprite = tree.root as NodeSprite;
+//	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
+//				_node.removeGlow(nn);
+//	        });
+			
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_tree", 0) );				
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
+			if (Theme.ENABLE_SERIAL == true) 
+	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
+			
+			if (_isTutorial == false)  	
+			{	
+	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
+	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "visible_button", 0) );
+	  		}
+	  		else
+	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );			
+		}
+				
 		/**
 		 * Play a node blinking visual effects.  
 		 */
@@ -890,14 +1006,14 @@ package cs448b.fp.tree
 		/**
 		 * Assign the traversal order of the tree
 		 */
-		public function setTraversalOrder(isPreview:Boolean):void
+		public function setTraversalOrder(isTutorial:Boolean):void
 		{
 			if (!_isContentTree)	// nothing if layout tree
 				return;
 			_nodeCount = 1;
 			// initialize the tree
 			var root:NodeSprite = tree.root as NodeSprite;
-			if (isPreview == true || _traversalOrder == Theme.ORDER_BFS)
+			if (isTutorial == true || _traversalOrder == Theme.ORDER_BFS)
 			{	
 		        root.visitTreeBreadthFirst(function(nn:NodeSprite):void {
 		        	nn.props["traversed"] = false;
