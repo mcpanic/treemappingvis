@@ -6,7 +6,7 @@ package cs448b.fp.display
 	import cs448b.fp.utils.NodeActions;
 	import cs448b.fp.utils.Theme;
 	
-	import flare.animate.Pause;
+	import flare.vis.Visualization;
 	
 	import flash.display.Sprite;
 
@@ -16,6 +16,7 @@ package cs448b.fp.display
 		private var _resultManager:ResultManager;
 		private var _helpManager:HelpManager;
 		private var _tutorialManager:TutorialManager;
+		private var _previewManager:PreviewManager;
 		private var _contentTree:CascadedTree = null;
 		private var _layoutTree:CascadedTree = null;
 						
@@ -26,24 +27,24 @@ package cs448b.fp.display
 				_popupManager = new PopupManager();	
 			_resultManager = new ResultManager();
 			_helpManager = new HelpManager();	
-			_tutorialManager = new TutorialManager();		
+			_tutorialManager = new TutorialManager();
+			if (Theme.ENABLE_FULL_PREVIEW == true)		
+				_previewManager = new PreviewManager();
 		}
 
 		/**
 		 * Initialize all types of screen popups
 		 */	
-		public function init():void
+		public function init(_isTutorial:Boolean):void
 		{
 			if (Theme.ENABLE_MERGE == true)
 			{
-			// Initialize popup manager
-			_popupManager.init();
-			_popupManager.x = Theme.LAYOUT_POPUP_X;
-			_popupManager.y = Theme.LAYOUT_POPUP_Y;
-			_popupManager.width = Theme.LAYOUT_POPUP_WIDTH;
-			_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
-			//_popupManager.height = Theme.LAYOUT_POPUP_HEIGHT;
-			//addChild(_popupManager);
+				// Initialize popup manager
+				_popupManager.init();
+				_popupManager.x = Theme.LAYOUT_POPUP_X;
+				_popupManager.y = Theme.LAYOUT_POPUP_Y;
+				_popupManager.width = Theme.LAYOUT_POPUP_WIDTH;
+				_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
 			}
 			
 			// Initialize result popup manager
@@ -66,7 +67,19 @@ package cs448b.fp.display
 			_tutorialManager.y = Theme.LAYOUT_TUTORIAL_Y;
 			_tutorialManager.width = Theme.LAYOUT_TUTORIAL_WIDTH;
 			//_tutorialManager.height = Theme.LAYOUT_TUTORIAL_HEIGHT;
-			_tutorialManager.addEventListener(ControlsEvent.STATUS_UPDATE, onTutorialStatusEvent);							
+			_tutorialManager.addEventListener(ControlsEvent.STATUS_UPDATE, onTutorialStatusEvent);		
+			
+			// Initialize preview manager
+			if (Theme.ENABLE_FULL_PREVIEW == true)
+			{
+
+				_previewManager.x = Theme.LAYOUT_PREVIEW_X;//Theme.LAYOUT_CTREE_X;//
+				_previewManager.y = Theme.LAYOUT_PREVIEW_Y;;//Theme.LAYOUT_CTREE_Y;
+				//_previewManager.width = 1300;//Theme.LAYOUT_TUTORIAL_WIDTH;		
+				_previewManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPreviewStatusEvent);	
+				_previewManager.init(_isTutorial);								
+				addChild(_previewManager);
+			}					
 		}
 
 		/**
@@ -198,7 +211,42 @@ package cs448b.fp.display
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_map", 0) ); 			
 			}																
 		}
-		
+
+
+		/**
+		 * Preview button events.
+		 * Triggered by previewManager, when button is pressed.
+		 */	
+		private function onPreviewStatusEvent( event:ControlsEvent ):void
+		{			
+			if (event.name == "preview_complete")	
+			{
+				removeChild(_previewManager);
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "preview_complete") ); 
+			}	
+			else if (event.name == "preview_invisible_button")	
+			{
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "preview_invisible_button") ); 	
+			}					
+			else if (event.name == "preview_show_content")	
+			{
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "preview_show_content") ); 	
+			}
+			else if (event.name == "preview_show_layout")	
+			{
+				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "preview_show_layout") ); 	
+			}		
+		}
+
+		/**
+		 * Send page display data to the previewManager
+		 */			
+		public function displayPage(vis:Visualization):void
+		{
+			if (_previewManager != null)
+				_previewManager.displayPage(vis);
+		}
+				
 		/**
 		 * Before hiding the popup
 		 */					
@@ -280,6 +328,7 @@ package cs448b.fp.display
 		{
 			beforeShowPopup();
 			addChild(_helpManager);
+						trace(this.numChildren + "/" + this.getChildIndex(_helpManager));
 		}
 
 

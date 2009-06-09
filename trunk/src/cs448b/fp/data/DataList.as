@@ -137,13 +137,13 @@ package cs448b.fp.data
 		/**
 		 * Populate the data list based on random assignment
 		 */				
-		public function getDataList(fileList:Array, imageList:Array, isPreview:Boolean, pair:Point=null):Point
+		public function getDataList(fileList:Array, imageList:Array, isTutorial:Boolean, pair:Point=null):Point
 		{
 			var cId:Number = -1;
 			var lId:Number = -1;
 			// For preview, hard-code the pair for tutorial & instructions
 			// For actual sessions, randomly assign a pair
-			if (isPreview == true)
+			if (isTutorial == true)
 			{
 				_cName = "dog";
 				_lName = "cat";			

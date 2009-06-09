@@ -28,7 +28,7 @@ package cs448b.fp.utils
 		private var _feedback:TextSprite;
 		private var _mappings:TextSprite;
 //		private var _textFormat:TextFormat;
-		private var _isPreview:Boolean;
+		private var _isTutorial:Boolean;
 									
 		public function CascadedTreeControls()
 		{
@@ -124,10 +124,10 @@ package cs448b.fp.utils
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "fit") );        			 
         }
 
-		public function setIsPreview(isPreview:Boolean):void
+		public function setIsTutorial(isTutorial:Boolean):void
 		{
-			_isPreview = isPreview;
-			if (_isPreview == true)
+			_isTutorial = isTutorial;
+			if (_isTutorial == true)
 			{
 				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
 				_restartButton.visible = false;
@@ -148,12 +148,15 @@ package cs448b.fp.utils
 		 */		
 		private function addUnmap():void
 		{		
+			_unmapButton = makeButton(Theme.ID_BUTTON_UNMAP);
+			return;
 			_unmapButton = new Button();
 			_unmapButton.label = Theme.LABEL_NOMAPPING;
 			_unmapButton.toggle = false;		
            	_unmapButton.addEventListener(MouseEvent.CLICK, onUnmapButton);
            	_unmapButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_unmapButton.enabled = false;
+           	_unmapButton.visible = false;
            	_unmapButton.useHandCursor = true;
            	addChild(_unmapButton);  			
 		}
@@ -162,31 +165,49 @@ package cs448b.fp.utils
         {
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "unmap") );        			 
         }
-        		
-		/**
-		 * Enable button controls
-		 */		
-		public function enableUnmapButton():void
-		{
-			_unmapButton.enabled = true;
-		}
+        
+        public function getButtonByID(id:Number):Button
+        {
+        	var button:Button = null;
+        	if (id == Theme.ID_BUTTON_HELP)
+        		button = _helpButton;
+        	else if (id == Theme.ID_BUTTON_CONTINUE)
+        		button = _continueButton;
+        	else if (id == Theme.ID_BUTTON_RESTART)
+        		button = _restartButton;
+        	else if (id == Theme.ID_BUTTON_UNMAP)
+        		button = _unmapButton;
+        	return button;
+        }
+        public function enableButton(id:Number):void
+        {
+        	getButtonByID(id).enabled = true;
+        }
+        public function disableButton(id:Number):void
+        {
+        	getButtonByID(id).enabled = false;
+        }		
+        public function visibleButton(id:Number):void
+        {
+        	getButtonByID(id).visible = true;
+        }		
+        public function invisibleButton(id:Number):void
+        {
+        	getButtonByID(id).visible = false;
+        }				
 
-		/**
-		 * Disable button controls
-		 */		
-		public function disableUnmapButton():void
-		{
-			_unmapButton.enabled = false;		
-		}
-				
+								
 		private function addHelp():void
 		{
+			_helpButton = makeButton(Theme.ID_BUTTON_HELP);
+			return;
 			_helpButton = new Button();
 			_helpButton.label = Theme.LABEL_HELP;
 			_helpButton.toggle = false;		
            	_helpButton.addEventListener(MouseEvent.CLICK, onHelpButton);
            	_helpButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_helpButton.enabled = false;
+           	_helpButton.visible = false;
            	_helpButton.useHandCursor = true;
            	addChild(_helpButton);  			
 					
@@ -196,25 +217,18 @@ package cs448b.fp.utils
         {
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "help") );        			 
         }
-        
-        public function enableHelpButton():void
-        {
-        	_helpButton.enabled = true;
-        }
-     
-        public function disableHelpButton():void
-        {
-        	_helpButton.enabled = false;
-        }
 
 		private function addRestart():void
 		{
+			_restartButton = makeButton(Theme.ID_BUTTON_RESTART);
+			return;
 			_restartButton = new Button();
 			_restartButton.label = Theme.LABEL_RESTART;
 			_restartButton.toggle = false;		
            	_restartButton.addEventListener(MouseEvent.CLICK, onRestartButton);
            	_restartButton.setStyle("textFormat", Theme.FONT_BUTTON); 
            	_restartButton.enabled = false;
+           	_restartButton.visible = false;
            	_restartButton.useHandCursor = true;
            	addChild(_restartButton);  			
 					
@@ -224,47 +238,62 @@ package cs448b.fp.utils
         {
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "restart") );        			 
         }
-        
-        public function enableRestartButton():void
-        {
-        	_restartButton.enabled = true;
-        }
-     
-        public function disableRestartButton():void
-        {
-        	_restartButton.enabled = false;
-        }
-        	        		   
+   	        		   
         	        		           	        		   
 		private function addContinueButton():void
 		{	   
+			_continueButton = makeButton(Theme.ID_BUTTON_CONTINUE);
+			return;
 			_continueButton = new Button();
 			_continueButton.label = Theme.LABEL_CONT1;
 			_continueButton.toggle = false;
            	_continueButton.addEventListener(MouseEvent.CLICK, onContinueButton);
            	_continueButton.setStyle("textFormat", Theme.FONT_BUTTON);//_textFormat);		
            	_continueButton.enabled = false;
+           	_continueButton.visible = false;
            	_continueButton.useHandCursor = true;
            	addChild(_continueButton);  	           	
 		}    
-		      
+		
+		private function makeButton(id:Number):Button
+		{
+			//var button:Button = getButtonByID(id);
+			var button:Button = new Button();
+			if (id == Theme.ID_BUTTON_CONTINUE)
+			{
+				button.label = Theme.LABEL_CONT1;
+          		button.addEventListener(MouseEvent.CLICK, onContinueButton);				
+			}
+			else if (id == Theme.ID_BUTTON_RESTART)
+			{
+				button.label = Theme.LABEL_RESTART;
+          		button.addEventListener(MouseEvent.CLICK, onRestartButton);				
+			}
+			else if (id == Theme.ID_BUTTON_HELP)
+			{
+				button.label = Theme.LABEL_HELP;
+          		button.addEventListener(MouseEvent.CLICK, onHelpButton);				
+			}
+			else if (id == Theme.ID_BUTTON_UNMAP)
+			{
+				button.label = Theme.LABEL_NOMAPPING;
+          		button.addEventListener(MouseEvent.CLICK, onUnmapButton);				
+			}				
+			button.toggle = false;
+           	button.setStyle("textFormat", Theme.FONT_BUTTON);//_textFormat);		
+           	button.enabled = false;
+           	button.visible = false;
+           	button.useHandCursor = true;
+           	addChild(button);  				
+			return button;
+		}      
         private function onContinueButton( mouseEvent:MouseEvent ):void
         {
 			//dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "continue") );        			 
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "next") );
         }	
 
-        
-        public function enableContinueButton():void
-        {
-        	_continueButton.enabled = true;
-        }
-     
-        public function disableContinueButton():void
-        {
-        	_continueButton.enabled = false;
-        }
-        
+                
 		private function addFeedback():void
 		{
             _feedback = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
@@ -286,7 +315,6 @@ package cs448b.fp.utils
             _notice.horizontalAnchor = TextSprite.LEFT;
             _notice.text = Theme.MSG_STAGE1; 
             _notice.textMode = TextSprite.DEVICE;
-//            _notice.text = "Stage: Hierarchical Matching";
             if (Theme.ENABLE_DEBUG == true)
             	this.addChild( _notice );        
         }
@@ -327,22 +355,40 @@ package cs448b.fp.utils
 
 		public function enableButtons():void
 		{
-			enableHelpButton();	
-			enableRestartButton();
+			enableButton(Theme.ID_BUTTON_HELP);	
+			enableButton(Theme.ID_BUTTON_RESTART);
 			if (Theme.ENABLE_CONTINUE_BUTTON == true)
-				enableContinueButton();
-			enableUnmapButton();			
+				enableButton(Theme.ID_BUTTON_CONTINUE);
+			enableButton(Theme.ID_BUTTON_UNMAP);			
 		}
 		
 		public function disableButtons():void
 		{
-			disableHelpButton();		
-			disableRestartButton();	
+			disableButton(Theme.ID_BUTTON_HELP);		
+			disableButton(Theme.ID_BUTTON_RESTART);	
 			if (Theme.ENABLE_CONTINUE_BUTTON == true)
-				disableContinueButton();	
-			disableUnmapButton();			
+				disableButton(Theme.ID_BUTTON_CONTINUE);	
+			disableButton(Theme.ID_BUTTON_UNMAP);			
+		}
+
+		public function visibleButtons():void
+		{
+			visibleButton(Theme.ID_BUTTON_HELP);	
+			visibleButton(Theme.ID_BUTTON_RESTART);
+			if (Theme.ENABLE_CONTINUE_BUTTON == true)
+				visibleButton(Theme.ID_BUTTON_CONTINUE);
+			visibleButton(Theme.ID_BUTTON_UNMAP);				
 		}
 		
+		public function invisibleButtons():void
+		{
+			invisibleButton(Theme.ID_BUTTON_HELP);	
+			invisibleButton(Theme.ID_BUTTON_RESTART);
+			if (Theme.ENABLE_CONTINUE_BUTTON == true)
+				invisibleButton(Theme.ID_BUTTON_CONTINUE);
+			invisibleButton(Theme.ID_BUTTON_UNMAP);				
+		}		
+						
 		public function layout():void
 		{
 

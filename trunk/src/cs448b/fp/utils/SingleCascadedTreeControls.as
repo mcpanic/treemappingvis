@@ -70,7 +70,27 @@ package cs448b.fp.utils
 			_zoomOutButton.enabled = false;
 			//_zoomResetButton.enabled = false;			
 		}
-				
+
+		/**
+		 * MAke visible button controls
+		 */		
+		public function visibleZoomButtons():void
+		{
+			_zoomInButton.visible = true;
+			_zoomOutButton.visible = true;
+			//_zoomResetButton.visible = true;			
+		}
+
+		/**
+		 * Make invisible button controls
+		 */		
+		public function invisibleZoomButtons():void
+		{
+			_zoomInButton.visible = false;
+			_zoomOutButton.visible = false;
+			//_zoomResetButton.visible = false;			
+		}
+								
 		/**
 		 * Add zoom-in button for each tree layout
 		 */		
