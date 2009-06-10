@@ -1,8 +1,8 @@
 package cs448b.fp.display
 {
 	import cs448b.fp.data.SessionManager;
-	import cs448b.fp.utils.ControlsEvent;
-	import cs448b.fp.utils.Theme;
+	import cs448b.fp.event.ControlsEvent;
+	import cs448b.fp.ui.Theme;
 	
 	import fl.controls.Button;
 	

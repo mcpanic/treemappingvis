@@ -1,8 +1,8 @@
-package cs448b.fp.tree
+package cs448b.fp.event
 {
 	import cs448b.fp.data.DataLoader;
 	import cs448b.fp.utils.MappingManager;
-	
+	import cs448b.fp.tree.AbstractTree;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.events.Event;

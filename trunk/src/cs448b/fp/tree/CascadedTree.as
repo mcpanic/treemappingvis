@@ -2,6 +2,9 @@ package cs448b.fp.tree
 {
 	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.utils.*;
+	import cs448b.fp.ui.*;
+	import cs448b.fp.event.ControlsEvent;
+	import cs448b.fp.event.MappingEvent;
 	
 	import flare.animate.Parallel;
 	import flare.animate.Pause;

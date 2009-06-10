@@ -1,4 +1,4 @@
-package cs448b.fp.tree
+package cs448b.fp.event
 {
 	import flare.vis.Visualization;
 	import flare.vis.controls.Control;

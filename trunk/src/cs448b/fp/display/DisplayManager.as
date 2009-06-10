@@ -2,9 +2,10 @@ package cs448b.fp.display
 {
 	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.tree.CascadedTree;
-	import cs448b.fp.utils.ControlsEvent;
-	import cs448b.fp.utils.NodeActions;
-	import cs448b.fp.utils.Theme;
+	import cs448b.fp.event.ControlsEvent;
+	import cs448b.fp.event.DisplayEvent;
+	import cs448b.fp.ui.NodeActions;
+	import cs448b.fp.ui.Theme;
 	
 	import flare.vis.Visualization;
 	

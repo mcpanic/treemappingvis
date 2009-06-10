@@ -1,7 +1,7 @@
-package cs448b.fp.utils
+package cs448b.fp.ui
 {
 	import fl.controls.Button;
-	
+	import cs448b.fp.event.ControlsEvent;
 	import flare.display.TextSprite;
 	
 	import flash.display.Loader;

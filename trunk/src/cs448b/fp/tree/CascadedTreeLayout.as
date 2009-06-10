@@ -1,7 +1,7 @@
 package cs448b.fp.tree
 {
 	import cs448b.fp.utils.*;
-	
+	import cs448b.fp.ui.*;
 	import flare.util.Property;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.*;
