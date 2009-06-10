@@ -4,9 +4,11 @@ package cs448b.fp.data
 	
 	public class SessionManager
 	{
+		// all files to refer to this variable whenever trying to check preview state
+		public static var isPreview:Boolean = true;
 		private var _assignmentId:String;
 		private var _curSession:Number;
-		private var _results:Array;
+		private var _results:Array;		
 		
 		public function SessionManager()
 		{
@@ -33,7 +35,7 @@ package cs448b.fp.data
 		{
 			_curSession = session;
 		}
-		
+				
 		/**
 		 * Is this a tutorial session?
 		 */

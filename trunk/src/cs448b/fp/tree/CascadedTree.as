@@ -1,5 +1,6 @@
 package cs448b.fp.tree
 {
+	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.utils.*;
 	
 	import flare.animate.Parallel;
@@ -32,7 +33,7 @@ package cs448b.fp.tree
 		private var _panel:Sprite;
 //		private var _previewManager:PreviewManager;
 		// Order of tree traversal
-		public var _traversalOrder:Number = Theme.ORDER_PREORDER_RANDOM;
+		public var _traversalOrder:Number = Theme.ORDER_PREORDER;
 		
 		public var _currentStep:Number = 0;
 			
@@ -86,8 +87,11 @@ package cs448b.fp.tree
 			_panel.mouseEnabled = false;
 			
 //			if (Theme.ENABLE_FULL_PREVIEW == false)
-				addChild(_panel);			
-			_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+40, _canvasHeight+40);
+			this.addChild(_panel);			
+			if (_isTutorial == true)
+		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
+		    else
+		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight+30);
 			
 			vis.bounds = bounds;
 			vis.x = _x+20;
@@ -133,18 +137,27 @@ package cs448b.fp.tree
 //			vis.x = 200;
 //			vis.y = 200;
 //			vis.update();
-trace(_panel.x + "," + _panel.y);
-trace(vis.x + "," + vis.y);
-//			vis.visible = true;
-//			_node.pullNodeForward(vis);
-//			vis.scaleX = 1;
-//			vis.scaleY = 1;
-//			updateScale(_canvasWidth, _canvasHeight);	
-//			addChild(_controls);
-//			_panel.addChild(vis);			
+//trace(_panel.x + "," + _panel.y);
+trace(_x + "," + _y);
+			trace("here" + this);
+			if (this.contains(_panel))
+				removeChild(_panel);
+			_panel = new Sprite();
+			_panel.graphics.beginFill(0xbbbbbb);
+			// smaller pane for tutorial session
+		    if (_isTutorial == true)
+		    	_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
+		    else
+				_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight+30);
+			_panel.mouseEnabled = false;
 
-						
-
+			
+			this.addChild(_panel);			
+			if (_isTutorial == true)
+		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
+		    else
+		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight+30);
+			_panel.addChild(vis);			
 		}
 		
 		/**
@@ -884,7 +897,10 @@ trace(vis.x + "," + vis.y);
 			// pause before automatically advancing a step
 		    if (_isTutorial == true)
 		    	new Pause(2);
-		    	
+
+			// out of the preview mode now
+			SessionManager.isPreview = false;
+					    	
 			// remove all filters
 			var root:NodeSprite = tree.root as NodeSprite;
 	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
@@ -920,22 +936,20 @@ trace(vis.x + "," + vis.y);
 			if (!_isContentTree)
 				return;			
 			// now make the panel and controls visible
-//			addChild(_panel);	
-//			addChild(_controls);
-//			vis.x = _x + 20;
-//			vis.y = _y + 20;
-//			_panel.addChild(vis);
+
 			// pause before automatically advancing a step
 		    if (_isTutorial == true)
 		    	new Pause(2);
-		    	
+
+			// out of the preview mode now
+			SessionManager.isPreview = false;		    	
 //			// remove all filters
 //			var root:NodeSprite = tree.root as NodeSprite;
 //	        root.visitTreeDepthFirst(function(nn:NodeSprite):void {
 //				_node.removeGlow(nn);
 //	        });
 			
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_tree", 0) );				
+			
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
@@ -946,7 +960,10 @@ trace(vis.x + "," + vis.y);
 	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "visible_button", 0) );
 	  		}
 	  		else
-	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );			
+	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );	
+	     	
+	     	// should be the last step because everything is re-initialized as the result of show_tree
+	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_tree", 0) );				
 		}
 				
 		/**
