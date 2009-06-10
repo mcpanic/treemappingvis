@@ -152,6 +152,8 @@ package cs448b.fp.display
         	{
 	        	if (SessionManager.curSession < Theme.NUM_SESSIONS)
 	        	{
+	        		
+		            trace("Result" + SessionManager.curSession + ": " + _sessionManager.getCName(SessionManager.curSession) + "--" + _sessionManager.getLName(SessionManager.curSession) + ":" + _sessionManager.getResult(SessionManager.curSession));		            
 	        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );
 	        	}
 	        	else if (_isConfirmed == false && SessionManager.curSession == Theme.NUM_SESSIONS)
