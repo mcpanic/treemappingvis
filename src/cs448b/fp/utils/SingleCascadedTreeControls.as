@@ -102,14 +102,14 @@ package cs448b.fp.utils
            	_loader1.scaleY = 0.5;
 
 			_zoomInButton = new Button();
-			_zoomInButton.label = "";Theme.LABEL_ZOOM_IN;
+			_zoomInButton.label = "";//Theme.LABEL_ZOOM_IN;
 			_zoomInButton.toggle = false;
 			_zoomInButton.x = Theme.LAYOUT_ZOOM_X;
 			_zoomInButton.y = Theme.LAYOUT_ZOOM_Y;
 			_zoomInButton.setSize(Theme.LAYOUT_ZOOM_WIDTH, Theme.LAYOUT_ZOOM_WIDTH)			
            	_zoomInButton.addEventListener(MouseEvent.CLICK, onZoomInButton);
            	//_zoomInButton.setStyle("textFormat", Theme.FONT_BUTTON); 
-           	_zoomInButton.enabled = false;
+           	_zoomInButton.enabled = true;
            	_zoomInButton.useHandCursor = true;
            	addChild(_zoomInButton);  			
 		}
@@ -140,7 +140,7 @@ package cs448b.fp.utils
 			_zoomOutButton.setSize(Theme.LAYOUT_ZOOM_WIDTH, Theme.LAYOUT_ZOOM_WIDTH)						
            	_zoomOutButton.addEventListener(MouseEvent.CLICK, onZoomOutButton);
            	//_zoomOutButton.setStyle("textFormat", Theme.FONT_BUTTON); 
-           	_zoomOutButton.enabled = false;
+           	_zoomOutButton.enabled = true;
            	_zoomOutButton.useHandCursor = true;
            	addChild(_zoomOutButton);  			
 		}

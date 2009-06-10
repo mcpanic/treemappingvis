@@ -241,14 +241,14 @@ package cs448b.fp.display
 			}		
 		}
 
-		/**
-		 * Send page display data to the previewManager
-		 */			
-		public function displayPage(vis:Visualization):void
-		{
-			if (_previewManager != null)
-				_previewManager.displayPage(vis);
-		}
+//		/**
+//		 * Send page display data to the previewManager
+//		 */			
+//		public function displayPage(vis:Visualization):void
+//		{
+//			if (_previewManager != null)
+//				_previewManager.displayPage(vis);
+//		}
 				
 		/**
 		 * Before hiding the popup

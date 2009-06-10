@@ -1,16 +1,15 @@
 package cs448b.fp.display
 {
 	import cs448b.fp.utils.ControlsEvent;
-	import cs448b.fp.utils.NodeActions;
 	import cs448b.fp.utils.Theme;
 	
 	import fl.controls.Button;
 	
-	import flare.vis.Visualization;
-	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.text.TextField;
+	import flash.utils.Timer;
 
 	public class PreviewManager extends Sprite
 	{
@@ -21,10 +20,13 @@ package cs448b.fp.display
 		private var _y:Number;
 		private var _nextButton:Button;
 		private var _output:TextField;
+		private var _timeField:TextField;
 		private var _curStep:Number;
 		private var _numStep:Number;
 		private var _previewPanel:Sprite;
-		private var _currentVis:Visualization;
+//		private var _currentVis:Visualization;
+		private var _currentTime:Number;
+		private var _myTimer:Timer;
 		
 		/**
 		 * Preview: show full-screen view of two pages, 
@@ -41,67 +43,48 @@ package cs448b.fp.display
 					
 						
 			_numStep = 3;
-			_currentVis = null;		
+//			_currentVis = null;		
 			// initialize the step (1: init, 2: content page, 3: layout page)
 			_curStep = 1;
-
-//			_iscontentTree = bContentTree;
-//			_isTutorial = bTutorial;					
+			_currentTime = Theme.PREVIEW_TIMEOUT;				
 		}
 		
 		public function init():void
-		{	
-//			_isTutorial = bTutorial;		
-//			_previewPanel = new Sprite();
-//			_previewPanel.graphics.beginFill(0xbbbbbb);
-//			// panel starts from the content tree origin			
-//			_x = Number(Theme.LAYOUT_CTREE_X);
-//			_y = Number(Theme.LAYOUT_CTREE_Y);
-////			_previewPanel.graphics.drawRect(25, 190, 1024, 668);			
-//			// smaller pane for tutorial session
-//		    if (_isTutorial == true)
-//		    	_previewPanel.graphics.drawRect(_x, _y, Theme.LAYOUT_FULL_PREVIEW_WIDTH+30, Theme.LAYOUT_FULL_PREVIEW_HEIGHT/2+30);
-//		    else
-//				_previewPanel.graphics.drawRect(_x, _y, Theme.LAYOUT_FULL_PREVIEW_WIDTH+30, Theme.LAYOUT_FULL_PREVIEW_HEIGHT+30);
-//			_previewPanel.mouseEnabled = false;
-//			addChild(_previewPanel);			
-//			_previewPanel.scrollRect = new Rectangle(_x, _y, Theme.LAYOUT_FULL_PREVIEW_WIDTH+40, Theme.LAYOUT_FULL_PREVIEW_HEIGHT+40);
-//		
-			
+		{				
 			// add controls		
 			addNextButton();
 			addMessage();	
+			addTime();
+			addTimer();
 			
-//			NodeActions.lock = false;
 			// hide all necessary controls
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "preview_invisible_button") );
 			// request the content page
-			showContentPage();	
-			
+			showContentPage();				
 		}
 
-		/**
-		 * Display the given visualization on the panel
-		 */			
-		public function displayPage(vis:Visualization):void
-		{		
-			// if anything is already there, remove it for the new page to display properly
-			if (_currentVis != null)
-				_previewPanel.removeChild(_currentVis);	
-			
-			// invalid input
-			if (vis == null)
-				return;
-				
-			// update the current vis	
-			_currentVis = vis;
-			vis.x = Theme.LAYOUT_PREVIEW_X;
-			vis.y = 190;
-			// adjust the vis scale to the preview mode
-//			vis.scaleX = _tree.getScale(Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT);	
-//			vis.scaleY = _tree.getScale(Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT);			
-			_previewPanel.addChild(vis);						
-		}
+//		/**
+//		 * Display the given visualization on the panel
+//		 */			
+//		public function displayPage(vis:Visualization):void
+//		{		
+//			// if anything is already there, remove it for the new page to display properly
+//			if (_currentVis != null)
+//				_previewPanel.removeChild(_currentVis);	
+//			
+//			// invalid input
+//			if (vis == null)
+//				return;
+//				
+//			// update the current vis	
+//			_currentVis = vis;
+//			vis.x = Theme.LAYOUT_PREVIEW_X;
+//			vis.y = 190;
+//			// adjust the vis scale to the preview mode
+////			vis.scaleX = _tree.getScale(Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT);	
+////			vis.scaleY = _tree.getScale(Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT);			
+//			_previewPanel.addChild(vis);						
+//		}
 			
 		/**
 		 * Add a next button
@@ -112,11 +95,12 @@ package cs448b.fp.display
 			_nextButton.label = Theme.LABEL_PREVIEW_NEXT;
 			_nextButton.toggle = false;
 			_nextButton.x = Theme.LAYOUT_PREVIEW_WIDTH - Theme.LAYOUT_TUTORIAL_BUTTON_WIDTH - 10;
-			_nextButton.y = Theme.LAYOUT_PREVIEW_Y + Theme.LAYOUT_PREVIEW_HEIGHT/2 - 20;
+			_nextButton.y = Theme.LAYOUT_PREVIEW_Y + Theme.LAYOUT_PREVIEW_HEIGHT/2 - 22;
 			_nextButton.width = Theme.LAYOUT_TUTORIAL_BUTTON_WIDTH;
            	_nextButton.addEventListener(MouseEvent.CLICK, onNextButton);
            	_nextButton.setStyle("textFormat", Theme.FONT_BUTTON);
            	_nextButton.useHandCursor = true;
+           	_nextButton.enabled = false;
            	addChild(_nextButton);         	
 		}
 
@@ -132,7 +116,10 @@ package cs448b.fp.display
         		onComplete();		
         	// on first next button click, show the layout page
         	else    
+        	{
+        		addTimer();
         		showLayoutPage();
+        	}
         }	
 
 		/**
@@ -172,7 +159,7 @@ package cs448b.fp.display
             _output.textColor = 0xffffff;
             _output.defaultTextFormat = Theme.FONT_TUTORIAL;
             _output.width = Theme.LAYOUT_PREVIEW_WIDTH - 130;
-//            _output.height = 130;
+            _output.height = Theme.LAYOUT_PREVIEW_HEIGHT - 10;
             _output.multiline = false;
             _output.wordWrap = true;
             _output.border = false;
@@ -189,6 +176,56 @@ package cs448b.fp.display
         	//_message.text = message + "\n";
         	_output.text = message;
         }  
-        		
+
+		/**
+		 * Add time message
+		 */	        
+		private function addTime():void
+		{           
+            _timeField = new TextField();
+            _timeField.x = Theme.LAYOUT_PREVIEW_WIDTH - 150;
+            _timeField.y = Theme.LAYOUT_PREVIEW_MSG_Y;
+            _timeField.textColor = 0xffffff;
+            _timeField.defaultTextFormat = Theme.FONT_TUTORIAL;
+            _timeField.width = 50;
+            _timeField.height = Theme.LAYOUT_PREVIEW_HEIGHT - 10;
+            _timeField.multiline = false;
+            _timeField.wordWrap = true;
+            _timeField.border = false;
+            _timeField.text = Theme.PREVIEW_TIMEOUT + " sec";
+            addChild(_timeField);                    
+        }       
+
+		/**
+		 * Update the time and display the message
+		 */        
+        private function timerHandler(event:TimerEvent):void
+        {     
+        	_currentTime--;   	
+        	_timeField.text = _currentTime + " sec";
+        }  
+
+		/**
+		 * Update the time and display the message
+		 */        
+        private function completeHandler(event:TimerEvent):void
+        {      	
+        	_timeField.text = "0 sec!";        	
+        	_nextButton.enabled = true;
+        }  
+        
+		/**
+		 * Add the timer
+		 */          
+        private function addTimer():void
+        {
+        	// re-initialize
+        	_currentTime = Theme.PREVIEW_TIMEOUT;
+			_myTimer = new Timer(1000, Theme.PREVIEW_TIMEOUT);
+            _myTimer.addEventListener("timer", timerHandler);
+            _myTimer.addEventListener(TimerEvent.TIMER_COMPLETE, completeHandler);
+			_myTimer.start();
+        	
+        }                		
 	}
 }

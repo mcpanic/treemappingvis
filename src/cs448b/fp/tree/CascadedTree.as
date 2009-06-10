@@ -916,14 +916,14 @@ trace(_x + "," + _y);
 	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );
 		}
 
-		/**
-		 * return the current vis. 
-		 * used in preview display
-		 */
-		public function getVis():Visualization
-		{
-			return vis;
-		}
+//		/**
+//		 * return the current vis. 
+//		 * used in preview display
+//		 */
+//		public function getVis():Visualization
+//		{
+//			return vis;
+//		}
 		
 		/**
 		 * When full page preview is over
