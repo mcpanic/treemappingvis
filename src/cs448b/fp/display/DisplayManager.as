@@ -28,7 +28,7 @@ package cs448b.fp.display
 			_resultManager = new ResultManager();
 			_helpManager = new HelpManager();	
 			_tutorialManager = new TutorialManager();
-			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)		
+			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true && SessionManager.isTutorial() == false)		
 				_previewManager = new PreviewManager();
 		}
 
@@ -40,37 +40,41 @@ package cs448b.fp.display
 			if (Theme.ENABLE_MERGE == true)
 			{
 				// Initialize popup manager
-				_popupManager.init();
+
 				_popupManager.x = Theme.LAYOUT_POPUP_X;
 				_popupManager.y = Theme.LAYOUT_POPUP_Y;
 				_popupManager.width = Theme.LAYOUT_POPUP_WIDTH;
 				_popupManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPopupStatusEvent);
+				_popupManager.init();
 			}
 			
 			// Initialize result popup manager
-			_resultManager.init();
+
 			_resultManager.x = Theme.LAYOUT_POPUP_X;
 			_resultManager.y = Theme.LAYOUT_POPUP_Y;
 			_resultManager.width = Theme.LAYOUT_POPUP_WIDTH;
 			_resultManager.addEventListener(ControlsEvent.STATUS_UPDATE, onResultStatusEvent);
-
+			_resultManager.init();
+			
 			// Initialize popup manager
-			_helpManager.init();
+
 			_helpManager.x = Theme.LAYOUT_POPUP_X;
 			_helpManager.y = Theme.LAYOUT_POPUP_Y;
 			_helpManager.width = Theme.LAYOUT_POPUP_WIDTH;
 			_helpManager.addEventListener(ControlsEvent.STATUS_UPDATE, onHelpStatusEvent);	
-			
+			_helpManager.init();
+						
 			// Initialize tutorial manager
-			_tutorialManager.init();
+
 			_tutorialManager.x = Theme.LAYOUT_TUTORIAL_X;
 			_tutorialManager.y = Theme.LAYOUT_TUTORIAL_Y;
 			_tutorialManager.width = Theme.LAYOUT_TUTORIAL_WIDTH;
 			//_tutorialManager.height = Theme.LAYOUT_TUTORIAL_HEIGHT;
 			_tutorialManager.addEventListener(ControlsEvent.STATUS_UPDATE, onTutorialStatusEvent);		
-			
+			_tutorialManager.init();
+						
 			// Initialize preview manager
-			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)
+			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true && SessionManager.isTutorial() == false)
 			{
 				_previewManager.x = Theme.LAYOUT_PREVIEW_X;//Theme.LAYOUT_CTREE_X;//
 				_previewManager.y = Theme.LAYOUT_PREVIEW_Y;;//Theme.LAYOUT_CTREE_Y;
@@ -195,7 +199,7 @@ package cs448b.fp.display
 //			}	
 			else if (event.name == "tutorial_click")
 			{
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) ); 
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "enable_button", 0) ); 
 				dispatchEvent( new DisplayEvent( DisplayEvent.DISPLAY_UPDATE, "tutorial_click") ); 	
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hide_unmap", 0) ); 	
 			}	
@@ -255,7 +259,7 @@ package cs448b.fp.display
 			_layoutTree.alpha = 1;			
 
 			// Enable all buttons
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  				
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "enable_button", 0) );  				
 			// Disable the lock so that interactionis enabled again
 			NodeActions.lock = false;			
 		}
@@ -269,7 +273,7 @@ package cs448b.fp.display
 			_layoutTree.alpha = Theme.ALPHA_POPUP; 		
 			
 			// Disable all buttons
-			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) );  							
+			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "disable_button", 0) );  							
 			// Enable the lock so that interaction is disabled during popup
 			NodeActions.lock = true;					
 		}	

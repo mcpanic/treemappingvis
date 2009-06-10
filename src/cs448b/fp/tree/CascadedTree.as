@@ -688,11 +688,11 @@ trace(_x + "," + _y);
 		 */	   		
 		protected override function onMouseDown(n:NodeSprite, isSender:Boolean = true):void 
 		{
-			trace(n.x + " " + n.y + " " + n.width + " " + n.height);
-			trace(n.u + " " + n.v + " " + n.w + " " + n.h);
-			trace(n.props["x"] + " " + n.props["y"] + " " + n.props["width"] + " " + n.props["height"]);
-			if (n.props["image"] != null)
-				trace(n.props["image"].x + " " + n.props["image"].y + " " + n.props["image"].width + " " + n.props["image"].height);
+//			trace(n.x + " " + n.y + " " + n.width + " " + n.height);
+//			trace(n.u + " " + n.v + " " + n.w + " " + n.h);
+//			trace(n.props["x"] + " " + n.props["y"] + " " + n.props["width"] + " " + n.props["height"]);
+//			if (n.props["image"] != null)
+//				trace(n.props["image"].x + " " + n.props["image"].y + " " + n.props["image"].width + " " + n.props["image"].height);
 //			if (n.getChildAt(0) != null)
 //				trace(n.getChildAt(0).x + " " + n.getChildAt(0).y + " " + n.getChildAt(0).width + " " + n.getChildAt(0).height);
 			// no linking effect for mouse click. only mouse-over and out gets linking
@@ -892,8 +892,8 @@ trace(_x + "," + _y);
 		private function onEndPreview(e:TransitionEvent):void
 		{
 			// pause before automatically advancing a step
-		    if (_isTutorial == true)
-		    	new Pause(2);
+//		    if (_isTutorial == true)
+//		    	new Pause(2);
 
 			// out of the preview mode now
 			SessionManager.isPreview = false;
@@ -911,7 +911,7 @@ trace(_x + "," + _y);
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
 			
 			if (_isTutorial == false)  		
-	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
+	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "enable_button", 0) );  
 	     	else
 	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );
 		}
@@ -935,8 +935,8 @@ trace(_x + "," + _y);
 			// now make the panel and controls visible
 
 			// pause before automatically advancing a step
-		    if (_isTutorial == true)
-		    	new Pause(2);
+//		    if (_isTutorial == true)
+//		    	new Pause(2);
 
 			// out of the preview mode now
 			SessionManager.isPreview = false;		    	
@@ -954,14 +954,15 @@ trace(_x + "," + _y);
 			
 			if (_isTutorial == false)  	
 			{	
-	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
+	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "enable_button", 0) );  
 	  		}
 	  		else
+	  		{
 	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );	
-	     	
+	    	}
 	     	// should be the last step because everything is re-initialized as the result of show_tree
-	     	//new Pause(3);
-	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_tree", 0) );				
+	     	if (_isTutorial == false)
+	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_tree", 0) );				
 		}
 				
 		/**

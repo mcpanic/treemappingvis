@@ -118,6 +118,8 @@ package cs448b.fp.utils
 		 */		 
 		public function showConnectedNodes(n:NodeSprite):void
 		{
+			if (n == null)
+				return;
 			if (n.parentNode != null && n.parentNode != _tree.tree.root)
 			{
 				// parent
