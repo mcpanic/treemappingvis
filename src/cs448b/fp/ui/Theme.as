@@ -5,10 +5,11 @@ package cs448b.fp.ui
 	import flash.filters.DropShadowFilter;
 	import flash.filters.GlowFilter;
 	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	public class Theme
 	{	
 		public static var ENABLE_DEBUG:Boolean = false;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
 		
 		// Enable / Disable use of full-screen preview session
 		public static var ENABLE_FULL_PREVIEW:Boolean = true;		
@@ -21,8 +22,8 @@ package cs448b.fp.ui
 		public static var NUM_PAIRS:Number = 15;
 		// How many steps are in the tutorial session
 		public static var NUM_TUTORIAL_STEPS:Number = 6;
-		// Preview timeout value
-		public static var PREVIEW_TIMEOUT:Number = 5;
+		// Preview timeout value in seconds
+		public static var PREVIEW_TIMEOUT:Number = 10;
 				
 		// Node offset options for better parent selection. 0: nothing, 1: cascaded offset, 2: expanded parent
 		public static var ENABLE_CASCADE_OFFSET:uint = 2;
@@ -85,7 +86,7 @@ package cs448b.fp.ui
 		public static var CONNECTED_LINE_WIDTH:Number = 7;	// dividend for the connected layout nodes on mouseover
 		public static var ALPHA_POPUP:Number = 0.5; 		// alpha value for the trees while popup menu is open
 		
-		public static var MAX_ZOOM:Number = 4; 		// alpha value for the trees while popup menu is open
+		public static var MAX_ZOOM:Number = 1; 		// alpha value for the trees while popup menu is open
 		public static var MIN_ZOOM:Number = 0.25; 		// alpha value for the trees while popup menu is open
 		
 		// Mapping status constants
@@ -102,7 +103,7 @@ package cs448b.fp.ui
 		public static var USE_DROPSHADOW:Boolean = false;
 		
 		public static var LAYOUT_CANVAS_WIDTH:uint = 550;	// single tree canvas width
-		public static var LAYOUT_CANVAS_HEIGHT:uint = 600;	// single tree canvas height	
+		public static var LAYOUT_CANVAS_HEIGHT:uint = 550;	// single tree canvas height	
 		public static var LAYOUT_CTREE_X:uint = 25;			// content tree x-coordinate
 		public static var LAYOUT_CTREE_Y:uint = 90;			// content tree y-coordinate
 		public static var LAYOUT_LTREE_X:uint = 620;		// layout tree x-coordinate
@@ -122,6 +123,8 @@ package cs448b.fp.ui
 		public static var LAYOUT_CONTINUE_WIDTH:Number = 150;	// continue button width				
 		public static var LAYOUT_FEEDBACK_X:Number = 25;//450;	// notice x-coordinate
 		public static var LAYOUT_FEEDBACK_Y:Number = 10;		// notice y-coordinate
+		public static var LAYOUT_FEEDBACK_WIDTH:Number = 620;		// notice width
+		public static var LAYOUT_FEEDBACK_HEIGHT:Number = 35;		// notice width
 				
 		public static var LAYOUT_NODENAME_X:Number = 20;	// tree name label x-coordinate, relative to the canvas origin
 		public static var LAYOUT_NODENAME_Y:Number = -25;	// tree name label y-coordinate, relative to the canvas origin		
@@ -149,8 +152,8 @@ package cs448b.fp.ui
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_COLOR:Number = 0xFFD700;	// popup diagram's line color
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_ALPHA:Number = 0.2;			// popup diagram's line alpha for inactive links 
 
-		public static var LAYOUT_FULL_PREVIEW_WIDTH:uint = 1024;		// full page preview canvas width
-		public static var LAYOUT_FULL_PREVIEW_HEIGHT:uint = 600;	// full page preview canvas height			
+		public static var LAYOUT_FULL_PREVIEW_WIDTH:uint = 850;		// full page preview canvas width
+		public static var LAYOUT_FULL_PREVIEW_HEIGHT:uint = 550;	// full page preview canvas height			
 		public static var LAYOUT_PREVIEW_X:Number = 20;		// popup x-coordinate
 		public static var LAYOUT_PREVIEW_Y:Number = 10;		// popup y-coordinate
 		public static var LAYOUT_PREVIEW_WIDTH:Number = 620;		// popup width
@@ -184,8 +187,8 @@ package cs448b.fp.ui
 		public static var MSG_MAPPING:String = "Mappings: ";
 		public static var MSG_MAPPING_INST:String = "For the highlighted segment on the left-hand page, \nfind the best corresponding segment on the right-hand page.";
 		public static var MSG_LOADED:String = "Loading...";
-		public static var MSG_PREVIEW1:String = "Please take a few minutes and read through the first page.";
-		public static var MSG_PREVIEW2:String = "Please take a few minutes and read through the second page.";
+		public static var MSG_PREVIEW1:String = "Please read through the first page.";
+		public static var MSG_PREVIEW2:String = "Please read through the second page.";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
 		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";	
 		public static var MSG_RESULT_SENDING:String = "Sending results to Mechanical Turk server.\n"
@@ -264,7 +267,12 @@ package cs448b.fp.ui
 		public static var FONT_MESSAGE:TextFormat;
 			FONT_MESSAGE = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
 			FONT_MESSAGE.color = "0xFFFFFF"; 
-
+		
+		public static var FONT_RIGHT_ALIGN:TextFormat;
+			FONT_RIGHT_ALIGN = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
+			FONT_RIGHT_ALIGN.color = "0xFFFFFF"; 	
+			FONT_RIGHT_ALIGN.align = TextFormatAlign.RIGHT;
+			
 		public static var FONT_TUTORIAL:TextFormat;
 			FONT_TUTORIAL = new TextFormat("Verdana,Tahoma,Arial",12,0,false);
 			FONT_TUTORIAL.color = "0xFFFFFF"; 		
