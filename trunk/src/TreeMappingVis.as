@@ -336,54 +336,17 @@ package {
 			else if (event.name == "show_tree")
 			{	
 				cleanup();
-				loadPair();
-				
-//				controls.visibleButtons();	
-//				cascadedTree3.visible = false;
-//				cascadedTree4.visible = false;
-//				removeChild(mappingManager);
-//				handleLoaded();	
-//				if (Theme.ENABLE_FULL_PREVIEW == true)
-//				{		
-//					if (this.contains(cascadedTree3))
-//						removeChild(cascadedTree3);
-//					if (this.contains(cascadedTree4))
-//						removeChild(cascadedTree4);	
-//				}	
-////				addChild(cascadedTree1);
-////				addChild(cascadedTree2);	
-//				
-//				trace("main " + this.numChildren);
-//				trace("tree1 " + this.getChildIndex(cascadedTree1));
-//				trace("tree2 " + this.getChildIndex(cascadedTree2));
-//				trace("control " + this.getChildIndex(controls));
-//				trace("mm " + this.getChildIndex(mappingManager));
-//				cascadedTree1.visible = true;
-//				cascadedTree2.visible = true;
-//				cascadedTree1.displayTree();
-//				cascadedTree2.displayTree();
-				
+				loadPair();				
 			}		
 			// Show the tree for mapping
 			else if (event.name == "show_preview")
-			{	
-//				return;
-//				if (this.contains(cascadedTree3))
-//					removeChild(cascadedTree3);
-//				if (this.contains(cascadedTree4))
-//					removeChild(cascadedTree4);	
-				
-				
+			{					
 				if (event.value == Theme.ID_PREVIEW_CONTENT)	// content					
 				{
 					cascadedTree2.visible = false;
 					cascadedTree1.visible = true;				
 					//cascadedTree1.displayTree();
 					cascadedTree1.enableZoomButtons();					
-//					cascadedTree4.visible = false;
-//					cascadedTree3.visible = true;
-//					cascadedTree3.displayTree();
-//					cascadedTree3.enableZoomButtons();
 				}	
 				else if (event.value == Theme.ID_PREVIEW_LAYOUT)
 				{	
@@ -391,11 +354,6 @@ package {
 					cascadedTree2.visible = true;				
 					//cascadedTree2.displayTree();
 					cascadedTree2.enableZoomButtons();
-						
-//					cascadedTree3.visible = false;
-//					cascadedTree4.visible = true;				
-//					cascadedTree4.displayTree();
-//					cascadedTree4.enableZoomButtons();
 				}	
 			}											
 			else if (event.name == "enable_button")

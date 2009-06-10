@@ -14,7 +14,7 @@ package cs448b.fp.ui
 		public static var ENABLE_FULL_PREVIEW:Boolean = true;		
 		// Enable / Disable use of scrollbar
 		public static var ENABLE_SCROLLBAR:Boolean = true;
-				
+						
 		// How many sessions are we having for each task?
 		public static var NUM_SESSIONS:Number = 5;
 		// How many pairs are in the database
@@ -158,6 +158,11 @@ package cs448b.fp.ui
 		public static var LAYOUT_PREVIEW_MSG_X:Number = 15;//25	// message display x-coordinate
 		public static var LAYOUT_PREVIEW_MSG_Y:Number = 8;//35	// message display x-coordinate
 		//public static var LAYOUT_TUTORIAL_OFFSET:Number = 65;//90;		// pixel offset 
+		
+		public static var LAYOUT_SCROLL_PREVIEW_X:Number = 730;		// scroll preview display x-coordinate
+		public static var LAYOUT_SCROLL_PREVIEW_Y:Number = -90;	// scroll preview display y-coordinate
+		public static var LAYOUT_SCROLL_PREVIEW_WIDTH:Number = 70;	// scroll preview display width
+		public static var LAYOUT_SCROLL_PREVIEW_HEIGHT:Number = 70;	// scroll preview display height
 				
 		public static var LAYOUT_TUTORIAL_X:Number = 20;		// popup x-coordinate
 		public static var LAYOUT_TUTORIAL_Y:Number = 10;		// popup y-coordinate
