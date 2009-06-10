@@ -44,16 +44,26 @@ package cs448b.fp.ui
 			addNotice();
 			addUnmap();
 			
+			
 			if (Theme.ENABLE_HELP_BUTTON == true)
 				addHelp();
 			
-				addRestart();
+			addRestart();
 			if (Theme.ENABLE_CONTINUE_BUTTON == true)
 				addContinueButton();
 
 			layout();
 		}
-
+		
+		public function addBorder():void
+		{
+			this.graphics.beginFill(0x101010);
+			this.graphics.lineStyle(3, 0xbbbbbb);
+			//this.graphics.drawRoundRect(Theme.LAYOUT_PREVIEW_X, Theme.LAYOUT_PREVIEW_Y, Theme.LAYOUT_PREVIEW_WIDTH, Theme.LAYOUT_PREVIEW_HEIGHT, 20);
+			this.graphics.drawRoundRect(20, 10, Theme.LAYOUT_FEEDBACK_WIDTH, Theme.LAYOUT_FEEDBACK_HEIGHT, 20);
+			this.graphics.endFill();			
+		}
+		
 		public function setSliderDepth(depth:uint):void
 		{
 			if (_depthSlider != null)

@@ -336,7 +336,8 @@ package {
 			else if (event.name == "show_tree")
 			{	
 				cleanup();
-				loadPair();				
+				loadPair();
+				controls.addBorder();				
 			}		
 			// Show the tree for mapping
 			else if (event.name == "show_preview")

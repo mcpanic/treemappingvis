@@ -185,11 +185,11 @@ package cs448b.fp.display
 		private function addTime():void
 		{           
             _timeField = new TextField();
-            _timeField.x = Theme.LAYOUT_PREVIEW_WIDTH - 150;
+            _timeField.x = Theme.LAYOUT_PREVIEW_WIDTH - 170;
             _timeField.y = Theme.LAYOUT_PREVIEW_MSG_Y;
             _timeField.textColor = 0xffffff;
-            _timeField.defaultTextFormat = Theme.FONT_TUTORIAL;
-            _timeField.width = 50;
+            _timeField.defaultTextFormat = Theme.FONT_RIGHT_ALIGN;
+            _timeField.width = 70;         
             _timeField.height = Theme.LAYOUT_PREVIEW_HEIGHT - 10;
             _timeField.multiline = false;
             _timeField.wordWrap = true;
@@ -212,7 +212,7 @@ package cs448b.fp.display
 		 */        
         private function completeHandler(event:TimerEvent):void
         {      	
-        	_timeField.text = "0 sec!";        	
+        	_timeField.text = "0 sec";        	
         	_nextButton.enabled = true;
         }  
         
