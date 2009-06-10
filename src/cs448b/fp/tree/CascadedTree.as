@@ -37,10 +37,10 @@ package cs448b.fp.tree
 		
 		public var _currentStep:Number = 0;
 			
-		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, canvasWidth:Number, canvasHeight:Number, bContentTree:Boolean, bTutorial:Boolean)
+		public function CascadedTree(i:Number, tree:Tree, x:Number, y:Number, canvasWidth:Number, canvasHeight:Number, bContentTree:Boolean)
 		{
 			this._isContentTree = bContentTree;			
-			this._isTutorial = bTutorial;
+			this._isTutorial = SessionManager.isTutorial();
 
 			this.x = x;
 			this.y = y;
@@ -59,14 +59,6 @@ package cs448b.fp.tree
 			return _isContentTree;
 		}
 
-		/**
-		 * is this content or layout tree?
-		 */			
-		public function get isTutorial():Boolean
-		{
-			return _isTutorial;
-		}
-		
 		/**
 		 * Vis and tree-specific controls initialization - general controls are in CascadedTreeControls.as
 		 */			

@@ -79,7 +79,7 @@ package cs448b.fp.display
         {
         	
 			var variables:URLVariables = new URLVariables();
-            variables.assignmentId = _sessionManager.assignmentId;
+            variables.assignmentId = SessionManager.assignmentId;
             for (var i:uint=1; i<=Theme.NUM_SESSIONS; i++)
             {
             	variables["cname"+i] 	= _sessionManager.getCName(i);
@@ -144,17 +144,17 @@ package cs448b.fp.display
 		 */	
         private function onConfirmButton( mouseEvent:MouseEvent ):void
         {  	
-        	if (_sessionManager.isTutorial() == true)
+        	if (SessionManager.isTutorial() == true)
         	{
         		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_submit") );     
         	}
         	else
         	{
-	        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
+	        	if (SessionManager.curSession < Theme.NUM_SESSIONS)
 	        	{
 	        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );
 	        	}
-	        	else if (_isConfirmed == false && _sessionManager.curSession == Theme.NUM_SESSIONS)
+	        	else if (_isConfirmed == false && SessionManager.curSession == Theme.NUM_SESSIONS)
 	        	{   					
 					sendToServer();
 					dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "confirm") );     
@@ -213,13 +213,13 @@ package cs448b.fp.display
          
         public function addResults(results:String):void
         {
-        	if (_sessionManager.isTutorial() == true)
+        	if (SessionManager.isTutorial() == true)
         		showMessage(Theme.MSG_RESULT_TUTORIAL);
         	else
         	{
-	        	showMessage("Task " + _sessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
+	        	showMessage("Task " + SessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
 	        	// Task not over yet
-	        	if (_sessionManager.curSession < Theme.NUM_SESSIONS)
+	        	if (SessionManager.curSession < Theme.NUM_SESSIONS)
 	        	{
 	        		showMessage(Theme.MSG_RESULT_CONTINUE);
 	        	}

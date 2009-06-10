@@ -35,7 +35,7 @@ package cs448b.fp.display
 		/**
 		 * Initialize all types of screen popups
 		 */	
-		public function init(_isTutorial:Boolean):void
+		public function init():void
 		{
 			if (Theme.ENABLE_MERGE == true)
 			{
@@ -76,7 +76,7 @@ package cs448b.fp.display
 				_previewManager.y = Theme.LAYOUT_PREVIEW_Y;;//Theme.LAYOUT_CTREE_Y;
 				//_previewManager.width = 1300;//Theme.LAYOUT_TUTORIAL_WIDTH;		
 				_previewManager.addEventListener(ControlsEvent.STATUS_UPDATE, onPreviewStatusEvent);	
-				_previewManager.init(_isTutorial);								
+				_previewManager.init();								
 				addChild(_previewManager);
 			}					
 		}

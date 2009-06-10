@@ -16,7 +16,7 @@ package cs448b.fp.display
 	{
 //		private var _tree:CascadedTree;
 //		private var _iscontentTree:Boolean;
-		private var _isTutorial:Boolean;
+//		private var _isTutorial:Boolean;
 		private var _x:Number;
 		private var _y:Number;
 		private var _nextButton:Button;
@@ -49,9 +49,9 @@ package cs448b.fp.display
 //			_isTutorial = bTutorial;					
 		}
 		
-		public function init(bTutorial:Boolean):void
+		public function init():void
 		{	
-			_isTutorial = bTutorial;		
+//			_isTutorial = bTutorial;		
 //			_previewPanel = new Sprite();
 //			_previewPanel.graphics.beginFill(0xbbbbbb);
 //			// panel starts from the content tree origin			

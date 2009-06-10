@@ -76,8 +76,8 @@ package {
 						
 			// See if the task is at the preview or actual phase
 			mturkManager = new MechanicalTurkManager();
-			sessionManager.assignmentId = mturkManager.getAssignmentId();
-			sessionManager.curSession = 1; 
+			SessionManager.assignmentId = mturkManager.getAssignmentId();
+			SessionManager.curSession = 1; 
 			
 			loadPair();
 		}
@@ -89,26 +89,30 @@ package {
 		{
 			var fileList:Array = new Array(2);
 			var imageList:Array = new Array(2);			
-			if (sessionManager.isTutorial() == true)
+			if (SessionManager.isTutorial() == true)
 			{
-				trace("Assignment ID: " + sessionManager.assignmentId);
-				dataList.getDataList(fileList, imageList, true);
+				trace("Assignment ID: " + SessionManager.assignmentId);
+				//dataList.getDataList(fileList, imageList, true);
+				dataList.getDataList(fileList, imageList);
 			}
 			// load a new pair
 //			else if (isRandom == true)
 			else if (SessionManager.isPreview == true)
 			{
-				trace("Assignment ID: " + sessionManager.assignmentId);
+				trace("Assignment ID: " + SessionManager.assignmentId);
 				
 				if (Theme.ENABLE_DEBUG == true)
-					currentPair = dataList.getDataList(fileList, imageList, false, new Point(12, 12));
+					currentPair = dataList.getDataList(fileList, imageList, new Point(12, 12));
+					//currentPair = dataList.getDataList(fileList, imageList, false, new Point(12, 12));
 				else
-					currentPair = dataList.getDataList(fileList, imageList, false);				
+					currentPair = dataList.getDataList(fileList, imageList);
+//					currentPair = dataList.getDataList(fileList, imageList, false);				
 			}
 			// load the current pair
 			else
 			{
-				currentPair = dataList.getDataList(fileList, imageList, false, currentPair);
+//				currentPair = dataList.getDataList(fileList, imageList, false, currentPair);
+				currentPair = dataList.getDataList(fileList, imageList, currentPair);
 			}
 			
 			sessionManager.addPairName(dataList.cName, dataList.lName);
@@ -146,27 +150,27 @@ package {
 		private function displayTree():void
 		{
 			// adjust the layout for the tutorial window
-			controls.setIsTutorial(sessionManager.isTutorial());
+//			controls.setIsTutorial(sessionManager.isTutorial());
 			
 //			if (Theme.ENABLE_FULL_PREVIEW == true)
 //				displayPreviewTree();
 			trace(SessionManager.isPreview);
-			if (sessionManager.isTutorial() == true)
+			if (SessionManager.isTutorial() == true)
 			{				
-				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, true, sessionManager.isTutorial());
-				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, false, sessionManager.isTutorial());
+				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, true);
+				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, false);
 			}
 			// for preview session
 			else if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)
 			{						
-				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT, true, sessionManager.isTutorial());
-				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT, false, sessionManager.isTutorial());								
+				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT, true);
+				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_FULL_PREVIEW_WIDTH, Theme.LAYOUT_FULL_PREVIEW_HEIGHT, false);								
 			}		
 			// normal cases
 			else	
 			{
-				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, true, sessionManager.isTutorial());
-				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, false, sessionManager.isTutorial());												
+				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, true);
+				cascadedTree2 = new CascadedTree(Theme.ID_LAYOUT, dataLoader.getTree(1), Theme.LAYOUT_LTREE_X, Theme.LAYOUT_LTREE_Y, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, false);												
 			}
 			cascadedTree1.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
 			cascadedTree2.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);		
@@ -213,7 +217,7 @@ package {
 			tes.setMappingManager(mappingManager);
 			
 			mappingManager.addEventListener(ControlsEvent.STATUS_UPDATE, onControlsStatusEvent);	
-			mappingManager.init(sessionManager.isTutorial());	// add root-root mapping
+			mappingManager.init();	// add root-root mapping
 			mappingManager.setSessionManager(sessionManager);
 			trace("Name\tOrder\tDepth\tNumChild\tWidth\tHeight");
 			printTree(cascadedTree1.tree.root, 0);
@@ -324,7 +328,7 @@ package {
 			else if (event.name == "tutorial_advance")
 			{	
 				// for step 5, only way to advance is through completion of the task
-				if (sessionManager.isTutorial() == true && mappingManager.currentTutorialStep != 5)
+				if (SessionManager.isTutorial() == true && mappingManager.currentTutorialStep != 5)
 					mappingManager.showTutorialNextStep();			
 			}
 			// Show the tree for mapping
@@ -435,12 +439,12 @@ package {
 			}										
 			else if (event.name == "finish")
 			{
-				if (sessionManager.curSession == Theme.NUM_SESSIONS)
+				if (SessionManager.curSession == Theme.NUM_SESSIONS)
 					trace("all sessions finished!");
 				else
 				{
-					trace("Session " + sessionManager.curSession + " complete.");
-					sessionManager.curSession++;
+					trace("Session " + SessionManager.curSession + " complete.");
+					SessionManager.curSession++;
 					cleanup();
 					SessionManager.isPreview = true;
 					loadPair();

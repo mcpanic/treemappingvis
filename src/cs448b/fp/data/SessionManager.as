@@ -6,45 +6,47 @@ package cs448b.fp.data
 	{
 		// all files to refer to this variable whenever trying to check preview state
 		public static var isPreview:Boolean = true;
-		private var _assignmentId:String;
-		private var _curSession:Number;
+		public static var assignmentId:String = "";
+		public static var curSession:Number = 0;
+		//private var _assignmentId:String;
+		//private var _curSession:Number;
 		private var _results:Array;		
 		
 		public function SessionManager()
 		{
 			_results = new Array(Theme.NUM_SESSIONS + 1);
-			_curSession = 0;
+			//_curSession = 0;
 		}
 		
-		public function get assignmentId():String
-		{
-			return _assignmentId;
-		}
-		
-		public function set assignmentId(id:String):void
-		{
-			_assignmentId = id;
-		}
-		
-		public function get curSession():Number
-		{
-			return _curSession;
-		}
-		
-		public function set curSession(session:Number):void
-		{
-			_curSession = session;
-		}
+//		public function get assignmentId():String
+//		{
+//			return _assignmentId;
+//		}
+//		
+//		public function set assignmentId(id:String):void
+//		{
+//			_assignmentId = id;
+//		}
+//		
+//		public function get curSession():Number
+//		{
+//			return _curSession;
+//		}
+//		
+//		public function set curSession(session:Number):void
+//		{
+//			_curSession = session;
+//		}
 				
 		/**
 		 * Is this a tutorial session?
 		 */
-		public function isTutorial():Boolean
+		public static function isTutorial():Boolean
 		{
 			var ret:Boolean;
 			if (Theme.ENABLE_MANUAL_PREVIEW == 0)
 			{		
-				if (_assignmentId == null || _assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
+				if (assignmentId == null || assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE")
 					ret = true;
 				else
 					ret = false;
