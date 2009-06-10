@@ -1,4 +1,4 @@
-package cs448b.fp.utils
+package cs448b.fp.ui
 {
 // Data related	
 	import fl.controls.CheckBox;

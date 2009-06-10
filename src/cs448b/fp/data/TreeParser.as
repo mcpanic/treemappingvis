@@ -1,6 +1,6 @@
 package cs448b.fp.data
 {
-	import cs448b.fp.utils.Theme;
+	import cs448b.fp.ui.Theme;
 	
 	import fl.containers.UILoader;
 	

@@ -1,7 +1,7 @@
-package cs448b.fp.utils
+package cs448b.fp.ui
 {
 	import cs448b.fp.data.SessionManager;
-	
+	import cs448b.fp.event.ControlsEvent;
 	import fl.controls.Button;
 	import fl.controls.CheckBox;
 	import fl.controls.Slider;

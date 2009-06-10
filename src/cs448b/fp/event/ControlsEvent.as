@@ -1,4 +1,4 @@
-package cs448b.fp.utils
+package cs448b.fp.event
 {
 	import flash.events.Event;	
 

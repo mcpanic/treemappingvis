@@ -4,11 +4,12 @@ package {
 	import cs448b.fp.data.MechanicalTurkManager;
 	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.tree.CascadedTree;
-	import cs448b.fp.tree.TreeEventSynchronizer;
+	import cs448b.fp.event.TreeEventSynchronizer;
 	import cs448b.fp.utils.*;
+	import cs448b.fp.ui.*;
+	import cs448b.fp.event.ControlsEvent;
 	
-	import flare.vis.data.NodeSprite;
-	
+	import flare.vis.data.NodeSprite;	
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;

@@ -1,6 +1,6 @@
-package cs448b.fp.utils
+package cs448b.fp.ui
 {
-	import cs448b.fp.utils.ControlsEvent;
+	import cs448b.fp.ui.ControlsEvent;
 	
 // Data related	
 	import fl.controls.Button;

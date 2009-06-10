@@ -2,10 +2,10 @@ package cs448b.fp.utils
 {
 	import cs448b.fp.data.Mapping;
 	import cs448b.fp.data.SessionManager;
-	import cs448b.fp.display.DisplayEvent;
 	import cs448b.fp.display.DisplayManager;
 	import cs448b.fp.tree.CascadedTree;
-	
+	import cs448b.fp.ui.*;
+	import cs448b.fp.event.*;
 	import flare.animate.TransitionEvent;
 	import flare.vis.data.NodeSprite;
 	
