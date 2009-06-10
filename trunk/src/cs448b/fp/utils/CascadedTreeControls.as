@@ -1,5 +1,7 @@
 package cs448b.fp.utils
 {
+	import cs448b.fp.data.SessionManager;
+	
 	import fl.controls.Button;
 	import fl.controls.CheckBox;
 	import fl.controls.Slider;
@@ -28,7 +30,7 @@ package cs448b.fp.utils
 		private var _feedback:TextSprite;
 		private var _mappings:TextSprite;
 //		private var _textFormat:TextFormat;
-		private var _isTutorial:Boolean;
+//		private var _isTutorial:Boolean;
 									
 		public function CascadedTreeControls()
 		{
@@ -124,10 +126,11 @@ package cs448b.fp.utils
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "fit") );        			 
         }
 
-		public function setIsTutorial(isTutorial:Boolean):void
+		public function setIsTutorial():void
 		{
-			_isTutorial = isTutorial;
-			if (_isTutorial == true)
+//			_isTutorial = isTutorial;
+//			_isTutorial = SessionManager.isTutorial();
+			if (SessionManager.isTutorial() == true)
 			{
 				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
 				_restartButton.visible = false;

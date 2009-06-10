@@ -41,10 +41,10 @@ package cs448b.fp.utils
 			_nextStepLock = true;
 		}
 
-		public function init(isTutorial:Boolean):void
+		public function init():void
 		{
 			
-			_isTutorial = isTutorial;
+			_isTutorial = SessionManager.isTutorial();
 			// Tutorial session
 			if (_isTutorial == true)			
 				_displayManager.showTutorial();						
@@ -53,7 +53,7 @@ package cs448b.fp.utils
 				
 			_displayManager.addEventListener(DisplayEvent.DISPLAY_UPDATE, onDisplayUpdateEvent);	
 			_displayManager.addEventListener(ControlsEvent.STATUS_UPDATE, onStatusUpdateEvent);					
-			_displayManager.init(_isTutorial);	
+			_displayManager.init();	
 
 			addChild(_displayManager);
 		}
