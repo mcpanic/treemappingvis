@@ -19,26 +19,6 @@ package cs448b.fp.data
 			_results = new Array(Theme.NUM_SESSIONS + 1);
 			//_curSession = 0;
 		}
-		
-//		public function get assignmentId():String
-//		{
-//			return _assignmentId;
-//		}
-//		
-//		public function set assignmentId(id:String):void
-//		{
-//			_assignmentId = id;
-//		}
-//		
-//		public function get curSession():Number
-//		{
-//			return _curSession;
-//		}
-//		
-//		public function set curSession(session:Number):void
-//		{
-//			_curSession = session;
-//		}
 				
 		/**
 		 * Is this a tutorial session?

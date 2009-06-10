@@ -1,19 +1,17 @@
 package cs448b.fp.tree
 {
 	import cs448b.fp.data.SessionManager;
-	import cs448b.fp.utils.*;
-	import cs448b.fp.ui.*;
 	import cs448b.fp.event.ControlsEvent;
 	import cs448b.fp.event.MappingEvent;
+	import cs448b.fp.ui.*;
+	import cs448b.fp.utils.*;
 	
 	import flare.animate.Parallel;
-	import flare.animate.Pause;
 	import flare.animate.Sequence;
 	import flare.animate.TransitionEvent;
 	import flare.animate.Transitioner;
 	import flare.animate.Tween;
 	import flare.util.Shapes;
-	import flare.vis.Visualization;
 	import flare.vis.data.Data;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
@@ -33,6 +31,8 @@ package cs448b.fp.tree
 
 		private var _controls:SingleCascadedTreeControls;
 		private var _node:NodeActions;
+		private var _scrollPanel:ScrollPanel;
+		
 		private var _panel:Sprite;
 //		private var _previewManager:PreviewManager;
 		// Order of tree traversal
@@ -72,22 +72,6 @@ package cs448b.fp.tree
 			//bounds = new Rectangle(_x, _y, 1024, 768);
 			bounds = new Rectangle(_x, _y, _canvasWidth, _canvasHeight);
 			
-			_panel = new Sprite();
-			_panel.graphics.beginFill(0x000000);
-			// smaller pane for tutorial session
-		    if (_isTutorial == true)
-		    	_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
-		    else
-				_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight+30);
-			_panel.mouseEnabled = false;
-			
-//			if (Theme.ENABLE_FULL_PREVIEW == false)
-			this.addChild(_panel);			
-			if (_isTutorial == true)
-		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
-		    else
-		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight+30);
-			
 			vis.bounds = bounds;
 			vis.x = _x+20;
 			vis.y = _y+20;
@@ -115,50 +99,73 @@ package cs448b.fp.tree
 				tf.y = Theme.LAYOUT_NODENAME_Y;
 				addChild(tf);					
 			}
-			_controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );							
-//			if (Theme.ENABLE_FULL_PREVIEW == false)
-//			{
-				addChild(_controls);						
-//				addChild(vis);				
-//			}
-			_panel.addChild(vis);
-		}
-
-		/**
-		 * Add all display objects
-		 */					
-		public function displayTree():void
-		{
-//			trace(_panel.numChildren + " " +  _panel.getChildIndex(vis));
-//			trace("children " + this.numChildren);
-//			trace("panel " + this.getChildIndex(_panel));
-//			trace("control " + this.getChildIndex(_controls));
-//			addChild(_panel);
-//			vis.x = 200;
-//			vis.y = 200;
-//			vis.update();
-//trace(_panel.x + "," + _panel.y);
-trace(_x + "," + _y);
-			trace("here" + this);
-			if (this.contains(_panel))
-				removeChild(_panel);
-			_panel = new Sprite();
-			_panel.graphics.beginFill(0xbbbbbb);
-			// smaller pane for tutorial session
-		    if (_isTutorial == true)
-		    	_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
-		    else
-				_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight+30);
-			_panel.mouseEnabled = false;
+			_controls.addEventListener( ControlsEvent.CONTROLS_UPDATE, onControlsEvent );
+			addChild(_controls);	
 
 			
-			this.addChild(_panel);			
-			if (_isTutorial == true)
-		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
-		    else
-		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight+30);
-			_panel.addChild(vis);			
+			if (Theme.ENABLE_SCROLLBAR == true)
+			{
+				if (_isTutorial == true)
+					_scrollPanel = new ScrollPanel(vis, _canvasWidth+30, _canvasHeight/2+30);
+				else
+					_scrollPanel = new ScrollPanel(vis, _canvasWidth+30, _canvasHeight+30);
+				addChild(_scrollPanel);
+			}
+			else
+			{
+				_panel = new Sprite();
+				_panel.graphics.beginFill(0x000000);
+				// smaller pane for tutorial session
+			    if (_isTutorial == true)
+			    	_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
+			    else
+					_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight+30);
+				_panel.mouseEnabled = false;
+				
+	//			if (Theme.ENABLE_FULL_PREVIEW == false)
+				this.addChild(_panel);			
+				if (_isTutorial == true)
+			    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
+			    else
+			    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight+30);
+			    	
+			    _panel.addChild(vis);	
+			}												
 		}
+
+//		/**
+//		 * Add all display objects
+//		 */					
+//		public function displayTree():void
+//		{
+////			trace(_panel.numChildren + " " +  _panel.getChildIndex(vis));
+////			trace("children " + this.numChildren);
+////			trace("panel " + this.getChildIndex(_panel));
+////			trace("control " + this.getChildIndex(_controls));
+////			addChild(_panel);
+////			vis.x = 200;
+////			vis.y = 200;
+////			vis.update();
+//
+//			if (this.contains(_panel))
+//				removeChild(_panel);
+//			_panel = new Sprite();
+//			_panel.graphics.beginFill(0xbbbbbb);
+//			// smaller pane for tutorial session
+//		    if (_isTutorial == true)
+//		    	_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
+//		    else
+//				_panel.graphics.drawRect(_x, _y, _canvasWidth+30, _canvasHeight+30);
+//			_panel.mouseEnabled = false;
+//
+//			
+//			this.addChild(_panel);			
+//			if (_isTutorial == true)
+//		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight/2+30);
+//		    else
+//		    	_panel.scrollRect = new Rectangle(_x, _y, _canvasWidth+30, _canvasHeight+30);
+//			_panel.addChild(vis);			
+//		}
 		
 		/**
 		 * Initialize nodes, edges, and layout
@@ -316,6 +323,8 @@ trace(_x + "," + _y);
 				vis.scaleX *= 1.1;
 				vis.scaleY *= 1.1;
 			}
+			if (Theme.ENABLE_SCROLLBAR == true)
+				_scrollPanel.update();
 		}
 
 		/**
@@ -328,6 +337,8 @@ trace(_x + "," + _y);
 				vis.scaleX /= 1.1;
 				vis.scaleY /= 1.1;
 			}		
+			if (Theme.ENABLE_SCROLLBAR == true)
+				_scrollPanel.update();
 		}
 		
 		/**
@@ -336,6 +347,8 @@ trace(_x + "," + _y);
 		private function onZoomResetButton():void
 		{
 			updateScale(_canvasWidth, _canvasHeight);	
+			if (Theme.ENABLE_SCROLLBAR == true)
+				_scrollPanel.update();
 		}
 				
 		/**

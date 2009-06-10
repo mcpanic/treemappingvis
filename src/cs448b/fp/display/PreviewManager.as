@@ -117,6 +117,8 @@ package cs448b.fp.display
         	// on first next button click, show the layout page
         	else    
         	{
+        		_nextButton.enabled = false;
+        		_timeField.text = Theme.PREVIEW_TIMEOUT + " sec";
         		addTimer();
         		showLayoutPage();
         	}
