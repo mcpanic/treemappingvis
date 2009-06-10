@@ -7,8 +7,8 @@ package cs448b.fp.utils
 	import flash.text.TextFormat;
 	public class Theme
 	{	
-		public static var ENABLE_DEBUG:Boolean = true;
-		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
+		public static var ENABLE_DEBUG:Boolean = false;
+		public static var ENABLE_MANUAL_PREVIEW:Number = 0;	//0: normal, 1: force preview, 2: force actual
 		
 		// Enable / Disable use of full-screen preview session
 		public static var ENABLE_FULL_PREVIEW:Boolean = true;		
@@ -205,7 +205,7 @@ package cs448b.fp.utils
 		
 		public static var MSG_TUT3:String = "For each highlighted segment on the left-hand page, " + 
 				"your goal is to find the best corresponding segment on the right-hand page. \n" + 
-				"Currently, the header of the left-hand page is highlighted. " + 
+				"Currently, the header of the left-hand page is highlighted. \n" + 
 				"For practice, click on the header of the right-hand page and then click \"Match\" to match the two headers. ";
 		// <when task is successfully completed, automatically advance>
 		
@@ -217,15 +217,16 @@ package cs448b.fp.utils
 		
 		public static var MSG_TUT5:String = "Great job! \n" + 
 				"Now complete the task by mapping the three remaining menu segments on the left-hand page " + 
-				"to their corresponding regions on the right-hand page. \n" + 
-				"Careful: a region on the right-hand side can only be matched once; " + 
-				"afterwards, it is disabled and cannot be used in subsequent matchings!";  
+				"to their corresponding regions on the right-hand page. ";// + 
+//				"Careful: a region on the right-hand side can only be matched once; " + 
+//				"afterwards, it is disabled and cannot be used in subsequent matchings!";  
 		// <when task is successfully completed, automatically advance>
 		
-		public static var MSG_TUT6:String = "\nWell done! " + 
-				"You are now ready to start the actual HIT. \n" + 
-				"Be sure to check out 'Help' to learn a few additional interaction tips. \n" + 
-				"Click 'Restart' to see this tutorial again.";
+		public static var MSG_TUT6:String = "\nWell done! \n" + 
+				"Click 'Restart' to see this tutorial again or start the HIT by accepting it. \n";
+//				"You are now ready to start the actual HIT. \n" + 
+//				"Be sure to check out 'Help' to learn a few additional interaction tips. \n" + 
+//				"Click 'Restart' to see this tutorial again.";
 
 		// Labels: for buttons and sections, used in tree control files
 		public static var LABEL_CONT1:String = "Match"; //"Start";

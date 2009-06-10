@@ -154,7 +154,7 @@ package {
 			
 //			if (Theme.ENABLE_FULL_PREVIEW == true)
 //				displayPreviewTree();
-			trace(SessionManager.isPreview);
+//			trace(SessionManager.isPreview);
 			if (SessionManager.isTutorial() == true)
 			{				
 				cascadedTree1 = new CascadedTree(Theme.ID_CONTENT, dataLoader.getTree(0), Theme.LAYOUT_CTREE_X, Theme.LAYOUT_CTREE_Y+Theme.LAYOUT_TUTORIAL_OFFSET, Theme.LAYOUT_CANVAS_WIDTH, Theme.LAYOUT_CANVAS_HEIGHT, true);
@@ -397,13 +397,13 @@ package {
 //					cascadedTree4.enableZoomButtons();
 				}	
 			}											
-			else if (event.name == "showbutton")
+			else if (event.name == "enable_button")
 			{	
 				controls.enableButtons();
 				cascadedTree1.enableZoomButtons();
 				cascadedTree2.enableZoomButtons();	
 			}
-			else if (event.name == "hidebutton")
+			else if (event.name == "disable_button")
 			{	
 				controls.disableButtons();
 				cascadedTree1.disableZoomButtons();					
@@ -452,7 +452,9 @@ package {
 			}	
 			else if (event.name == "restart")
 			{
-				//trace("restart");
+				// remember the restart click - to be used in tutorialManager, to go back to step 2 instead of step 1
+				if (SessionManager.isTutorial() == true)
+					SessionManager.isTutorialRestart = true;
 				cleanup();
 //				isRandom = false;
 				loadPair();

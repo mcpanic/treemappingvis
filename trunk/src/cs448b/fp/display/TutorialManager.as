@@ -1,5 +1,6 @@
 package cs448b.fp.display
 {
+	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.utils.ControlsEvent;
 	import cs448b.fp.utils.Theme;
 	
@@ -42,6 +43,11 @@ package cs448b.fp.display
 			addNextButton();	
 			//addStep();
 			addMessage();
+			// straigtly to step 2 when restarted
+			if (SessionManager.isTutorialRestart == true)
+			{
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "next") );      
+			}
 		}
 
 		/**
@@ -195,14 +201,20 @@ package cs448b.fp.display
         	
         	if (_curStep == 2)	// play preview
         	{
-        		_nextButton.visible = false;
-        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_preview") );
+//        		if (Theme.ENABLE_FULL_PREVIEW == true)	// we don't show preview in the tutorial with the full page version
+//        			showNext();
+//        		else
+//        		{
+        			_nextButton.visible = false;
+        			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_preview") );
+//        		}
         	}
 //        	else if (_curStep == 3)	// highlight the first node
 //        		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_highlight") );
         	else if (_curStep == 3)	// enable clicking the first node
         	{
         		//_nextButton.enabled = false;
+        		_nextButton.visible = false;
         		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_click") );
         	}
         	else if (_curStep == 4)	// assign no mapping practice

@@ -6,8 +6,10 @@ package cs448b.fp.data
 	{
 		// all files to refer to this variable whenever trying to check preview state
 		public static var isPreview:Boolean = true;
+		public static var isTutorialRestart:Boolean = false;
 		public static var assignmentId:String = "";
 		public static var curSession:Number = 0;
+		
 		//private var _assignmentId:String;
 		//private var _curSession:Number;
 		private var _results:Array;		

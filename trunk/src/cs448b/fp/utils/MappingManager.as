@@ -105,18 +105,23 @@ package cs448b.fp.utils
 		{
 			// Disable all buttons
 			if (Theme.ENABLE_FULL_PREVIEW == false && SessionManager.isPreview == true)
-				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) ); 
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "disable_button", 0) ); 
 			
 			// Set the traversal order
 			_contentTree.setTraversalOrder(_isTutorial);
-			
-			//trace("isPreview: " + SessionManager.isPreview);
-			// Play the review of web page segments to be mapped, in the traversal order specified.
-			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)
+						
+			// Force the start in the tutorial. we don't show preview anymore
+			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isTutorial() == true)
+			{	
+				if (_contentTree != null)
+					_contentTree.onEndFullPreview();
+			}
+			else if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)
 				;
 			// Force the start
 			else if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == false)
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );
+			// Play the review of web page segments to be mapped, in the traversal order specified.
 			else
 				_contentTree.playPreview();	
 			
