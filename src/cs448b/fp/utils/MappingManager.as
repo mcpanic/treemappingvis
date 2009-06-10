@@ -110,9 +110,13 @@ package cs448b.fp.utils
 			// Set the traversal order
 			_contentTree.setTraversalOrder(_isTutorial);
 			
+			//trace("isPreview: " + SessionManager.isPreview);
 			// Play the review of web page segments to be mapped, in the traversal order specified.
-			if (Theme.ENABLE_FULL_PREVIEW == true)
-				;//_contentTree.playFullPreview();
+			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)
+				;
+			// Force the start
+			else if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == false)
+				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );
 			else
 				_contentTree.playPreview();	
 			
@@ -747,6 +751,7 @@ package cs448b.fp.utils
         			_nextStepLock = false;
         		else
         		{
+        			//trace("STAGE:" + _currentStage);
 			        if (_currentStage == Theme.STAGE_INITIAL)	// To the hierarchical stage
 			       	{
 			       		_currentStage = Theme.STAGE_HIERARCHICAL;
@@ -770,6 +775,7 @@ package cs448b.fp.utils
 			        	}
 			        	else		       	
 			        	{	    		
+			        		//trace("hello" + _isRootMapped);
 			        		if (_isRootMapped == false) 	// if root has not been mapped, map the root first.
 			        		{
 			        			addRootMapping();

@@ -95,6 +95,11 @@ package cs448b.fp.tree
 				vis.scaleX = 0.7;
 				vis.scaleY = 0.7;
 			}
+			else if (SessionManager.isPreview == true)
+			{
+				vis.scaleX = 1;
+				vis.scaleY = 1;
+			}
 			else
 			{
 				updateScale(_canvasWidth, _canvasHeight);					          						
@@ -941,7 +946,8 @@ trace(_x + "," + _y);
 //				_node.removeGlow(nn);
 //	        });
 			
-			
+	     		
+	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "visible_button", 0) );				
 			dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "stage", Theme.STAGE_HIERARCHICAL) );  
 			if (Theme.ENABLE_SERIAL == true) 
 	       		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "continue" ) );  
@@ -949,12 +955,12 @@ trace(_x + "," + _y);
 			if (_isTutorial == false)  	
 			{	
 	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "showbutton", 0) );  
-	     		dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "visible_button", 0) );
 	  		}
 	  		else
 	     		dispatchEvent ( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "tutorial_advance", 0) );	
 	     	
 	     	// should be the last step because everything is re-initialized as the result of show_tree
+	     	//new Pause(3);
 	     	dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "show_tree", 0) );				
 		}
 				
