@@ -43,8 +43,11 @@ package cs448b.fp.utils
 			addMappings();
 			addNotice();
 			addUnmap();
-			addHelp();
-			addRestart();
+			
+			if (Theme.ENABLE_HELP_BUTTON == true)
+				addHelp();
+			
+				addRestart();
 			if (Theme.ENABLE_CONTINUE_BUTTON == true)
 				addContinueButton();
 
@@ -126,14 +129,18 @@ package cs448b.fp.utils
 			dispatchEvent( new ControlsEvent( ControlsEvent.CONTROLS_UPDATE, "fit") );        			 
         }
 
-		public function setIsTutorial():void
+		public function update():void
 		{
 //			_isTutorial = isTutorial;
 //			_isTutorial = SessionManager.isTutorial();
 			if (SessionManager.isTutorial() == true)
 			{
-				_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
-				_restartButton.visible = false;
+				if (Theme.ENABLE_HELP_BUTTON == true)
+					_helpButton.y = Theme.LAYOUT_HELP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
+				// no restart button on tutorial
+				if (_restartButton != null && this.contains(_restartButton))
+					removeChild(_restartButton);
+				//_restartButton.visible = false;
 				//_restartButton.y = Theme.LAYOUT_RESTART_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
 				_unmapButton.y = Theme.LAYOUT_UNMAP_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
 				_continueButton.y = Theme.LAYOUT_CONTINUE_Y + Theme.LAYOUT_TUTORIAL_OFFSET;
@@ -184,19 +191,23 @@ package cs448b.fp.utils
         }
         public function enableButton(id:Number):void
         {
-        	getButtonByID(id).enabled = true;
+        	if (getButtonByID(id) != null)
+        		getButtonByID(id).enabled = true;
         }
         public function disableButton(id:Number):void
         {
-        	getButtonByID(id).enabled = false;
+        	if (getButtonByID(id) != null)
+        		getButtonByID(id).enabled = false;
         }		
         public function visibleButton(id:Number):void
         {
-        	getButtonByID(id).visible = true;
+        	if (getButtonByID(id) != null)
+        		getButtonByID(id).visible = true;
         }		
         public function invisibleButton(id:Number):void
         {
-        	getButtonByID(id).visible = false;
+        	if (getButtonByID(id) != null)
+        		getButtonByID(id).visible = false;
         }				
 
 								
