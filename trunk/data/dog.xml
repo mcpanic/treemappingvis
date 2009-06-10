@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<node>
+  <label><![CDATA[1]]></label>
+  <url><![CDATA[../data/dog/1.png]]></url>
+  <position x="0" y="0" width="600" height="400"></position>
+  <children>
+    <node>
+      <label><![CDATA[16]]></label>
+      <url><![CDATA[../data/dog/16.png]]></url>
+      <position x="11" y="0" width="480" height="90"></position>
+      <children></children>
+    </node>
+	
+        <node>
+          <label><![CDATA[102]]></label>
+          <url><![CDATA[../data/dog/102.png]]></url>
+          <position x="31" y="124" width="144" height="142"></position>
+          <children></children>
+        </node>	
+		
+ 
+     <node>
+      <label><![CDATA[41]]></label>
+      <url><![CDATA[../data/dog/41.PNG]]></url>
+      <position x="257" y="121" width="230" height="198"></position>
+      <children>
+        <node>
+          <label><![CDATA[52]]></label>
+          <url><![CDATA[../data/dog/52.PNG]]></url>
+          <position x="256" y="121" width="230" height="36"></position>
+          <children></children>
+        </node>
+        <node>
+          <label><![CDATA[56]]></label>
+          <url><![CDATA[../data/dog/56.PNG]]></url>
+          <position x="263" y="174" width="154" height="126"></position>
+          <children></children>
+        </node>
+      </children>
+    </node>
+
+  </children>
+</node>

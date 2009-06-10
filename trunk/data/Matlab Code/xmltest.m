@@ -1,8 +1,8 @@
 clc; clear all; close all;
 
 % PARSEXML Convert XML file to a MATLAB structure.
-filename = 'allRecipes_layout.xml';
-im = imread('allRecipes.png', 'png');
+filename = 'zopa_layout.xml';
+im = imread('zopa.png', 'png');
 
 try
    tree = xmlread(filename);
