@@ -26,6 +26,8 @@ package cs448b.fp.utils
 		public static var ENABLE_CASCADE_OFFSET:uint = 2;
 		public static var CASCADE_OFFSET:uint = 16;
 		
+		// Enable / Disable help button
+		public static var ENABLE_HELP_BUTTON:Boolean = false;
 		// Load or not image segments. If true, only root image is loaded. If false, all segments are loaded, causing more overhead.
 		public static var ENABLE_IMAGE_SEGMENT:Boolean = false;
 		// Enable /Disable merge operation (1 to N mapping possible)

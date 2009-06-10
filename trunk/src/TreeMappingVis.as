@@ -150,7 +150,7 @@ package {
 		private function displayTree():void
 		{
 			// adjust the layout for the tutorial window
-//			controls.setIsTutorial(sessionManager.isTutorial());
+			controls.update();
 			
 //			if (Theme.ENABLE_FULL_PREVIEW == true)
 //				displayPreviewTree();
