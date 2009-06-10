@@ -28,7 +28,7 @@ package cs448b.fp.display
 			_resultManager = new ResultManager();
 			_helpManager = new HelpManager();	
 			_tutorialManager = new TutorialManager();
-			if (Theme.ENABLE_FULL_PREVIEW == true)		
+			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)		
 				_previewManager = new PreviewManager();
 		}
 
@@ -70,9 +70,8 @@ package cs448b.fp.display
 			_tutorialManager.addEventListener(ControlsEvent.STATUS_UPDATE, onTutorialStatusEvent);		
 			
 			// Initialize preview manager
-			if (Theme.ENABLE_FULL_PREVIEW == true)
+			if (Theme.ENABLE_FULL_PREVIEW == true && SessionManager.isPreview == true)
 			{
-
 				_previewManager.x = Theme.LAYOUT_PREVIEW_X;//Theme.LAYOUT_CTREE_X;//
 				_previewManager.y = Theme.LAYOUT_PREVIEW_Y;;//Theme.LAYOUT_CTREE_Y;
 				//_previewManager.width = 1300;//Theme.LAYOUT_TUTORIAL_WIDTH;		

@@ -104,7 +104,7 @@ package cs448b.fp.utils
 		public function startSession():void
 		{
 			// Disable all buttons
-			if (Theme.ENABLE_FULL_PREVIEW == false)
+			if (Theme.ENABLE_FULL_PREVIEW == false && SessionManager.isPreview == true)
 				dispatchEvent( new ControlsEvent( ControlsEvent.STATUS_UPDATE, "hidebutton", 0) ); 
 			
 			// Set the traversal order

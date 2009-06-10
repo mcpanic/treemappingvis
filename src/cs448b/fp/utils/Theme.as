@@ -11,7 +11,7 @@ package cs448b.fp.utils
 		public static var ENABLE_MANUAL_PREVIEW:Number = 2;	//0: normal, 1: force preview, 2: force actual
 		
 		// Enable / Disable use of full-screen preview session
-		public static var ENABLE_FULL_PREVIEW:Boolean = false;		
+		public static var ENABLE_FULL_PREVIEW:Boolean = true;		
 		// Enable / Disable use of scrollbar
 		public static var ENABLE_SCROLLBAR:Boolean = true;
 				
