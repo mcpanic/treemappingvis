@@ -47,34 +47,14 @@ package cs448b.fp.ui
             sp.source = _vis;
             sp.source.x = 15;
             sp.source.y = 15;
-//            sp.alpha = 1;
-//            sp.graphics.beginFill(0xbbbbbb);
-//			sp.graphics.lineStyle(3, 0x000000);
-//			sp.graphics.drawRect(0, 0, 100, 100);//Theme.LAYOUT_PREVIEW_WIDTH, Theme.LAYOUT_PREVIEW_HEIGHT, 20);
-//			sp.graphics.endFill();
-            //sp.setStyle("contentPadding", 20);
+
             var bgColor:Sprite = new Sprite();
             bgColor.graphics.beginFill(0x101010);
 //			bgColor.graphics.lineStyle(3, 0xbbbbbb);
 			bgColor.graphics.drawRect(0, 0, Theme.LAYOUT_PREVIEW_WIDTH, Theme.LAYOUT_PREVIEW_HEIGHT);
 			bgColor.graphics.endFill();
 			sp.setStyle("upSkin", bgColor);
-			//sp.graphics.beginFill(0x000000);
-            //var styleObj:Object = sp.getStyle("backgroundColor");
-            //sp.setStyle("backgroundColor", 0x000000);
-//            sp.clearStyle();
-//            sp.blendMode = false;
-//            trace(sp.numChildren);
-//            sp.content.alpha = 1;
-//            //sp.backgroundColor = 0x000000;
-//            trace("COLOR " + sp.getStyle("backgroundColor"));
-            //sp.addEventListener(Event.COMPLETE, createPreviewWindow);
-//            if (SessionManager.isPreview == true)
-//            {
-//            	createPreviewWindow();
-//            	sp.addEventListener(ScrollEvent.SCROLL, repositionPreview);
-//            	sp.scrollDrag = false;
-//            }
+
             sp.scrollDrag = false;
             //trace(sp.scrollDrag);
             sp.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -155,7 +135,7 @@ package cs448b.fp.ui
 
         private function onMouseDown(e:MouseEvent):void 
         {
-            trace("mouse down");
+            //trace("mouse down");
         }
         
 		/**

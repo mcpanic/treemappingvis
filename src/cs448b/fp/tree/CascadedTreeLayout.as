@@ -169,36 +169,30 @@ package cs448b.fp.tree
 	        root.visitTreeBreadthFirst(function(n:NodeSprite):void {
 				if (n.props["image"] != null)
 				{
+					// width and height adjustment
+					if (Theme.ENABLE_INTERPOLATION == true)
+					{
+						n.props["image"].width = Number(n.props["width"]);
+						n.props["image"].height = Number(n.props["height"]);
+					}
+					else
+						n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
+						
 					if (Theme.ENABLE_CASCADE_OFFSET == 0)	// _isContentTree == true || 
 					{
-						n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
 						n.props["image"].x = Number(n.props["x"]);
 						n.props["image"].y = Number(n.props["y"]);
 					}
 					else if (Theme.ENABLE_CASCADE_OFFSET == 1)
 					{
-						n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
 						// (depth - 1) since we want the root to be not cascaded (it's not selectable)
 						n.props["image"].x = Number(n.props["x"]) + (n.depth - 1) * _cascadeOffset;
 						n.props["image"].y = Number(n.props["y"]) + (n.depth - 1) * _cascadeOffset;
 					}
 					else if (Theme.ENABLE_CASCADE_OFFSET == 2)
 					{	
-						// for leaf nodes, no expansion
-	//					if (n.childDegree == 0)
-	//					{
-							n.props["image"].setSize(Number(n.props["width"]), Number(n.props["height"]));
-							n.props["image"].x = Number(n.props["x"]);
-							n.props["image"].y = Number(n.props["y"]);
-	//					}
-	//					else
-	//					{				
-	//						var w:Number = Number(n.props["width"]) + (_maxDepth - n.depth) * _cascadeOffset;
-	//						var h:Number = Number(n.props["height"]) + (_maxDepth - n.depth) * _cascadeOffset;
-	//						n.props["image"].setSize(w, h);
-	//						n.props["image"].x = Number(n.props["x"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-	//						n.props["image"].y = Number(n.props["y"]) - (_maxDepth - n.depth) * _cascadeOffset / 2;
-	//					}
+						n.props["image"].x = Number(n.props["x"]);
+						n.props["image"].y = Number(n.props["y"]);
 					}	    
 				} 					     				
 	        });

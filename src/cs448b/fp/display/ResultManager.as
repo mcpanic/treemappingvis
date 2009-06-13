@@ -20,7 +20,7 @@ package cs448b.fp.display
 	public class ResultManager extends Sprite
 	{
 		private var _confirmButton:Button;
-		private var _inst:TextSprite;
+		private var _inst:TextField;
 //		private var _message:TextSprite;
 		private var _output:TextField;
 		
@@ -33,7 +33,7 @@ package cs448b.fp.display
 		{
 			this.graphics.beginFill(0x101010);
 			this.graphics.lineStyle(3, 0xbbbbbb);
-			this.graphics.drawRoundRect(0, 0, Theme.LAYOUT_POPUP_WIDTH, Theme.LAYOUT_POPUP_HEIGHT, 20);
+			this.graphics.drawRoundRect(0, 0, Theme.LAYOUT_RESULT_WIDTH, Theme.LAYOUT_RESULT_HEIGHT, 20);
 			this.graphics.endFill();
 			_isConfirmed = false;
 		}
@@ -44,8 +44,9 @@ package cs448b.fp.display
 		public function init():void
 		{
 			addConfirmButton();		
-			addInstruction();
+			//addInstruction();
 			addMessage();
+			showMessage(Theme.MSG_RESULT);
 		}
 		
 		public function setSessionManager(sessionManager:SessionManager):void
@@ -59,11 +60,14 @@ package cs448b.fp.display
 		private function addConfirmButton():void
 		{	   
 			_confirmButton = new Button();
-			_confirmButton.label = "Continue";
+			if (SessionManager.isTutorial() == true)
+				_confirmButton.label = "Continue";
+			else
+				_confirmButton.label = "Submit";
 			_confirmButton.toggle = true;
 			_confirmButton.width = 100;
-			_confirmButton.x = Theme.LAYOUT_POPUP_WIDTH / 2 - _confirmButton.width / 2;
-			_confirmButton.y = Theme.LAYOUT_POPUP_HEIGHT - 40;
+			_confirmButton.x = Theme.LAYOUT_RESULT_WIDTH / 2 - _confirmButton.width / 2;
+			_confirmButton.y = Theme.LAYOUT_RESULT_HEIGHT - 40;
            	_confirmButton.addEventListener(MouseEvent.CLICK, onConfirmButton);
            	_confirmButton.setStyle("textFormat", Theme.FONT_BUTTON);
            	_confirmButton.useHandCursor = true;
@@ -168,19 +172,21 @@ package cs448b.fp.display
         	}
         }
 				
-		/**
-		 * Add an instruction for mapping completion
-		 */	        
-		private function addInstruction():void
-		{
-            _inst = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
-            _inst.horizontalAnchor = TextSprite.LEFT;
-            _inst.text = Theme.MSG_RESULT;
-            _inst.x = 50;
-            _inst.y = 30;
-            _inst.textMode = TextSprite.DEVICE;
-            addChild( _inst );        
-        }  
+//		/**
+//		 * Add an instruction for mapping completion
+//		 */	        
+//		private function addInstruction():void
+//		{
+//            //_inst = new TextSprite("", Theme.FONT_MESSAGE);//_textFormat);
+//            _inst = new TextField();
+//            //_inst.horizontalAnchor = TextSprite.LEFT;
+//            _inst.defaultTextFormat = Theme.FONT_MESSAGE;
+//            _inst.text = Theme.MSG_RESULT;
+//            _inst.x = 50;
+//            _inst.y = 30;
+//            //_inst.textMode = TextSprite.DEVICE;
+//            addChild( _inst );        
+//        }  
         				
 		/**
 		 * Event handler for cancel button click
@@ -189,11 +195,11 @@ package cs448b.fp.display
 		{
             _output = new TextField();
             _output.x = 50;
-            _output.y = 70;
+            _output.y = 30;
             _output.textColor = 0xffffff;
             _output.defaultTextFormat = Theme.FONT_MESSAGE;
             _output.width = Theme.LAYOUT_POPUP_WIDTH - 100;
-            _output.height = 130;
+            _output.height = 50;
             _output.multiline = true;
             _output.wordWrap = true;
             _output.border = false;
@@ -219,7 +225,8 @@ package cs448b.fp.display
         		showMessage(Theme.MSG_RESULT_TUTORIAL);
         	else
         	{
-	        	showMessage("Task " + SessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
+	        	//showMessage("Task " + SessionManager.curSession + " of " + Theme.NUM_SESSIONS + " complete.");
+	        	//showMessage("Task complete.");
 	        	// Task not over yet
 	        	if (SessionManager.curSession < Theme.NUM_SESSIONS)
 	        	{
@@ -227,7 +234,7 @@ package cs448b.fp.display
 	        	}
 	        	else
 	        	{
-	        		showMessage(Theme.MSG_RESULT_CONTINUE);
+	        		showMessage(Theme.MSG_RESULT_FINISH);
 	        	}
 	        	_sessionManager.addResult(results);
         	}

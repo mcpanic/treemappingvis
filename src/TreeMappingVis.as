@@ -103,7 +103,7 @@ package {
 				trace("Assignment ID: " + SessionManager.assignmentId);
 				
 				if (Theme.ENABLE_DEBUG == true)
-					currentPair = dataList.getDataList(fileList, imageList, new Point(12, 12));
+					currentPair = dataList.getDataList(fileList, imageList, new Point(2, 2));
 					//currentPair = dataList.getDataList(fileList, imageList, false, new Point(12, 12));
 				else
 					currentPair = dataList.getDataList(fileList, imageList);

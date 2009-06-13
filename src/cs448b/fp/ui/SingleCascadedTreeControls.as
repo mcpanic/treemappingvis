@@ -1,7 +1,10 @@
 package cs448b.fp.ui
 {
-	import fl.controls.Button;
+	import cs448b.fp.data.SessionManager;
 	import cs448b.fp.event.ControlsEvent;
+	
+	import fl.controls.Button;
+	
 	import flare.display.TextSprite;
 	
 	import flash.display.Loader;
@@ -30,6 +33,11 @@ package cs448b.fp.ui
 			//addLabel();
 			addZoomInButton();
 			addZoomOutButton();
+			
+			if (SessionManager.isPreview == true)
+			{
+				invisibleZoomButtons();
+			}
 			
 		}
 
