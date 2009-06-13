@@ -223,7 +223,11 @@ package cs448b.fp.display
         {
         	// re-initialize
         	_currentTime = Theme.PREVIEW_TIMEOUT;
-			_myTimer = new Timer(1000, Theme.PREVIEW_TIMEOUT);
+        	// when debugging, only 1 sec delay
+        	if (Theme.ENABLE_DEBUG == true)
+        		_myTimer = new Timer(1000, 1);
+        	else
+				_myTimer = new Timer(1000, Theme.PREVIEW_TIMEOUT);
             _myTimer.addEventListener("timer", timerHandler);
             _myTimer.addEventListener(TimerEvent.TIMER_COMPLETE, completeHandler);
 			_myTimer.start();

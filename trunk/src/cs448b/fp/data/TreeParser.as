@@ -7,7 +7,10 @@ package cs448b.fp.data
 	import flare.vis.data.NodeSprite;
 	import flare.vis.data.Tree;
 	
+	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
+	import flash.display.Loader;
+	import flash.display.PixelSnapping;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -86,15 +89,93 @@ package cs448b.fp.data
 //			var image:DisplayObject = addImage(n, xml);
 //			n.props["image"] = image;
 //			n.addChild(image);
-										
-			var image:DisplayObject = addImage(n, xml);
-			if (_tree.root == n)
-			{				
-				n.props["image"] = image;
-				n.addChild(image);
+			
+			if (Theme.ENABLE_INTERPOLATION == false)
+			{							
+				var image:DisplayObject = addImage(n, xml);
+				if (_tree.root == n)
+				{				
+					n.props["image"] = image;
+					n.addChild(image);
+				}
+			}
+			else
+			{
+				addImageLoader(n, xml);
+								
 			}
 		}
 
+		private function onAddImageLoaderComplete(e:Event):void
+		{
+//			if (Theme.ENABLE_INTERPOLATION == true)
+//			{
+//				//var source:IBitmapDrawable = e.target.loader;
+//				var source:DisplayObject = e.target as DisplayObject;
+//				var original:InterpolatedBitmapData = new InterpolatedBitmapData(source.width, source.height);
+//				original.draw(source);
+//				 
+//				/* The size of the output image */
+//				var newWidth:int = 100;
+//				var newHeight:int = 200;
+//				 
+//				var resized:BitmapData = new BitmapData(newWidth, newHeight);
+//				 
+//				var xFactor:Number = original.width / newWidth;
+//				var yFactor:Number = original.height / newHeight;
+//				 
+//				/* Loop through the pixels of the output image, fetching the equivalent pixel from the input*/
+//				for (var x:int = 0; x < newWidth; x++) 
+//				{
+//				    for (var y:int = 0; y < newHeight; y++) 
+//				    {
+//				        resized.setPixel(x, y, original.getPixelBilinear(x * xFactor, y * yFactor));
+//				    }
+//				}
+//			}		
+				var loader:Loader = Loader(e.target.loader);
+				var img:Bitmap = Bitmap(loader.content);
+				img.smoothing = true;
+				//img.pixelSnapping = PixelSnapping.AUTO;							
+				_tree.root.props["image"] = img;
+				_tree.root.addChild(img);					
+				if (_cb != null) 
+					_cb();							
+		
+		}
+		
+		private function onAddImageComplete(e:Event):void
+		{
+
+			if (_cb != null) 
+				_cb();			
+		}
+		
+		/**
+		 * Load images with Loader class
+		 */			
+		private function addImageLoader(n:NodeSprite, xml:XML):void
+		{
+			var ldr:Loader;
+			var url:String;
+			var urlReq:URLRequest;
+			// load only the root image
+			if (Theme.ENABLE_IMAGE_SEGMENT == false)
+			{			
+				if (n == _tree.root)
+				{
+					ldr = new Loader();							
+					url = _imageLocation + xml.label + ".png";
+		 			urlReq = new URLRequest(url);
+					ldr.load(urlReq);
+					ldr.name = xml.label.toString();
+					ldr.contentLoaderInfo.addEventListener(Event.COMPLETE, onAddImageLoaderComplete);					
+				}
+						
+			}
+			
+		}
+				
 		/**
 		 * Load images
 		 */			
@@ -107,21 +188,13 @@ package cs448b.fp.data
 			if (Theme.ENABLE_IMAGE_SEGMENT == false)
 			{			
 				if (n == _tree.root)
-				{
-					ldr = new UILoader();		
+				{	
+					ldr = new UILoader();					
 					url = _imageLocation + xml.label + ".png";
 		 			urlReq = new URLRequest(url);
 					ldr.load(urlReq);
 					ldr.name = xml.label.toString();
-					ldr.addEventListener(Event.COMPLETE,
-						function(evt:Event):void
-						{	
-//							_numNodesLoaded++;
-//							if(_numNodes == _numNodesLoaded && _cb != null)
-							(_cb != null) 
-								_cb();
-													
-						});
+					ldr.addEventListener(Event.COMPLETE, onAddImageComplete);
 					return ldr;
 				}
 				else

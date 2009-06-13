@@ -15,15 +15,17 @@ package cs448b.fp.ui
 		public static var ENABLE_FULL_PREVIEW:Boolean = true;		
 		// Enable / Disable use of scrollbar
 		public static var ENABLE_SCROLLBAR:Boolean = true;
+		// Enable / Disable image interpolation for better legibility
+		public static var ENABLE_INTERPOLATION:Boolean = true;
 						
 		// How many sessions are we having for each task?
-		public static var NUM_SESSIONS:Number = 5;
+		public static var NUM_SESSIONS:Number = 1;
 		// How many pairs are in the database
 		public static var NUM_PAIRS:Number = 15;
 		// How many steps are in the tutorial session
 		public static var NUM_TUTORIAL_STEPS:Number = 6;
 		// Preview timeout value in seconds
-		public static var PREVIEW_TIMEOUT:Number = 10;
+		public static var PREVIEW_TIMEOUT:Number = 30;
 				
 		// Node offset options for better parent selection. 0: nothing, 1: cascaded offset, 2: expanded parent
 		public static var ENABLE_CASCADE_OFFSET:uint = 2;
@@ -152,6 +154,9 @@ package cs448b.fp.ui
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_COLOR:Number = 0xFFD700;	// popup diagram's line color
 		public static var LAYOUT_POPUP_DIAGRAM_LINE_ALPHA:Number = 0.2;			// popup diagram's line alpha for inactive links 
 
+		public static var LAYOUT_RESULT_WIDTH:Number = 600;		// popup width
+		public static var LAYOUT_RESULT_HEIGHT:Number = 150;		// popup height
+		
 		public static var LAYOUT_FULL_PREVIEW_WIDTH:uint = 850;		// full page preview canvas width
 		public static var LAYOUT_FULL_PREVIEW_HEIGHT:uint = 550;	// full page preview canvas height			
 		public static var LAYOUT_PREVIEW_X:Number = 20;		// popup x-coordinate
@@ -190,11 +195,11 @@ package cs448b.fp.ui
 		public static var MSG_PREVIEW1:String = "Please read through the first page.";
 		public static var MSG_PREVIEW2:String = "Please read through the second page.";
 		public static var MSG_POPUP:String = "This segment already has a mapping. What do you want to do?";
-		public static var MSG_RESULT:String = "Your mapping task is successfully finished!";	
-		public static var MSG_RESULT_SENDING:String = "Sending results to Mechanical Turk server.\n"
-		public static var MSG_RESULT_TUTORIAL:String = "Practice task 1 of 1 complete. Click 'Continue' to finish the tutorial."
-		public static var MSG_RESULT_CONTINUE:String = "Click on the 'Continue' button to start the next task."
-		public static var MSG_RESULT_FINISH:String = "Click on the 'Continue' button to submit the result and finish this HIT."
+		public static var MSG_RESULT:String = "Your mapping task is successfully finished!\n";	
+		public static var MSG_RESULT_SENDING:String = "Sending results to Mechanical Turk server.\n";
+		public static var MSG_RESULT_TUTORIAL:String = "Practice task complete. Click 'Continue' to finish the tutorial.";
+		public static var MSG_RESULT_CONTINUE:String = "Click on the 'Submit' button to submit the result and finish this this.";//"Click on the 'Continue' button to start the next task."
+		public static var MSG_RESULT_FINISH:String = "Click on the 'Submit' button to submit the result and finish this HIT.";
 		
 		public static var MSG_HELP:String = "Mouse click: select a segment\n" + 
 				"Mouse over\n" + 
